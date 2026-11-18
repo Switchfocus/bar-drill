@@ -4,130 +4,302 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Cantina Bar Drill</title>
-<meta name="theme-color" content="#1A1714">
+<meta name="theme-color" content="#F7EEDD" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#13100E" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Barlow+Condensed:ital,wght@0,500;0,700;1,600;1,700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Barlow+Condensed:ital,wght@0,600;0,700;1,600;1,700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+/* =========================================================
+   1. TOKENS
+   Every colour, size, space and radius used below comes from here.
+   ========================================================= */
 :root{
-  --cream:#F7EEDD; --paper:#FFF9EE; --ink:#1A1714; --muted:#6B6158;
-  --orange:#F2A23A; --orange-d:#D9861C; --pink:#D9366B; --green:#2E7A4E; --red:#C23B2E;
-  --line:#1A1714; --r:14px;
+  /* colour: light (default) */
+  --c-bg:#F7EEDD; --c-surface:#FFFAF0; --c-sunken:#F1DFBF;
+  --c-ink:#1A1714; --c-muted:#5C534A; --c-line:#1A1714; --c-line-soft:#D9C9AE; --c-meter-off:#8C7F6E;
+  --c-shadow:#1A1714;
+  --c-brand:#F2A23A; --c-on-brand:#1A1714;
+  --c-accent:#A8204F;
+  --c-success:#24683F; --c-success-bg:#D3EBDA; --c-on-success:#FFFFFF;
+  --c-danger:#A93226;  --c-danger-bg:#F6D5D0;  --c-on-danger:#FFFFFF;
+  --c-info-bg:#FBE5BF;
+  --c-nav-bg:#1A1714; --c-nav-fg:#C9BFB2;
+  --c-focus:#1A1714; --c-focus-halo:#F2A23A;
+
+  /* type */
+  --f-display:"Bowlby One", "Arial Black", Impact, sans-serif;
+  --f-label:"Barlow Condensed", "Arial Narrow", sans-serif;
+  --f-body:Barlow, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --fs-sm:.875rem;   /* 14 – meta, tags */
+  --fs-md:1rem;      /* 16 – body */
+  --fs-lg:1.125rem;  /* 18 – labels, buttons */
+  --fs-xl:1.375rem;  /* 22 – card titles, questions */
+  --fs-2xl:1.75rem;  /* 28 – wordmark, flashcard */
+  --fs-3xl:3rem;     /* 48 – score */
+  --lh-tight:1.15; --lh-body:1.45;
+
+  /* space (4-pt) */
+  --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:24px; --s-6:32px; --s-7:48px;
+
+  /* shape */
+  --r-sm:8px; --r-md:12px; --r-lg:16px; --r-pill:999px;
+  --bw:2px;
+  --sh-sm:2px 2px 0 var(--c-shadow); --sh-md:4px 4px 0 var(--c-shadow);
+
+  /* motion */
+  --dur:120ms; --ease:cubic-bezier(.2,.7,.3,1);
+
+  /* layout */
+  --tap:44px; --maxw:560px; --nav-h:64px;
 }
-*{box-sizing:border-box}
-html,body{margin:0;background:var(--cream);color:var(--ink);font-family:Barlow,system-ui,sans-serif;font-size:16px;-webkit-tap-highlight-color:transparent}
+/* colour: dark – automatic, unless the user picked light */
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --c-bg:#13100E; --c-surface:#211C18; --c-sunken:#30281F;
+    --c-ink:#F7EEDD; --c-muted:#C2B6A6; --c-line:#9C8E7C; --c-line-soft:#3E352D; --c-meter-off:#7A6E60;
+    --c-shadow:#000;
+    --c-accent:#F27BA2;
+    --c-success:#6FCF97; --c-success-bg:#1E3A2A; --c-on-success:#13100E;
+    --c-danger:#F28B7D;  --c-danger-bg:#46231F;  --c-on-danger:#13100E;
+    --c-info-bg:#3D2F17;
+    --c-nav-bg:#0B0908; --c-nav-fg:#B9AE9F;
+    --c-focus:#F7EEDD; --c-focus-halo:#F2A23A;
+  }
+}
+/* colour: dark – chosen manually */
+:root[data-theme="dark"]{
+  --c-bg:#13100E; --c-surface:#211C18; --c-sunken:#30281F;
+  --c-ink:#F7EEDD; --c-muted:#C2B6A6; --c-line:#9C8E7C; --c-line-soft:#3E352D; --c-meter-off:#7A6E60;
+  --c-shadow:#000;
+  --c-accent:#F27BA2;
+  --c-success:#6FCF97; --c-success-bg:#1E3A2A; --c-on-success:#13100E;
+  --c-danger:#F28B7D;  --c-danger-bg:#46231F;  --c-on-danger:#13100E;
+  --c-info-bg:#3D2F17;
+  --c-nav-bg:#0B0908; --c-nav-fg:#B9AE9F;
+  --c-focus:#F7EEDD; --c-focus-halo:#F2A23A;
+}
+
+/* =========================================================
+   2. BASE
+   ========================================================= */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;background:var(--c-bg)}
+body{margin:0;background:var(--c-bg);color:var(--c-ink);font:var(--fs-md)/var(--lh-body) var(--f-body);-webkit-tap-highlight-color:transparent}
 button,input,select,textarea{font:inherit;color:inherit}
-.wrap{max-width:560px;margin:0 auto;padding:calc(16px + env(safe-area-inset-top)) 16px calc(96px + env(safe-area-inset-bottom))}
-header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:14px}
-h1{font-family:"Bowlby One",sans-serif;font-weight:400;font-size:30px;line-height:.95;margin:0;letter-spacing:.5px;color:var(--ink);text-shadow:2px 2px 0 var(--orange)}
-.sub{font-family:"Barlow Condensed";font-style:italic;font-weight:600;color:var(--muted);font-size:15px;margin-top:4px}
-.streak{font-family:"Barlow Condensed";font-weight:700;font-size:14px;text-align:right;line-height:1.1;white-space:nowrap}
-.streak b{display:block;font-family:"Bowlby One";font-weight:400;font-size:22px;color:var(--pink)}
-.chips{display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none;margin:0 -16px;padding-left:16px;padding-right:16px}
-.chips::-webkit-scrollbar{display:none}
-.chip{flex:0 0 auto;border:2px solid var(--line);background:var(--paper);border-radius:999px;padding:5px 12px;font-family:"Barlow Condensed";font-weight:700;font-size:15px;letter-spacing:.3px;cursor:pointer}
-.chip.on{background:var(--ink);color:var(--paper)}
-.card{background:var(--paper);border:2px solid var(--line);border-radius:var(--r);box-shadow:4px 4px 0 var(--line);padding:16px;margin:12px 0}
-.cat-h{font-family:"Barlow Condensed";font-style:italic;font-weight:700;font-size:22px;margin:22px 0 4px;display:flex;align-items:center;gap:8px}
-.cat-h::after{content:"";flex:1;height:2px;background:var(--line)}
-.dname{font-family:"Bowlby One";font-weight:400;font-size:20px;line-height:1.1;margin:0}
-.row{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
-.price{font-family:"Barlow Condensed";font-weight:700;font-size:18px;white-space:nowrap}
-.spirit{font-family:"Barlow Condensed";font-style:italic;font-weight:600;color:var(--pink);font-size:16px;margin-top:2px}
-.ings{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
-.ing{background:#F3E2C4;border-radius:6px;padding:3px 8px;font-size:14px}
-.note{font-size:14px;color:var(--muted);margin-top:8px}
-.spec{margin-top:10px;border-top:2px dashed #CDBFA8;padding-top:8px;font-size:14px;white-space:pre-wrap}
-.spec.empty{color:var(--muted);font-style:italic}
-.dots{display:inline-flex;gap:3px;vertical-align:middle;margin-left:6px}
-.dots i{width:7px;height:7px;border-radius:50%;background:#D9CBB3;display:block}
-.dots i.f{background:var(--green)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:2px solid var(--line);border-radius:12px;background:var(--orange);padding:12px 16px;font-family:"Barlow Condensed";font-weight:700;font-size:18px;letter-spacing:.3px;cursor:pointer;box-shadow:3px 3px 0 var(--line);transition:transform .06s, box-shadow .06s}
-.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--line)}
-.btn.ghost{background:var(--paper)}
-.btn.dark{background:var(--ink);color:var(--paper)}
-.btn.green{background:var(--green);color:#fff}
-.btn.red{background:var(--red);color:#fff}
-.btn.sm{padding:7px 11px;font-size:15px;border-radius:9px;box-shadow:2px 2px 0 var(--line)}
-.btn.block{width:100%}
-.btns{display:flex;gap:10px;margin-top:14px}
-.btns .btn{flex:1}
-nav{position:fixed;left:0;right:0;bottom:0;background:var(--ink);padding:8px 8px calc(8px + env(safe-area-inset-bottom));display:flex;justify-content:center;z-index:10}
-nav .in{display:flex;gap:4px;max-width:560px;width:100%}
-nav button{flex:1;background:none;border:0;color:#B9AE9F;font-family:"Barlow Condensed";font-weight:700;font-size:15px;padding:6px 0;border-radius:10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
-nav button svg{width:22px;height:22px}
-nav button.on{color:var(--ink);background:var(--orange)}
-.q-meta{display:flex;justify-content:space-between;font-family:"Barlow Condensed";font-weight:700;color:var(--muted);font-size:15px}
-.bar{height:8px;border:2px solid var(--line);border-radius:99px;background:var(--paper);overflow:hidden;margin:6px 0 4px}
-.bar>div{height:100%;background:var(--pink);transition:width .25s}
-.q{font-family:"Bowlby One";font-weight:400;font-size:21px;line-height:1.2;margin:4px 0 0}
-.q small{display:block;font-family:Barlow;font-size:15px;color:var(--muted);margin-top:6px;line-height:1.35}
-.opts{display:flex;flex-direction:column;gap:9px;margin-top:14px}
-.opt{text-align:left;border:2px solid var(--line);border-radius:12px;background:var(--paper);padding:12px 14px;font-size:16px;line-height:1.3;cursor:pointer;box-shadow:2px 2px 0 var(--line)}
-.opt.ok{background:#CFEBD8;border-color:var(--green)}
-.opt.bad{background:#F6D0CB;border-color:var(--red)}
-.opt[disabled]{cursor:default}
-.verdict{font-family:"Barlow Condensed";font-weight:700;font-size:20px;margin-top:14px}
-.verdict.ok{color:var(--green)} .verdict.bad{color:var(--red)}
-.flip{min-height:250px;display:flex;flex-direction:column;justify-content:center;text-align:center;cursor:pointer}
-.flip .big{font-family:"Bowlby One";font-size:28px;line-height:1.1}
-.hint{font-family:"Barlow Condensed";font-style:italic;font-weight:600;color:var(--muted);font-size:16px;margin-top:10px}
-.seg{display:flex;border:2px solid var(--line);border-radius:12px;overflow:hidden;margin-top:6px}
-.seg button{flex:1;border:0;background:var(--paper);padding:8px;font-family:"Barlow Condensed";font-weight:700;font-size:15px;cursor:pointer}
-.seg button+button{border-left:2px solid var(--line)}
-.seg button.on{background:var(--ink);color:var(--paper)}
-.big-score{font-family:"Bowlby One";font-size:56px;line-height:1;text-align:center;margin:8px 0}
-label.f{display:block;font-family:"Barlow Condensed";font-weight:700;font-size:15px;margin-top:12px}
-.f input,.f select,.f textarea{display:block;width:100%;margin-top:4px;border:2px solid var(--line);border-radius:10px;background:#fff;padding:9px 11px;font-family:Barlow;font-weight:400;font-size:16px}
-.f textarea{min-height:90px;resize:vertical}
-.list-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:2px dashed #D8C9AF}
-.list-item:last-child{border-bottom:0}
-.muted{color:var(--muted)}
-.empty{text-align:center;padding:30px 10px;color:var(--muted)}
-.modal{position:fixed;inset:0;background:rgba(26,23,20,.55);display:flex;align-items:flex-end;justify-content:center;z-index:20;padding:12px}
-.modal .card{width:100%;max-width:540px;max-height:88vh;overflow:auto;margin-bottom:calc(8px + env(safe-area-inset-bottom))}
-.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:9px 16px;border-radius:999px;font-family:"Barlow Condensed";font-weight:700;z-index:30}
-.seg.folders{margin:0 0 10px;box-shadow:3px 3px 0 var(--line)}
-.seg.folders button{font-size:17px;padding:10px 6px}
-.seg.folders button.on{background:var(--orange);color:var(--ink)}
-.facts{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;margin-top:10px;font-size:14px}
-.facts dt{font-family:"Barlow Condensed";font-weight:700;color:var(--muted)}
-.facts dd{margin:0}
-.vid{display:inline-block;margin-top:10px;font-family:"Barlow Condensed";font-weight:700;font-size:15px;color:var(--pink);text-decoration:none;border-bottom:2px solid var(--pink)}
-body.locked .wrap,body.locked nav{display:none}
-#gate{max-width:440px;margin:0 auto;padding:calc(28px + env(safe-area-inset-top)) 16px 40px}
+button{cursor:pointer}
+h1,h2,h3,p{margin:0}
+:focus{outline:none}
+:focus-visible{outline:3px solid var(--c-focus);outline-offset:3px;box-shadow:0 0 0 6px var(--c-focus-halo);border-radius:var(--r-sm)}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.skip{position:absolute;left:var(--s-4);top:-100px;z-index:50;background:var(--c-brand);color:var(--c-on-brand);padding:var(--s-3) var(--s-4);border-radius:var(--r-md);font:700 var(--fs-lg) var(--f-label)}
+.skip:focus{top:var(--s-4)}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+
+/* =========================================================
+   3. LAYOUT
+   ========================================================= */
+.wrap{max-width:var(--maxw);margin:0 auto;padding:calc(var(--s-4) + env(safe-area-inset-top)) var(--s-4) calc(var(--nav-h) + var(--s-7) + env(safe-area-inset-bottom))}
+body.locked .app,body.locked .tabbar{display:none}
 body:not(.locked) #gate{display:none}
-.gate-h{font-family:"Bowlby One";font-size:38px;line-height:.95;text-shadow:3px 3px 0 var(--orange);margin:0}
-.or{display:flex;align-items:center;gap:10px;color:var(--muted);font-family:"Barlow Condensed";font-weight:700;margin:14px 0}
-.or::before,.or::after{content:"";flex:1;height:2px;background:#D8C9AF}
-.linkbtn{background:none;border:0;padding:0;font-family:"Barlow Condensed";font-weight:700;font-size:16px;color:var(--pink);text-decoration:underline;cursor:pointer}
-.msg{margin-top:12px;padding:10px 12px;border-radius:10px;font-size:15px;border:2px solid var(--line)}
-.msg.err{background:#F6D0CB}.msg.ok{background:#CFEBD8}.msg.info{background:#FBE7C5}
-.sync{font-family:"Barlow Condensed";font-weight:700;font-size:14px;color:var(--muted)}
-.sync i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;background:var(--green)}
-.sync.saving i{background:var(--orange)}.sync.off i{background:var(--red)}
-.spinner{width:34px;height:34px;border:4px solid #D8C9AF;border-top-color:var(--ink);border-radius:50%;animation:sp .8s linear infinite;margin:60px auto}
+.stack>*+*{margin-top:var(--s-3)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:var(--s-3)}
+.cluster{display:flex;flex-wrap:wrap;gap:var(--s-2)}
+.grow{flex:1}
+
+/* =========================================================
+   4. COMPONENTS
+   ========================================================= */
+/* --- Top bar --- */
+.topbar{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--s-4);margin-bottom:var(--s-4)}
+.wordmark{font:400 var(--fs-2xl)/1 var(--f-display);letter-spacing:.02em;text-shadow:2px 2px 0 var(--c-brand)}
+.eyebrow{display:block;font:italic 600 var(--fs-md)/1.2 var(--f-label);color:var(--c-muted);margin-top:var(--s-1)}
+.meter-wrap{min-width:120px;text-align:right}
+.meter-label{font:700 var(--fs-sm)/1.2 var(--f-label);color:var(--c-muted)}
+.meter-label b{font:400 var(--fs-xl)/1 var(--f-display);color:var(--c-ink)}
+.bar{height:10px;border:var(--bw) solid var(--c-line);border-radius:var(--r-pill);background:var(--c-surface);overflow:hidden;margin-top:var(--s-1)}
+.bar>span{display:block;height:100%;background:var(--c-success);transition:width .3s var(--ease)}
+.bar.quiz>span{background:var(--c-brand)}
+
+/* --- Segmented control (toggle group) --- */
+.seg{display:flex;border:var(--bw) solid var(--c-line);border-radius:var(--r-md);overflow:hidden;background:var(--c-surface)}
+.seg button{flex:1;min-height:var(--tap);border:0;background:transparent;font:700 var(--fs-lg)/1.1 var(--f-label);padding:var(--s-2) var(--s-3);transition:background var(--dur) var(--ease)}
+.seg button+button{border-left:var(--bw) solid var(--c-line)}
+.seg button[aria-pressed="true"]{background:var(--c-ink);color:var(--c-bg)}
+.seg.primary{box-shadow:var(--sh-sm)}
+.seg.primary button[aria-pressed="true"]{background:var(--c-brand);color:var(--c-on-brand)}
+.seg button:focus-visible{outline-offset:-5px;box-shadow:none;border-radius:var(--r-sm)}
+
+/* --- Filter chips --- */
+.chips{display:flex;gap:var(--s-2);overflow-x:auto;scrollbar-width:none;margin:var(--s-3) calc(-1 * var(--s-4)) 0;padding:var(--s-1) var(--s-4) var(--s-2);scroll-padding:var(--s-4);
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 var(--s-4),#000 calc(100% - var(--s-6)),transparent);mask-image:linear-gradient(90deg,transparent 0,#000 var(--s-4),#000 calc(100% - var(--s-6)),transparent)}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;min-height:var(--tap);display:inline-flex;align-items:center;gap:var(--s-2);border:var(--bw) solid var(--c-line);background:var(--c-surface);border-radius:var(--r-pill);padding:0 var(--s-4);font:700 var(--fs-md)/1 var(--f-label);letter-spacing:.02em}
+.chip .n{font:600 var(--fs-sm)/1 var(--f-body);color:var(--c-muted)}
+.chip[aria-pressed="true"]{background:var(--c-ink);color:var(--c-bg)}
+.chip[aria-pressed="true"] .n{color:inherit;opacity:.8}
+.chip[aria-pressed="true"]::before{content:"✓";font-size:var(--fs-sm)}
+
+/* --- Card --- */
+.card{background:var(--c-surface);border:var(--bw) solid var(--c-line);border-radius:var(--r-lg);box-shadow:var(--sh-md);padding:var(--s-4);margin:var(--s-4) 0}
+.card.flat{box-shadow:none}
+.card.danger{border-color:var(--c-danger);box-shadow:none}
+.card-title{font:400 var(--fs-xl)/var(--lh-tight) var(--f-display);margin:0}
+.section-title{display:flex;align-items:center;gap:var(--s-2);font:italic 700 var(--fs-xl)/1 var(--f-label);margin:var(--s-6) 0 0}
+.section-title::after{content:"";flex:1;height:var(--bw);background:var(--c-line)}
+.section-title .n{font:600 var(--fs-sm)/1 var(--f-body);font-style:normal;color:var(--c-muted)}
+.panel-title{font:700 var(--fs-xl)/1.1 var(--f-label);margin:0}
+.lede{color:var(--c-muted);font-size:var(--fs-sm);margin-top:var(--s-1)}
+.muted{color:var(--c-muted)}
+
+/* --- Drink card content --- */
+.drink-head{display:flex;align-items:flex-start;gap:var(--s-3)}
+.drink-head .grow{min-width:0}
+.price{font:700 var(--fs-lg)/1.2 var(--f-label);white-space:nowrap;padding-top:2px}
+.spirit{font:italic 600 var(--fs-md)/1.2 var(--f-label);color:var(--c-accent);margin-top:var(--s-1)}
+.ings{display:flex;flex-wrap:wrap;gap:var(--s-1) var(--s-2);margin:var(--s-3) 0 0;padding:0;list-style:none}
+.ings li,.ings>span{background:var(--c-sunken);border-radius:var(--r-sm);padding:var(--s-1) var(--s-2);font-size:var(--fs-sm)}
+.note{font-size:var(--fs-sm);color:var(--c-muted);margin-top:var(--s-2)}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:var(--s-1) var(--s-3);margin:var(--s-3) 0 0;font-size:var(--fs-sm)}
+.facts dt{font:700 var(--fs-sm)/1.45 var(--f-label);color:var(--c-muted);text-transform:uppercase;letter-spacing:.04em}
+.facts dd{margin:0}
+.spec{margin-top:var(--s-3);padding-top:var(--s-3);border-top:var(--bw) dashed var(--c-line-soft);font-size:var(--fs-sm);white-space:pre-line}
+.spec-label{display:block;font:700 var(--fs-sm)/1.45 var(--f-label);color:var(--c-muted);text-transform:uppercase;letter-spacing:.04em}
+.card-foot{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s-2) var(--s-4);margin-top:var(--s-3)}
+
+/* --- Mastery meter (3 segments + text for AT) --- */
+.mastery{display:inline-flex;gap:3px;vertical-align:middle}
+.mastery i{width:10px;height:10px;border-radius:50%;border:2px solid var(--c-meter-off);display:block}
+.mastery i.on{background:var(--c-success);border-color:var(--c-success)}
+
+/* --- Buttons --- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--s-2);min-height:48px;border:var(--bw) solid var(--c-line);border-radius:var(--r-md);background:var(--c-surface);color:var(--c-ink);padding:var(--s-2) var(--s-4);font:700 var(--fs-lg)/1.1 var(--f-label);letter-spacing:.02em;box-shadow:var(--sh-sm);text-decoration:none;transition:transform var(--dur) var(--ease),box-shadow var(--dur) var(--ease)}
+.btn:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--c-shadow)}
+.btn[disabled]{opacity:.55;cursor:not-allowed;transform:none;box-shadow:var(--sh-sm)}
+.btn-primary{background:var(--c-brand);color:var(--c-on-brand);border-color:var(--c-line)}
+.btn-dark{background:var(--c-ink);color:var(--c-bg)}
+.btn-success{background:var(--c-success);color:var(--c-on-success)}
+.btn-danger{background:var(--c-danger);color:var(--c-on-danger)}
+.btn-danger-outline{color:var(--c-danger);border-color:var(--c-danger);box-shadow:none}
+.btn-sm{min-height:var(--tap);font-size:var(--fs-md);padding:var(--s-1) var(--s-3);border-radius:var(--r-sm)}
+.btn-block{width:100%}
+.btn-icon{min-width:var(--tap);min-height:var(--tap);padding:0;border-radius:var(--r-sm);box-shadow:none;border-color:transparent;background:transparent}
+.btn-icon:hover{border-color:var(--c-line)}
+.btn svg{width:20px;height:20px;flex:none}
+.btns{display:flex;gap:var(--s-3);margin-top:var(--s-4)}
+.btns>.btn{flex:1}
+.link{display:inline-flex;align-items:center;min-height:var(--tap);background:none;border:0;padding:0 var(--s-1);font:700 var(--fs-md)/1.2 var(--f-label);color:var(--c-accent);text-decoration:underline;text-underline-offset:3px}
+.link.danger{color:var(--c-danger)}
+
+/* --- Sticky action bar (sits above the tab bar) --- */
+.actionbar{position:sticky;bottom:calc(var(--nav-h) + env(safe-area-inset-bottom) + var(--s-3));z-index:5;margin-top:var(--s-4)}
+.actionbar .btn{box-shadow:var(--sh-md)}
+
+/* --- Search field --- */
+.search{position:relative;margin-top:var(--s-4)}
+.search svg{position:absolute;left:var(--s-3);top:50%;transform:translateY(-50%);width:20px;height:20px;color:var(--c-muted);pointer-events:none}
+.search input{width:100%;min-height:48px;border:var(--bw) solid var(--c-line);border-radius:var(--r-md);background:var(--c-surface);padding:var(--s-2) var(--s-3) var(--s-2) 40px;font-size:var(--fs-md)}
+.search input::placeholder{color:var(--c-muted);opacity:1}
+
+/* --- Form fields --- */
+.field{display:block;margin-top:var(--s-4)}
+.field-label{display:block;font:700 var(--fs-md)/1.2 var(--f-label);margin-bottom:var(--s-1)}
+.field-hint{display:block;font-size:var(--fs-sm);color:var(--c-muted);margin-top:var(--s-1)}
+.field-error{display:block;font-size:var(--fs-sm);color:var(--c-danger);font-weight:600;margin-top:var(--s-1)}
+.input{display:block;width:100%;min-height:48px;border:var(--bw) solid var(--c-line);border-radius:var(--r-sm);background:var(--c-surface);padding:var(--s-2) var(--s-3);font-size:var(--fs-md)}
+textarea.input{min-height:104px;resize:vertical;line-height:var(--lh-body)}
+.input[aria-invalid="true"]{border-color:var(--c-danger);box-shadow:0 0 0 2px var(--c-danger)}
+.input::placeholder{color:var(--c-muted);opacity:.85}
+.pw{position:relative}
+.pw .input{padding-right:84px}
+.pw button{position:absolute;right:2px;top:2px;bottom:2px;min-width:76px;border:0;border-left:var(--bw) solid var(--c-line-soft);background:transparent;font:700 var(--fs-md) var(--f-label);border-radius:0 var(--r-sm) var(--r-sm) 0}
+.split{display:flex;gap:var(--s-3)}.split>*{flex:1;min-width:0}
+
+/* --- Inline messages --- */
+.msg{margin-top:var(--s-3);padding:var(--s-3);border-radius:var(--r-md);font-size:var(--fs-sm);border:var(--bw) solid var(--c-line)}
+.msg-error{background:var(--c-danger-bg)} .msg-success{background:var(--c-success-bg)} .msg-info{background:var(--c-info-bg)}
+.tag{display:inline-block;font:700 var(--fs-sm)/1.3 var(--f-label);border:1.5px solid var(--c-line);border-radius:6px;padding:0 6px;margin-left:var(--s-1);vertical-align:2px;background:var(--c-surface)}
+.tag.ok{background:var(--c-success-bg)}
+
+/* --- Quiz --- */
+.q-meta{display:flex;justify-content:space-between;font:700 var(--fs-md)/1.2 var(--f-label);color:var(--c-muted)}
+.question{font:400 var(--fs-xl)/1.25 var(--f-display);margin-top:var(--s-3)}
+.question strong{font-weight:400;background:linear-gradient(transparent 62%,color-mix(in srgb,var(--c-brand) 55%,transparent) 0)}
+.question-detail{font:500 var(--fs-md)/var(--lh-body) var(--f-body);margin-top:var(--s-2)}
+.options{display:flex;flex-direction:column;gap:var(--s-2);margin-top:var(--s-4)}
+.option{display:flex;align-items:center;gap:var(--s-3);text-align:left;min-height:56px;border:var(--bw) solid var(--c-line);border-radius:var(--r-md);background:var(--c-surface);padding:var(--s-3) var(--s-4);font-size:var(--fs-md);line-height:1.3;box-shadow:var(--sh-sm)}
+.option .key{flex:none;width:28px;height:28px;border-radius:50%;border:var(--bw) solid var(--c-line);display:grid;place-items:center;font:700 var(--fs-sm) var(--f-label)}
+.option[aria-disabled="true"]{cursor:default;box-shadow:none}
+.option.is-correct{background:var(--c-success-bg);border-color:var(--c-success)}
+.option.is-correct .key{background:var(--c-success);border-color:var(--c-success);color:var(--c-on-success)}
+.option.is-wrong{background:var(--c-danger-bg);border-color:var(--c-danger)}
+.option.is-wrong .key{background:var(--c-danger);border-color:var(--c-danger);color:var(--c-on-danger)}
+.option.is-dim{opacity:.6}
+.option .why{display:block;font:700 var(--fs-sm)/1.2 var(--f-label);margin-top:2px}
+.verdict{display:flex;align-items:center;gap:var(--s-2);font:700 var(--fs-xl)/1.1 var(--f-label);margin-top:var(--s-4)}
+.verdict svg{width:24px;height:24px;flex:none}
+.option .key svg{width:16px;height:16px}
+.verdict.ok{color:var(--c-success)} .verdict.bad{color:var(--c-danger)}
+.score{font:400 var(--fs-3xl)/1 var(--f-display);text-align:center;margin:var(--s-2) 0}
+
+/* --- Flashcard --- */
+.flashcard{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:var(--s-3);width:100%;min-height:260px;text-align:center;border:var(--bw) solid var(--c-line);border-radius:var(--r-lg);background:var(--c-surface);box-shadow:var(--sh-md);padding:var(--s-5);margin:var(--s-4) 0 0}
+.flashcard .big{font:400 var(--fs-2xl)/1.1 var(--f-display)}
+.flashcard .ings{justify-content:center}
+.hint{font:italic 600 var(--fs-md)/1.35 var(--f-label);color:var(--c-muted)}
+
+/* --- Tab bar --- */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--c-nav-bg);padding:var(--s-2) var(--s-2) calc(var(--s-2) + env(safe-area-inset-bottom))}
+.tabbar ul{display:flex;gap:var(--s-1);max-width:var(--maxw);margin:0 auto;padding:0;list-style:none}
+.tabbar li{flex:1}
+.tabbar button{width:100%;min-height:48px;background:none;border:0;color:var(--c-nav-fg);font:700 var(--fs-md)/1 var(--f-label);padding:var(--s-1) 0;border-radius:var(--r-md);display:flex;flex-direction:column;align-items:center;gap:3px}
+.tabbar button svg{width:22px;height:22px}
+.tabbar button[aria-current="page"]{color:var(--c-on-brand);background:var(--c-brand)}
+.tabbar button:focus-visible{outline-color:var(--c-brand);box-shadow:none}
+
+/* --- Dialog --- */
+.scrim{position:fixed;inset:0;background:rgba(10,8,7,.6);display:flex;align-items:flex-end;justify-content:center;z-index:20;padding:var(--s-3)}
+.dialog{width:100%;max-width:540px;max-height:88vh;overflow:auto;margin:0 0 calc(var(--s-2) + env(safe-area-inset-bottom));background:var(--c-surface);border:var(--bw) solid var(--c-line);border-radius:var(--r-lg);box-shadow:var(--sh-md);padding:var(--s-4) var(--s-4) var(--s-5)}
+@media (min-width:600px){.scrim{align-items:center}}
+body.modal-open{overflow:hidden}
+
+/* --- Toast --- */
+.toast{position:fixed;left:50%;bottom:calc(var(--nav-h) + var(--s-5) + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--c-ink);color:var(--c-bg);padding:var(--s-2) var(--s-4);border-radius:var(--r-pill);font:700 var(--fs-md) var(--f-label);z-index:30;max-width:calc(100vw - 32px)}
+
+/* --- Gate (sign-in) --- */
+#gate{max-width:440px;margin:0 auto;padding:calc(var(--s-6) + env(safe-area-inset-top)) var(--s-4) var(--s-7)}
+.gate-h{font:400 2.25rem/.95 var(--f-display);text-shadow:3px 3px 0 var(--c-brand)}
+.or{display:flex;align-items:center;gap:var(--s-3);color:var(--c-muted);font:700 var(--fs-md) var(--f-label);margin:var(--s-4) 0}
+.or::before,.or::after{content:"";flex:1;height:var(--bw);background:var(--c-line-soft)}
+.sync{display:inline-flex;align-items:center;gap:var(--s-2);font:700 var(--fs-sm) var(--f-label);color:var(--c-muted)}
+.sync i{width:8px;height:8px;border-radius:50%;background:var(--c-success)}
+.sync.saving i{background:var(--c-brand)} .sync.off i{background:var(--c-danger)}
+.spinner{width:34px;height:34px;border:4px solid var(--c-line-soft);border-top-color:var(--c-ink);border-radius:50%;animation:sp .8s linear infinite;margin:var(--s-7) auto}
 @keyframes sp{to{transform:rotate(360deg)}}
-.tag{display:inline-block;font-family:"Barlow Condensed";font-weight:700;font-size:13px;border:1.5px solid var(--line);border-radius:6px;padding:0 6px;margin-left:6px;vertical-align:middle;background:#fff}
+.list-item{display:flex;justify-content:space-between;align-items:center;gap:var(--s-3);padding:var(--s-2) 0;border-bottom:var(--bw) dashed var(--c-line-soft)}
+.list-item:last-child{border-bottom:0}
+.empty{text-align:center;padding:var(--s-6) var(--s-3);color:var(--c-muted)}
 </style>
 </head>
 <body class="locked">
+<a class="skip" href="#main">Skip to content</a>
 <div id="gate"></div>
-<div class="wrap">
-  <header>
+<div class="app wrap">
+  <header class="topbar">
     <div>
-      <h1>CANTINA<br>BAR DRILL</h1>
-      <div class="sub">Corrochio's Cantina · menu trainer</div>
+      <h1 class="wordmark">BAR DRILL</h1>
+      <span class="eyebrow">Corrochio's Cantina trainer</span>
     </div>
-    <div class="streak" id="mastery"></div>
+    <div class="meter-wrap" id="mastery"></div>
   </header>
-  <div class="seg folders" id="folders"></div>
-  <div class="chips" id="chips"></div>
-  <main id="view"></main>
+  <div class="seg primary" role="group" aria-label="Menu" id="folders"></div>
+  <div class="chips" role="group" aria-label="Categories to include" id="chips"></div>
+  <main id="main" tabindex="-1"></main>
 </div>
-<nav><div class="in" id="nav"></div></nav>
+<nav class="tabbar" aria-label="Sections"><ul id="nav"></ul></nav>
 <div id="layer"></div>
-
+<div id="live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 <script>
 /* ---------- Menu data (from the Cantina menu PDF) ---------- */
 const MENU = [
@@ -263,6 +435,7 @@ let folder = "cantina";
 const CATS_OF=f=>FOLDERS[f].cats;
 Object.defineProperty(window,"CATS",{get:()=>CATS_OF(folder)});
 
+
 /* ---------- Storage (per-browser, safe) ---------- */
 function load(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -273,7 +446,7 @@ function initState(remote){
     items=remote.items; stats=remote.stats||{}; decksBy=remote.decksBy||{};
     folder=remote.folder; tab=remote.tab||"learn";
   }else{
-    // First sign-in: bring over anything saved in this browser by the old version
+    // First sign-in: bring over anything saved in this browser by an earlier version
     items=load("cbd_items",null)||DEFAULT_ITEMS(); stats=load("cbd_stats",{});
     decksBy=load("cbd_decks2",null)||{cantina:load("cbd_decks",["Cocktails","Happy hour","Shots"])};
     folder=load("cbd_folder","cantina"); tab=load("cbd_tab","learn");
@@ -288,215 +461,371 @@ Object.defineProperty(window,"decks",{get:()=>decksBy[folder],set:v=>{decksBy[fo
 const snapshot=()=>({items,stats,decksBy,folder,tab,classicsAdded:true});
 const persist=()=>{if(window.cloudSave) window.cloudSave(snapshot())};
 
+/* ---------- Theme (per device) ---------- */
+let theme=load("cbd_theme","auto");
+function applyTheme(){
+  const r=document.documentElement;
+  if(theme==="auto") r.removeAttribute("data-theme"); else r.setAttribute("data-theme",theme);
+}
+applyTheme();
+
 /* ---------- Helpers ---------- */
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
 const uniq=a=>[...new Set(a)];
+const norm=s=>String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+const isQuizzable=i=>i.ingredients.length||(i.qa&&i.qa.length);
 const pool=()=>items.filter(i=>i.folder===folder&&decks.includes(i.cat));
 const st=id=>stats[id]||(stats[id]={hit:0,miss:0,streak:0});
-function weight(i){const s=st(i.id);let w=1+s.miss*1.6-s.hit*.5-s.streak*.4;if(!s.hit&&!s.miss)w+=1;return Math.max(.25,Math.min(6,w))}
+const peek=id=>stats[id]||{hit:0,miss:0,streak:0};
+function weight(i){const s=peek(i.id);let w=1+s.miss*1.6-s.hit*.5-s.streak*.4;if(!s.hit&&!s.miss)w+=1;return Math.max(.25,Math.min(6,w))}
 function pickWeighted(arr,avoid){const c=arr.length>1?arr.filter(x=>x.id!==avoid):arr;let t=c.reduce((a,x)=>a+weight(x),0),r=Math.random()*t;for(const x of c){r-=weight(x);if(r<=0)return x}return c[c.length-1]}
-function level(i){const s=st(i.id);return Math.max(0,Math.min(3,s.streak))}
-function dots(i){const l=level(i);return `<span class="dots" title="Mastery">${[0,1,2].map(n=>`<i class="${n<l?'f':''}"></i>`).join("")}</span>`}
+const level=i=>Math.max(0,Math.min(3,peek(i.id).streak));
+const isWeak=i=>{const s=peek(i.id);return (s.miss>0&&s.streak<2)||(s.hit+s.miss>0&&s.streak===0)};
 function record(id,ok){const s=st(id);if(ok){s.hit++;s.streak++}else{s.miss++;s.streak=0}persist();renderMastery()}
-function toast(t){const d=document.createElement("div");d.className="toast";d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),1600)}
-function renderMastery(){const p=pool().filter(i=>i.ingredients.length||i.qa);const m=p.filter(i=>level(i)>=3).length;$("#mastery").innerHTML=`<b>${m}/${p.length}</b>mastered`}
+const ICON={
+  edit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  cross:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>',
+  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>'
+};
+function meter(i){const l=level(i);return `<span class="mastery" role="img" aria-label="Mastery ${l} of 3">${[0,1,2].map(n=>`<i class="${n<l?"on":""}"></i>`).join("")}</span>`}
 
-/* ---------- Chips ---------- */
+/* ---------- Announcements & toasts ---------- */
+function announce(t){const l=$("#live");l.textContent="";setTimeout(()=>{l.textContent=t},40)}
+function toast(t){
+  document.querySelectorAll(".toast").forEach(x=>x.remove());
+  const d=document.createElement("div");d.className="toast";d.setAttribute("aria-hidden","true");d.textContent=t;document.body.appendChild(d);
+  announce(t);setTimeout(()=>d.remove(),2200);
+}
+
+/* ---------- Dialog (focus trap, Escape, restore focus) ---------- */
+let lastFocus=null;
+const FOCUSABLE='button:not([disabled]),[href],input:not([disabled]),select,textarea,[tabindex]:not([tabindex="-1"])';
+function openDialog(html,{focus}={}){
+  lastFocus=document.activeElement;
+  $("#layer").innerHTML=`<div class="scrim" id="scrim"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-title">${html}</div></div>`;
+  document.body.classList.add("modal-open");
+  document.querySelectorAll(".app,.tabbar,#gate").forEach(e=>e.setAttribute("inert",""));
+  const dlg=$(".dialog");
+  $("#scrim").addEventListener("mousedown",e=>{if(e.target.id==="scrim")closeDialog()});
+  dlg.addEventListener("keydown",e=>{
+    if(e.key==="Escape"){e.preventDefault();closeDialog();return}
+    if(e.key!=="Tab")return;
+    const f=[...dlg.querySelectorAll(FOCUSABLE)];if(!f.length)return;
+    if(e.shiftKey&&document.activeElement===f[0]){e.preventDefault();f[f.length-1].focus()}
+    else if(!e.shiftKey&&document.activeElement===f[f.length-1]){e.preventDefault();f[0].focus()}
+  });
+  (focus?dlg.querySelector(focus):dlg.querySelector(FOCUSABLE))?.focus();
+  return dlg;
+}
+function closeDialog(){
+  $("#layer").innerHTML="";document.body.classList.remove("modal-open");
+  document.querySelectorAll("[inert]").forEach(e=>e.removeAttribute("inert"));
+  if(lastFocus&&document.contains(lastFocus))lastFocus.focus();
+}
+function confirmDialog(title,body,label,yes){
+  openDialog(`<h2 class="panel-title" id="dlg-title">${esc(title)}</h2>${body?`<p class="lede">${esc(body)}</p>`:""}
+    <div class="btns"><button class="btn" id="c-no">Cancel</button><button class="btn btn-danger" id="c-yes">${esc(label)}</button></div>`,{focus:"#c-no"});
+  $("#c-no").onclick=closeDialog;$("#c-yes").onclick=()=>{closeDialog();yes()};
+}
+// names the auth module uses
+window.toast=toast; window.modal=html=>openDialog(html); window.closeModal=closeDialog; window.openDialog=openDialog; window.announce=announce;
+
+/* ---------- Header: mastery meter ---------- */
+function renderMastery(){
+  const p=pool().filter(isQuizzable);const m=p.filter(i=>level(i)>=3).length;const pct=p.length?Math.round(m/p.length*100):0;
+  $("#mastery").innerHTML=`<div class="meter-label"><b>${m}</b> / ${p.length} mastered</div>
+    <div class="bar" role="progressbar" aria-label="Drinks mastered in the selected categories" aria-valuemin="0" aria-valuemax="${p.length}" aria-valuenow="${m}"><span style="width:${pct}%"></span></div>`;
+}
+
+/* ---------- Folder switch & category chips ---------- */
 function renderFolders(){
-  $("#folders").innerHTML=Object.entries(FOLDERS).map(([k,f])=>`<button data-f="${k}" class="${folder===k?'on':''}">${esc(f.name)}</button>`).join("");
-  $("#folders").querySelectorAll("button").forEach(b=>b.onclick=()=>{folder=b.dataset.f;qz=null;fc.item=null;persist();renderFolders();renderChips();renderMastery();render();window.scrollTo(0,0)});
+  $("#folders").innerHTML=Object.entries(FOLDERS).map(([k,f])=>`<button type="button" data-f="${k}" aria-pressed="${folder===k}">${esc(f.name)}</button>`).join("");
+  $("#folders").querySelectorAll("button").forEach(b=>b.onclick=()=>{
+    if(folder===b.dataset.f)return;
+    folder=b.dataset.f;qz=null;fc.item=null;learnQ="";persist();renderFolders();renderChips();renderMastery();render();
+  });
 }
 function renderChips(){
-  $("#chips").innerHTML=CATS.map(c=>`<button class="chip ${decks.includes(c)?'on':''}" data-c="${esc(c)}">${esc(c)}</button>`).join("");
+  const cats=CATS, all=cats.every(c=>decks.includes(c));
+  const count=c=>items.filter(i=>i.folder===folder&&i.cat===c).length;
+  $("#chips").innerHTML=`<button type="button" class="chip" data-all aria-pressed="${all}">All</button>`+
+    cats.map(c=>`<button type="button" class="chip" data-c="${esc(c)}" aria-pressed="${decks.includes(c)}">${esc(c)} <span class="n">${count(c)}</span></button>`).join("");
   $("#chips").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{
-    const c=b.dataset.c; decks=decks.includes(c)?decks.filter(x=>x!==c):[...decks,c];
-    if(!decks.length) decks=[c];
-    persist();renderChips();renderMastery();render();
+    if(b.hasAttribute("data-all")) decks=[...cats];
+    else{const c=b.dataset.c;decks=decks.includes(c)?decks.filter(x=>x!==c):[...decks,c];if(!decks.length)decks=[c]}
+    persist();qz=null;const keep=b.dataset.c||"all";renderChips();renderMastery();render();
+    ($(`#chips [data-c="${CSS.escape(keep)}"]`)||$("#chips [data-all]"))?.focus();
   });
 }
 
-/* ---------- Card markup ---------- */
-function drinkCard(i,opts={}){
-  return `<div class="card">
-    <div class="row"><h3 class="dname">${esc(i.name)}${opts.dots===false?'':dots(i)}</h3><span class="price">${esc(i.price)}</span></div>
-    ${i.spirit?`<div class="spirit">${esc(i.spirit)}</div>`:""}
-    ${i.ingredients.length?`<div class="ings">${i.ingredients.map(x=>`<span class="ing">${esc(x)}</span>`).join("")}</div>`:""}
-    ${i.note?`<div class="note">${esc(i.note)}</div>`:""}
-    ${i.method||i.glass||i.garnish?`<dl class="facts">${i.method?`<dt>Method</dt><dd>${esc(i.method)}</dd>`:""}${i.glass?`<dt>Glass</dt><dd>${esc(i.glass)}</dd>`:""}${i.garnish?`<dt>Garnish</dt><dd>${esc(i.garnish)}</dd>`:""}</dl>`:""}
-    ${["Food","Beer","Wine","Softs"].includes(i.cat)||!i.ingredients.length?"":(i.spec?`<div class="spec">${esc(i.spec)}</div>`:`<div class="spec empty">House spec (measures, glass, ice, garnish): not added yet</div>`)}
-    ${i.video&&/^https:\/\//.test(i.video)?`<a class="vid" href="${esc(i.video)}" target="_blank" rel="noopener">▶ Watch in the video</a>`:""}
-    ${opts.edit?`<div class="btns" style="margin-top:10px"><button class="btn sm ghost" data-edit="${esc(i.id)}">Edit</button></div>`:""}
-  </div>`;
+/* ---------- Drink card ---------- */
+const MIXED=["Cocktails","Happy hour","Shots","0%"];
+function drinkCard(i,{edit=false,level:showLevel=true}={}){
+  const hid="d-"+i.id;
+  const facts=i.method||i.glass||i.garnish?`<dl class="facts">${i.method?`<dt>Method</dt><dd>${esc(i.method)}</dd>`:""}${i.glass?`<dt>Glass</dt><dd>${esc(i.glass)}</dd>`:""}${i.garnish?`<dt>Garnish</dt><dd>${esc(i.garnish)}</dd>`:""}</dl>`:"";
+  const spec=i.spec?`<div class="spec"><span class="spec-label">${i.folder==="cantina"?"House spec":"Spec"}</span>${esc(i.spec)}</div>`:"";
+  const addSpec=!i.spec&&edit&&i.folder==="cantina"&&MIXED.includes(i.cat)&&i.ingredients.length?`<button type="button" class="link" data-edit="${esc(i.id)}">+ Add house spec</button>`:"";
+  const vid=i.video&&/^https:\/\//.test(i.video)?`<a class="link" href="${esc(i.video)}" target="_blank" rel="noopener">▶ Watch the build<span class="sr-only"> for ${esc(i.name)} on YouTube (opens in a new tab)</span></a>`:"";
+  return `<article class="card" aria-labelledby="${hid}">
+    <div class="drink-head">
+      <div class="grow">
+        <h3 class="card-title" id="${hid}">${esc(i.name)}</h3>
+        ${i.spirit?`<p class="spirit">${esc(i.spirit)}</p>`:""}
+      </div>
+      ${i.price?`<span class="price">${esc(i.price)}</span>`:""}
+      ${edit?`<button type="button" class="btn btn-icon" data-edit="${esc(i.id)}" aria-label="Edit ${esc(i.name)}">${ICON.edit}</button>`:""}
+    </div>
+    ${i.ingredients.length?`<ul class="ings" aria-label="Ingredients">${i.ingredients.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:""}
+    ${i.note?`<p class="note">${esc(i.note)}</p>`:""}
+    ${facts}${spec}
+    ${(showLevel&&isQuizzable(i))||addSpec||vid?`<div class="card-foot">${showLevel&&isQuizzable(i)?meter(i):""}${vid}${addSpec}</div>`:""}
+  </article>`;
 }
+function bindEdit(root=document){root.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>openEditor(b.dataset.edit))}
 
 /* ---------- LEARN ---------- */
+let learnQ="";
 function renderLearn(){
-  const p=pool();
-  let h=`<div class="note" style="margin-top:0">Tap a category above to add or remove it. ${folder==="cantina"?"Specs from the Cantina menu. Add the house measures under <b>Edit</b> once you've seen them on shift.":"Standard classic specs in ml. Bars vary, so follow the house spec when there is one."}</div>`;
+  $("#main").innerHTML=`<h2 class="sr-only">Learn</h2>
+    <div class="search" role="search">
+      ${ICON.search}
+      <label for="q" class="sr-only">Search drinks or ingredients</label>
+      <input id="q" type="search" placeholder="Search drinks or ingredients" autocomplete="off" value="${esc(learnQ)}">
+    </div>
+    <p class="lede" style="margin-top:var(--s-3)">The dots fill as you answer correctly. Three right in a row and a drink counts as mastered.</p>
+    <div id="results"></div>`;
+  let t;$("#q").oninput=e=>{learnQ=e.target.value;renderResults();clearTimeout(t);t=setTimeout(()=>{const r=$("#results");if(r)announce(r.dataset.count+(r.dataset.count==="1"?" result":" results"))},500)};
+  renderResults();
+}
+function renderResults(){
+  const q=norm(learnQ.trim());
+  const list=pool().filter(i=>!q||norm([i.name,i.spirit,i.note,i.cat,...i.ingredients].join(" ")).includes(q));
+  let h="";
   CATS.filter(c=>decks.includes(c)).forEach(c=>{
-    const list=p.filter(i=>i.cat===c); if(!list.length) return;
-    h+=`<div class="cat-h">${esc(c)}</div>`+list.map(i=>drinkCard(i,{edit:true})).join("");
+    const l=list.filter(i=>i.cat===c);if(!l.length)return;
+    h+=`<h2 class="section-title">${esc(c)} <span class="n">${l.length}</span></h2>`+l.map(i=>drinkCard(i,{edit:true})).join("");
   });
-  $("#view").innerHTML=h||`<div class="empty">Nothing in these categories.</div>`;
-  bindEditButtons();
+  const r=$("#results");r.dataset.count=list.length;
+  r.innerHTML=h||`<p class="empty">${q?`Nothing matches “${esc(learnQ)}”.`:"Nothing in these categories."}</p>`;
+  bindEdit(r);
 }
 
 /* ---------- FLASHCARDS ---------- */
 let fc={item:null,flipped:false,dir:"name"};
-function renderCards(){
+function renderCards(focusSel){
   const p=pool().filter(i=>i.ingredients.length);
-  if(!p.length){$("#view").innerHTML=`<div class="empty">No drinks with ingredients in these categories.</div>`;return}
+  if(!p.length){$("#main").innerHTML=`<p class="empty">No drinks with ingredients in these categories.</p>`;return}
   if(!fc.item||!p.find(x=>x.id===fc.item.id)) fc.item=pickWeighted(p);
   const i=fc.item;
-  const front = fc.dir==="name"
-    ? `<div class="big">${esc(i.name)}</div><div class="hint">Say the build out loud: spirit, modifiers, citrus, rim. Then tap.</div>`
-    : `<div class="ings" style="justify-content:center">${i.ingredients.map(x=>`<span class="ing">${esc(x)}</span>`).join("")}</div>${i.note?`<div class="note">${esc(i.note.replace(new RegExp(i.name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'),'___'))}</div>`:""}<div class="hint">Which drink is this? Tap to reveal.</div>`;
-  $("#view").innerHTML=`
-    <div class="seg"><button data-d="name" class="${fc.dir==='name'?'on':''}">Name → build</button><button data-d="ing" class="${fc.dir==='ing'?'on':''}">Build → name</button></div>
-    ${fc.flipped?drinkCard(i):`<div class="card flip" id="flip"><div class="q-meta" style="justify-content:center">${esc(i.cat)}</div>${front}</div>`}
-    ${fc.flipped?`<div class="btns"><button class="btn red" id="miss">Missed it</button><button class="btn green" id="got">Got it</button></div>`:`<button class="btn block dark" id="reveal" style="margin-top:4px">Reveal</button>`}`;
-  document.querySelectorAll("#view .seg button").forEach(b=>b.onclick=()=>{fc.dir=b.dataset.d;fc.flipped=false;renderCards()});
-  const flip=()=>{fc.flipped=true;renderCards()};
-  if($("#flip")) $("#flip").onclick=flip;
-  if($("#reveal")) $("#reveal").onclick=flip;
-  if($("#got")) $("#got").onclick=()=>{record(i.id,true);next()};
-  if($("#miss")) $("#miss").onclick=()=>{record(i.id,false);next()};
-  function next(){fc.item=pickWeighted(p,i.id);fc.flipped=false;renderCards()}
+  const nameRx=new RegExp(i.name.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),"gi");
+  const front=fc.dir==="name"
+    ? `<span class="eyebrow">${esc(i.cat)}</span><span class="big">${esc(i.name)}</span><span class="hint">Say the build out loud, then tap to check.</span>`
+    : `<span class="eyebrow">${esc(i.cat)}</span><span class="ings">${i.ingredients.map(x=>`<span>${esc(x)}</span>`).join("")}</span>${i.note?`<span class="note">${esc(i.note.replace(nameRx,"___"))}</span>`:""}<span class="hint">Which drink is this? Tap to check.</span>`;
+  $("#main").innerHTML=`<h2 class="sr-only">Flashcards</h2>
+    <div class="seg" role="group" aria-label="Card direction">
+      <button type="button" data-d="name" aria-pressed="${fc.dir==="name"}">Name → build</button>
+      <button type="button" data-d="ing" aria-pressed="${fc.dir==="ing"}">Build → name</button>
+    </div>
+    ${fc.flipped
+      ? `<div id="answer" tabindex="-1">${drinkCard(i)}</div>
+         <div class="actionbar"><div class="btns" style="margin-top:0">
+           <button type="button" class="btn btn-danger" id="miss">${ICON.cross} Missed it</button>
+           <button type="button" class="btn btn-success" id="got">${ICON.check} Got it</button>
+         </div></div>`
+      : `<button type="button" class="flashcard" id="flip" aria-label="${fc.dir==="name"?esc(i.name)+". Reveal the build":"Reveal which drink this is"}">${front}</button>`}`;
+  $("#main").querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{fc.dir=b.dataset.d;fc.flipped=false;renderCards(`[data-d="${b.dataset.d}"]`)});
+  if($("#flip")) $("#flip").onclick=()=>{fc.flipped=true;renderCards("#answer")};
+  const next=ok=>{record(i.id,ok);fc.item=pickWeighted(p,i.id);fc.flipped=false;renderCards("#flip")};
+  if($("#got")) $("#got").onclick=()=>next(true);
+  if($("#miss")) $("#miss").onclick=()=>next(false);
+  if(focusSel) $(focusSel)?.focus();
 }
 
 /* ---------- QUIZ ---------- */
 let qz=null;
+const KIND=i=>i.folder==="classics"?"mixed":({Food:"food",Softs:"other",Beer:"other",Wine:"other"}[i.cat]||"mixed");
 const ingStr=i=>i.ingredients.join(", ");
-function makeOptions(correct,cands){const w=shuffle(uniq(cands.filter(c=>c&&c!==correct))).slice(0,3);return w.length<2?null:shuffle([correct,...w])}
+const words=i=>new Set(i.ingredients.flatMap(x=>norm(x).split(/[^a-z0-9%]+/)).filter(w=>w.length>2));
+function similar(i,cands){
+  // rank plausible distractors: same kind, shared ingredients, same category
+  const w=words(i);
+  return cands.filter(x=>x.id!==i.id&&KIND(x)===KIND(i))
+    .map(x=>{let s=0;words(x).forEach(t=>{if(w.has(t))s+=2});if(x.cat===i.cat)s+=1;return {x,s:s+Math.random()*1.5}})
+    .sort((a,b)=>b.s-a.s).map(o=>o.x);
+}
+function makeOptions(correct,cands){const w=uniq(cands.filter(c=>c&&c!==correct)).slice(0,3);return w.length<3?null:shuffle([correct,...w])}
 function genQuestion(i){
   const all=items.filter(x=>x.folder===i.folder&&x.ingredients.length);
-  const same=all.filter(x=>x.cat===i.cat&&x.id!==i.id);
-  const others=shuffle(same).concat(shuffle(all.filter(x=>x.cat!==i.cat&&x.id!==i.id)));
+  const near=similar(i,all);
   const gens=[];
-  if(i.ingredients.length>=2) gens.push(()=>{const o=makeOptions(ingStr(i),others.map(ingStr));return o&&{q:`What goes into the <u>${esc(i.name)}</u>?`,opts:o,a:ingStr(i)}});
-  if(i.ingredients.length>=2) gens.push(()=>{const o=makeOptions(i.name,others.filter(x=>ingStr(x)!==ingStr(i)).map(x=>x.name));return o&&{q:`Which drink is this?<small>${esc(ingStr(i))}</small>`,opts:o,a:i.name}});
-  if(i.price&&i.price.startsWith("£")) gens.push(()=>{const o=makeOptions(i.price,shuffle(uniq(items.filter(x=>x.cat===i.cat||x.cat==="Cocktails").map(x=>x.price))).filter(p=>p&&p.startsWith("£")));return o&&{q:`How much is the <u>${esc(i.name)}</u>?`,opts:o,a:i.price}});
-  if(i.spirit) gens.push(()=>{const o=makeOptions(i.spirit,items.filter(x=>x.spirit&&x.spirit!==i.spirit&&!x.spirit.includes(i.spirit)&&!i.spirit.includes(x.spirit)).map(x=>x.spirit));return o&&{q:`What's the base spirit in the <u>${esc(i.name)}</u>?`,opts:o,a:i.spirit}});
+  const nm=`<strong>${esc(i.name)}</strong>`;
+  if(i.ingredients.length>=2){
+    gens.push(()=>{const o=makeOptions(ingStr(i),near.filter(x=>ingStr(x)!==ingStr(i)).slice(0,6).map(ingStr).sort(()=>Math.random()-.5));return o&&{q:`What goes into the ${nm}?`,opts:o,a:ingStr(i)}});
+    gens.push(()=>{const o=makeOptions(i.name,near.filter(x=>ingStr(x)!==ingStr(i)).slice(0,6).map(x=>x.name).sort(()=>Math.random()-.5));return o&&{q:"Which drink is this?",detail:ingStr(i),opts:o,a:i.name}});
+  }
+  if(i.price&&i.price.startsWith("£")) gens.push(()=>{const o=makeOptions(i.price,shuffle(uniq(items.filter(x=>x.folder===i.folder&&KIND(x)===KIND(i)).map(x=>x.price))).filter(p=>p&&p.startsWith("£")));return o&&{q:`How much is the ${nm}?`,opts:o,a:i.price}});
+  if(i.spirit) gens.push(()=>{const o=makeOptions(i.spirit,shuffle(items.filter(x=>x.folder===i.folder&&x.spirit&&x.spirit!==i.spirit&&!x.spirit.includes(i.spirit)&&!i.spirit.includes(x.spirit)).map(x=>x.spirit)));return o&&{q:`What's the base spirit in the ${nm}?`,opts:o,a:i.spirit}});
   if(i.ingredients.length>=3) gens.push(()=>{
-    const mine=i.ingredients.map(s=>s.toLowerCase());
-    const foreign=shuffle(uniq(others.flatMap(x=>x.ingredients))).find(s=>!mine.some(m=>m.includes(s.toLowerCase())||s.toLowerCase().includes(m)));
+    const mine=i.ingredients.map(norm);
+    const foreign=uniq(near.flatMap(x=>x.ingredients)).find(s=>!mine.some(m=>m.includes(norm(s))||norm(s).includes(m)));
     if(!foreign) return null;
-    const opts=shuffle([foreign,...shuffle(i.ingredients).slice(0,3)]);
-    return {q:`Which of these is <b>NOT</b> in the <u>${esc(i.name)}</u>?`,opts,a:foreign};
+    return {q:`Which of these is <em>not</em> in the ${nm}?`,opts:shuffle([foreign,...shuffle(i.ingredients).slice(0,3)]),a:foreign};
   });
-  [["method","How is the <u>%s</u> made?"],["glass","What's the <u>%s</u> served in?"],["garnish","What's the garnish on the <u>%s</u>?"]].forEach(([f,t])=>{
-    if(!i[f]) return;
-    gens.push(()=>{const o=makeOptions(i[f],all.filter(x=>x[f]&&x[f]!==i[f]).map(x=>x[f]));return o&&{q:t.replace("%s",esc(i.name)),opts:o,a:i[f]}});
+  [["method","How is the %s made?"],["glass","What's the %s served in?"],["garnish","What's the garnish on the %s?"]].forEach(([f,t])=>{
+    if(!i[f])return;
+    gens.push(()=>{const o=makeOptions(i[f],shuffle(all.filter(x=>x[f]&&x[f]!==i[f]).map(x=>x[f])));return o&&{q:t.replace("%s",nm),opts:o,a:i[f]}});
   });
   (i.qa||[]).forEach(x=>gens.push(()=>({q:esc(x.q),opts:shuffle([x.a,...x.w.slice(0,3)]),a:x.a})));
   for(const g of shuffle(gens)){const r=g();if(r)return {...r,item:i}}
   return null;
 }
-function startQuiz(n=10){
-  const p=pool().filter(i=>i.ingredients.length||(i.qa&&i.qa.length));
-  if(!p.length){qz=null;$("#view").innerHTML=`<div class="empty">Pick a category with drinks first.</div>`;return}
+function startQuiz({n=10,only=null}={}){
+  let p=pool().filter(isQuizzable);
+  if(only) p=p.filter(i=>only.includes(i.id));
+  if(!p.length){qz=null;$("#main").innerHTML=`<p class="empty">Pick a category with drinks first.</p>`;return}
   const qs=[];let last=null,guard=0;
-  while(qs.length<n&&guard++<200){const it=pickWeighted(p,last);const q=genQuestion(it);if(q&&!qs.some(x=>x.q===q.q)){qs.push(q);last=it.id}}
+  while(qs.length<n&&guard++<300){const it=pickWeighted(p,last);const q=genQuestion(it);if(q&&!qs.some(x=>x.q===q.q&&x.a===q.a)){qs.push(q);last=it.id}}
   qz={qs,idx:0,score:0,answered:false,picked:null,missed:[]};
   renderQuiz();
 }
-function renderQuiz(){
+function answer(k){
+  if(!qz||qz.answered)return;
+  const q=qz.qs[qz.idx];qz.picked=k;qz.answered=true;
+  const ok=q.opts[k]===q.a;if(ok)qz.score++;else qz.missed.push(q.item.id);
+  record(q.item.id,ok);
+  renderQuiz(`.option[data-k="${k}"]`);
+  announce(ok?"Correct.":`Not quite. The answer is ${q.a}.`);
+}
+function nextQ(){if(!qz||!qz.answered)return;qz.idx++;qz.answered=false;qz.picked=null;renderQuiz("#q-text");window.scrollTo(0,0)}
+function renderQuiz(focusSel){
   if(!qz){startQuiz();return}
   if(qz.idx>=qz.qs.length){
-    const pct=Math.round(qz.score/qz.qs.length*100);
-    const missed=uniq(qz.missed);
-    $("#view").innerHTML=`<div class="card" style="text-align:center">
-      <div class="q-meta" style="justify-content:center">Round done</div>
-      <div class="big-score">${qz.score}/${qz.qs.length}</div>
-      <div class="hint" style="margin-top:0">${pct===100?"Flawless. Behind the bar you go.":pct>=80?"Solid. A couple to tighten up.":pct>=50?"Getting there. Run another round.":"Back to the Learn tab for a bit, then go again."}</div>
-      <button class="btn block" id="again" style="margin-top:16px">Another round</button></div>
-      ${missed.length?`<div class="cat-h">Review these</div>`+missed.map(id=>drinkCard(items.find(x=>x.id===id))).join(""):""}`;
-    $("#again").onclick=()=>startQuiz();
+    const n=qz.qs.length,pct=Math.round(qz.score/n*100),missed=uniq(qz.missed);
+    const weak=pool().filter(isQuizzable).filter(isWeak).map(i=>i.id);
+    $("#main").innerHTML=`<section class="card" aria-labelledby="q-done" style="text-align:center">
+      <h2 class="panel-title" id="q-done" tabindex="-1">Round done</h2>
+      <p class="score" aria-label="${qz.score} out of ${n}">${qz.score}/${n}</p>
+      <p class="hint">${pct===100?"Flawless. Behind the bar you go.":pct>=80?"Solid. A couple to tighten up.":pct>=50?"Getting there. Run another round.":"Spend a few minutes in Learn, then go again."}</p>
+      <div class="stack" style="margin-top:var(--s-4)">
+        <button type="button" class="btn btn-primary btn-block" id="again">Another round</button>
+        ${missed.length?`<button type="button" class="btn btn-block" id="misses">Drill the ${missed.length} I missed</button>`:""}
+        ${weak.length>missed.length?`<button type="button" class="btn btn-block" id="weak">Drill all weak spots (${weak.length})</button>`:""}
+      </div></section>
+      ${missed.length?`<h2 class="section-title">Review</h2>`+missed.map(id=>drinkCard(items.find(x=>x.id===id))).join(""):""}`;
+    $("#again").onclick=()=>{startQuiz();$("#q-text")?.focus()};
+    if($("#misses")) $("#misses").onclick=()=>{startQuiz({n:Math.max(5,missed.length*2),only:missed});$("#q-text")?.focus()};
+    if($("#weak")) $("#weak").onclick=()=>{startQuiz({n:10,only:weak});$("#q-text")?.focus()};
+    $("#q-done").focus();
     return;
   }
-  const q=qz.qs[qz.idx];
-  $("#view").innerHTML=`<div class="card">
-    <div class="q-meta"><span>Question ${qz.idx+1} of ${qz.qs.length}</span><span>${esc(q.item.cat)}</span></div>
-    <div class="bar"><div style="width:${qz.idx/qz.qs.length*100}%"></div></div>
-    <p class="q">${q.q}</p>
-    <div class="opts">${q.opts.map((o,k)=>{
-      let cls="";if(qz.answered){if(o===q.a)cls="ok";else if(k===qz.picked)cls="bad"}
-      return `<button class="opt ${cls}" data-k="${k}" ${qz.answered?"disabled":""}>${esc(o)}</button>`}).join("")}</div>
-    ${qz.answered?`<div class="verdict ${q.opts[qz.picked]===q.a?'ok':'bad'}">${q.opts[qz.picked]===q.a?"¡Eso! Correct.":"Not quite."}</div>`:""}
-  </div>
-  ${qz.answered?drinkCard(q.item)+`<button class="btn block dark" id="nextq">${qz.idx+1<qz.qs.length?"Next question":"See score"}</button>`:""}`;
-  document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
-    if(qz.answered) return;
-    qz.picked=+b.dataset.k;qz.answered=true;
-    const ok=q.opts[qz.picked]===q.a; if(ok) qz.score++; else qz.missed.push(q.item.id);
-    record(q.item.id,ok); renderQuiz();
-  });
-  if($("#nextq")) $("#nextq").onclick=()=>{qz.idx++;qz.answered=false;qz.picked=null;renderQuiz();window.scrollTo(0,0)};
+  const q=qz.qs[qz.idx],n=qz.qs.length,L="ABCD";
+  const opt=(o,k)=>{
+    let cls="",sr="",icon=L[k];
+    if(qz.answered){
+      if(o===q.a){cls="is-correct";sr=" (correct answer)";icon=ICON.check}
+      else if(k===qz.picked){cls="is-wrong";sr=" (your answer)";icon=ICON.cross}
+      else cls="is-dim";
+    }
+    return `<button type="button" class="option ${cls}" data-k="${k}" ${qz.answered?'aria-disabled="true"':""}><span class="key" aria-hidden="true">${icon}</span><span>${esc(o)}<span class="sr-only">${sr}</span></span></button>`;
+  };
+  const ok=qz.answered&&q.opts[qz.picked]===q.a;
+  $("#main").innerHTML=`<section class="card" aria-labelledby="q-text">
+      <div class="q-meta"><span>Question ${qz.idx+1} of ${n}</span><span>${qz.score} correct</span></div>
+      <div class="bar quiz" role="progressbar" aria-label="Round progress" aria-valuemin="0" aria-valuemax="${n}" aria-valuenow="${qz.idx}"><span style="width:${qz.idx/n*100}%"></span></div>
+      <h2 class="question" id="q-text" tabindex="-1">${q.q}${q.detail?`<span class="question-detail" style="display:block">${esc(q.detail)}</span>`:""}</h2>
+      <div class="options" role="group" aria-labelledby="q-text">${q.opts.map(opt).join("")}</div>
+      ${qz.answered?`<p class="verdict ${ok?"ok":"bad"}" aria-hidden="true">${ok?ICON.check+" ¡Eso! Correct.":ICON.cross+" Not quite."}</p>`:`<p class="lede" style="margin-top:var(--s-3)">Tip: keys 1–4 or A–D answer, Enter goes to the next question.</p>`}
+    </section>
+    ${qz.answered?`<h2 class="section-title">The spec</h2>${drinkCard(q.item)}
+      <div class="actionbar"><button type="button" class="btn btn-dark btn-block" id="nextq">${qz.idx+1<n?"Next question":"See my score"} →</button></div>`:""}`;
+  $("#main").querySelectorAll(".option").forEach(b=>b.onclick=()=>answer(+b.dataset.k));
+  if($("#nextq")) $("#nextq").onclick=nextQ;
+  if(focusSel) $(focusSel)?.focus();
 }
+document.addEventListener("keydown",e=>{
+  if(tab!=="quiz"||!qz||$("#layer").children.length||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)||e.metaKey||e.ctrlKey||e.altKey)return;
+  const k="1234".indexOf(e.key)>-1?"1234".indexOf(e.key):"abcd".indexOf(e.key.toLowerCase());
+  if(!qz.answered&&k>-1&&e.key.length===1&&qz.qs[qz.idx]&&k<qz.qs[qz.idx].opts.length){e.preventDefault();answer(k)}
+  else if(qz.answered&&(e.key==="Enter"||e.key==="ArrowRight")&&!(e.target.closest&&e.target.closest("a"))){e.preventDefault();nextQ()}
+});
 
-/* ---------- EDIT ---------- */
-function bindEditButtons(){document.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>openEditor(b.dataset.edit))}
+/* ---------- MANAGE ---------- */
 function renderEdit(){
   const p=pool();
-  $("#view").innerHTML=`<div class="card" id="acct"></div>
-    <div class="card">
-      <div class="dname" style="font-size:18px">Your menu</div>
-      <div class="note">Add drinks, fix specs, or fill in measures, glass and garnish once you've seen the house spec sheet. Changes sync to your account on every device.</div>
-      <div class="btns"><button class="btn" id="add">+ Add drink</button></div>
-    </div>
-    <div class="card">${p.length?p.map(i=>`<div class="list-item"><div><b>${esc(i.name)}</b><span class="tag">${esc(i.cat)}</span>${i.spec?'<span class="tag" style="background:#CFEBD8">spec</span>':''}<div class="muted" style="font-size:14px">${esc(i.ingredients.slice(0,4).join(", "))}${i.ingredients.length>4?"…":""}</div></div><button class="btn sm ghost" data-edit="${esc(i.id)}">Edit</button></div>`).join(""):`<div class="empty">Nothing in the selected categories.</div>`}</div>
-    <div class="card">
-      <div class="dname" style="font-size:18px">Backup & reset</div>
-      <div class="note">Copy your menu as text to keep a backup or share it with a colleague, then paste it back in with Import.</div>
-      <div class="btns"><button class="btn sm ghost" id="exp">Copy menu</button><button class="btn sm ghost" id="imp">Import</button></div>
-      <div class="btns"><button class="btn sm ghost" id="rstats">Reset progress</button><button class="btn sm red" id="rmenu">Reset to menu</button></div>
-    </div>`;
-  bindEditButtons();
-  if(window.renderAccount) window.renderAccount($("#acct"));
+  $("#main").innerHTML=`<h2 class="sr-only">Manage</h2>
+    <section class="card" id="acct" aria-label="Account"></section>
+    <section class="card" aria-labelledby="h-look">
+      <h2 class="panel-title" id="h-look">Appearance</h2>
+      <p class="lede">Dark is easier on the eyes behind a dim bar. Auto follows your phone.</p>
+      <div class="seg" role="group" aria-labelledby="h-look" style="margin-top:var(--s-3)">
+        ${["auto","light","dark"].map(t=>`<button type="button" data-t="${t}" aria-pressed="${theme===t}">${t==="auto"?"Auto":t[0].toUpperCase()+t.slice(1)}</button>`).join("")}
+      </div>
+    </section>
+    <section class="card" aria-labelledby="h-menu">
+      <div class="row"><h2 class="panel-title" id="h-menu">Your menu</h2><button type="button" class="btn btn-primary btn-sm" id="add">${ICON.plus} Add drink</button></div>
+      <p class="lede">Fix specs or add the house measures once you've seen them on shift. Showing the categories selected above.</p>
+      <div style="margin-top:var(--s-2)">${p.length?p.map(i=>`<div class="list-item"><div><strong>${esc(i.name)}</strong><span class="tag">${esc(i.cat)}</span>${i.spec?'<span class="tag ok">spec</span>':""}<div class="muted" style="font-size:var(--fs-sm)">${esc(i.ingredients.slice(0,4).join(", "))}${i.ingredients.length>4?"…":""}</div></div><button type="button" class="btn btn-sm" data-edit="${esc(i.id)}" aria-label="Edit ${esc(i.name)}">Edit</button></div>`).join(""):`<p class="empty">Nothing in the selected categories.</p>`}</div>
+    </section>
+    <section class="card" aria-labelledby="h-backup">
+      <h2 class="panel-title" id="h-backup">Backup</h2>
+      <p class="lede">Copy your menu as text to keep a backup or share it with a colleague, then paste it back with Import.</p>
+      <div class="btns"><button type="button" class="btn btn-sm" id="exp">Copy menu</button><button type="button" class="btn btn-sm" id="imp">Import</button></div>
+    </section>
+    <section class="card danger" aria-labelledby="h-danger">
+      <h2 class="panel-title" id="h-danger">Reset</h2>
+      <p class="lede">These can't be undone.</p>
+      <div class="btns"><button type="button" class="btn btn-sm btn-danger-outline" id="rstats">Reset progress</button><button type="button" class="btn btn-sm btn-danger-outline" id="rmenu">Reset menu</button></div>
+    </section>`;
+  bindEdit($("#main"));
+  if(window.renderAccount) window.renderAccount($("#acct")); else $("#acct").innerHTML=`<h2 class="panel-title">Account</h2><p class="lede">Progress is saved in this browser.</p>`;
+  $("#main").querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>{theme=b.dataset.t;save("cbd_theme",theme);applyTheme();renderEdit();$(`[data-t="${theme}"]`).focus()});
   $("#add").onclick=()=>openEditor(null);
   $("#exp").onclick=async()=>{try{await navigator.clipboard.writeText(JSON.stringify(items));toast("Menu copied")}catch(e){openText("Copy this text",JSON.stringify(items))}};
-  $("#imp").onclick=()=>openImport();
-  $("#rstats").onclick=()=>confirmBox("Reset all quiz progress?",()=>{stats={};persist();renderMastery();toast("Progress reset")});
-  $("#rmenu").onclick=()=>confirmBox("Replace all your edits with the original Cantina menu and the 50 classics?",()=>{items=DEFAULT_ITEMS();persist();renderEdit();renderMastery();toast("Menu restored")});
+  $("#imp").onclick=openImport;
+  $("#rstats").onclick=()=>confirmDialog("Reset all quiz progress?","Your mastery dots and weak spots go back to zero. Your menu stays.","Reset progress",()=>{stats={};persist();renderMastery();toast("Progress reset")});
+  $("#rmenu").onclick=()=>confirmDialog("Reset the menu?","Replaces all your edits with the original Cantina menu and the 50 classics.","Reset menu",()=>{items=DEFAULT_ITEMS();persist();renderEdit();renderChips();renderMastery();toast("Menu restored")});
 }
-function modal(html){$("#layer").innerHTML=`<div class="modal" id="m"><div class="card">${html}</div></div>`;$("#m").onclick=e=>{if(e.target.id==="m")closeModal()}}
-function closeModal(){$("#layer").innerHTML=""}
-function confirmBox(msg,yes){modal(`<div class="dname" style="font-size:18px">${esc(msg)}</div><div class="btns"><button class="btn ghost" id="no">Cancel</button><button class="btn red" id="yes">Yes</button></div>`);$("#no").onclick=closeModal;$("#yes").onclick=()=>{closeModal();yes()}}
-function openText(t,txt){modal(`<div class="dname" style="font-size:18px">${esc(t)}</div><label class="f"><textarea readonly>${esc(txt)}</textarea></label><div class="btns"><button class="btn ghost" id="cl">Close</button></div>`);$("#cl").onclick=closeModal}
+function openText(t,txt){openDialog(`<h2 class="panel-title" id="dlg-title">${esc(t)}</h2><label class="field"><span class="field-label">Menu text</span><textarea class="input" readonly>${esc(txt)}</textarea></label><div class="btns"><button class="btn" id="cl">Close</button></div>`);$("#cl").onclick=closeDialog}
 function openImport(){
-  modal(`<div class="dname" style="font-size:18px">Import menu</div><label class="f">Paste menu text<textarea id="impt"></textarea></label><div class="btns"><button class="btn ghost" id="cl">Cancel</button><button class="btn" id="go">Import</button></div>`);
-  $("#cl").onclick=closeModal;
-  $("#go").onclick=()=>{try{const d=JSON.parse($("#impt").value);if(!Array.isArray(d)||!d.every(x=>x.id&&x.name&&Array.isArray(x.ingredients)))throw 0;items=d;persist();closeModal();render();renderMastery();toast("Menu imported")}catch(e){toast("That text isn't a valid menu")}};
+  openDialog(`<h2 class="panel-title" id="dlg-title">Import menu</h2>
+    <label class="field"><span class="field-label">Paste menu text</span><textarea class="input" id="impt" aria-describedby="imp-err"></textarea><span class="field-error" id="imp-err"></span></label>
+    <div class="btns"><button class="btn" id="cl">Cancel</button><button class="btn btn-primary" id="go">Import</button></div>`);
+  $("#cl").onclick=closeDialog;
+  $("#go").onclick=()=>{try{const d=JSON.parse($("#impt").value);if(!Array.isArray(d)||!d.every(x=>x.id&&x.name&&Array.isArray(x.ingredients)))throw 0;d.forEach(x=>{if(!x.folder)x.folder="cantina"});items=d;persist();closeDialog();render();renderChips();renderMastery();toast("Menu imported")}
+    catch(e){$("#impt").setAttribute("aria-invalid","true");$("#imp-err").textContent="That text isn't a valid menu. Paste exactly what Copy menu gave you.";$("#impt").focus()}};
 }
 function openEditor(id){
   const it=id?items.find(x=>x.id===id):{id:"",folder,cat:decks[0]||CATS[0],name:"",price:"",spirit:"",ingredients:[],note:"",spec:"",method:"",glass:"",garnish:""};
-  modal(`<div class="dname" style="font-size:18px">${id?"Edit drink":"New drink"}</div>
-    <label class="f">Name<input id="e-name" value="${esc(it.name)}"></label>
-    <div style="display:flex;gap:10px"><label class="f" style="flex:1">Category<select id="e-cat">${CATS_OF(it.folder||folder).map(c=>`<option ${c===it.cat?"selected":""}>${esc(c)}</option>`).join("")}</select></label>
-    <label class="f" style="flex:1">Price<input id="e-price" value="${esc(it.price)}" placeholder="£12"></label></div>
-    <label class="f">Base spirit<input id="e-spirit" value="${esc(it.spirit)}" placeholder="Tequila Ocho Plata"></label>
-    <label class="f">Ingredients (one per line)<textarea id="e-ing">${esc(it.ingredients.join("\n"))}</textarea></label>
-    <label class="f">Notes (rim, serve, upsell)<input id="e-note" value="${esc(it.note)}"></label>
-    <label class="f">Spec (measures, ice, rim)<textarea id="e-spec" placeholder="50ml Ocho Plata&#10;25ml Cointreau&#10;25ml lime&#10;Shake · rocks glass · cubed ice&#10;Half salt rim, lime wedge">${esc(it.spec)}</textarea></label>
-    <label class="f">Method<input id="e-method" value="${esc(it.method||"")}" placeholder="Shake"></label>
-    <div style="display:flex;gap:10px"><label class="f" style="flex:1">Glass<input id="e-glass" value="${esc(it.glass||"")}" placeholder="Coupe"></label>
-    <label class="f" style="flex:1">Garnish<input id="e-garnish" value="${esc(it.garnish||"")}" placeholder="Lime wheel"></label></div>
-    <div class="btns">${id?`<button class="btn red" id="del">Delete</button>`:""}<button class="btn ghost" id="cl">Cancel</button><button class="btn" id="sv">Save</button></div>`);
-  $("#cl").onclick=closeModal;
+  const f=(key,label,val,{ph="",hint="",area=false,type="text"}={})=>`<label class="field"><span class="field-label">${label}</span>${area?`<textarea class="input" id="e-${key}" placeholder="${esc(ph)}" ${hint?`aria-describedby="h-${key}"`:""}>${esc(val)}</textarea>`:`<input class="input" id="e-${key}" type="${type}" value="${esc(val)}" placeholder="${esc(ph)}" ${hint?`aria-describedby="h-${key}"`:""}>`}${hint?`<span class="field-hint" id="h-${key}">${hint}</span>`:""}</label>`;
+  openDialog(`<h2 class="panel-title" id="dlg-title">${id?"Edit "+esc(it.name):"New drink"}</h2>
+    <label class="field"><span class="field-label">Name <span aria-hidden="true">*</span></span><input class="input" id="e-name" value="${esc(it.name)}" required aria-required="true" aria-describedby="e-name-err"><span class="field-error" id="e-name-err"></span></label>
+    <div class="split"><label class="field"><span class="field-label">Category</span><select class="input" id="e-cat">${CATS_OF(it.folder||folder).map(c=>`<option ${c===it.cat?"selected":""}>${esc(c)}</option>`).join("")}</select></label>
+    ${f("price","Price",it.price,{ph:"£12"})}</div>
+    ${f("spirit","Base spirit",it.spirit,{ph:"Tequila Ocho Plata"})}
+    ${f("ing","Ingredients",it.ingredients.join("\n"),{area:true,hint:"One per line."})}
+    ${f("note","Notes",it.note,{ph:"Rim, serve, upsell"})}
+    ${f("spec","Spec",it.spec,{area:true,ph:"50ml Ocho Plata\n25ml Cointreau\n25ml lime",hint:"Measures, ice and rim, one per line."})}
+    ${f("method","Method",it.method||"",{ph:"Shake"})}
+    <div class="split">${f("glass","Glass",it.glass||"",{ph:"Coupe"})}${f("garnish","Garnish",it.garnish||"",{ph:"Lime wheel"})}</div>
+    <div class="btns">${id?`<button class="btn btn-danger-outline" id="del">Delete</button>`:""}<button class="btn" id="cl">Cancel</button><button class="btn btn-primary" id="sv">Save</button></div>`,{focus:"#e-name"});
+  $("#cl").onclick=closeDialog;
   $("#sv").onclick=()=>{
-    const name=$("#e-name").value.trim(); if(!name){toast("Give it a name");return}
+    const name=$("#e-name").value.trim();
+    if(!name){$("#e-name").setAttribute("aria-invalid","true");$("#e-name-err").textContent="Give the drink a name.";$("#e-name").focus();return}
     const d={...it,name,cat:$("#e-cat").value,price:$("#e-price").value.trim(),spirit:$("#e-spirit").value.trim(),
       ingredients:$("#e-ing").value.split("\n").map(s=>s.trim()).filter(Boolean),note:$("#e-note").value.trim(),spec:$("#e-spec").value.trim(),
       method:$("#e-method").value.trim(),glass:$("#e-glass").value.trim(),garnish:$("#e-garnish").value.trim(),folder:it.folder||folder};
-    if(id){items[items.findIndex(x=>x.id===id)]=d}else{d.id="u"+Date.now().toString(36);items.push(d);if(!decks.includes(d.cat)){decks.push(d.cat);renderChips()}}
-    persist();closeModal();render();renderMastery();toast("Saved");
+    if(id){items[items.findIndex(x=>x.id===id)]=d}else{d.id="u"+Date.now().toString(36);items.push(d);if(!decks.includes(d.cat)){decks=[...decks,d.cat]}}
+    persist();closeDialog();renderChips();render();renderMastery();toast(`Saved ${name}`);
   };
-  if($("#del")) $("#del").onclick=()=>confirmBox(`Delete ${it.name}?`,()=>{items=items.filter(x=>x.id!==id);persist();render();renderMastery();toast("Deleted")});
+  if($("#del")) $("#del").onclick=()=>confirmDialog(`Delete ${it.name}?`,"It's removed from your menu and quizzes.","Delete",()=>{items=items.filter(x=>x.id!==id);persist();render();renderChips();renderMastery();toast(`Deleted ${it.name}`)});
 }
 
-/* ---------- Nav ---------- */
+/* ---------- Tab bar ---------- */
 const TABS=[
  {k:"learn",l:"Learn",i:'<path d="M4 5h11a3 3 0 0 1 3 3v12H7a3 3 0 0 1-3-3z"/><path d="M8 9h6M8 13h6"/>'},
  {k:"cards",l:"Flashcards",i:'<rect x="3" y="6" width="14" height="13" rx="2"/><path d="M7 3h12a2 2 0 0 1 2 2v12"/>'},
@@ -504,32 +833,50 @@ const TABS=[
  {k:"edit",l:"Manage",i:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/>'}
 ];
 function renderNav(){
-  $("#nav").innerHTML=TABS.map(t=>`<button class="${tab===t.k?'on':''}" data-k="${t.k}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${t.i}</svg>${t.l}</button>`).join("");
-  $("#nav").querySelectorAll("button").forEach(b=>b.onclick=()=>{tab=b.dataset.k;if(tab==="quiz")qz=null;persist();renderNav();render();window.scrollTo(0,0)});
+  $("#nav").innerHTML=TABS.map(t=>`<li><button type="button" data-k="${t.k}" ${tab===t.k?'aria-current="page"':""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${t.i}</svg>${t.l}</button></li>`).join("");
+  $("#nav").querySelectorAll("button").forEach(b=>b.onclick=()=>{
+    if(tab===b.dataset.k&&tab!=="quiz")return;
+    tab=b.dataset.k;if(tab==="quiz")qz=null;persist();renderNav();render();window.scrollTo(0,0);$(`#nav [data-k="${tab}"]`).focus();
+  });
 }
-function render(){({learn:renderLearn,cards:renderCards,quiz:renderQuiz,edit:renderEdit})[tab]()}
-window.toast=toast;window.modal=modal;window.closeModal=closeModal;
+function render(){
+  ({learn:renderLearn,cards:renderCards,quiz:renderQuiz,edit:renderEdit})[tab]();
+  document.title=`${TABS.find(t=>t.k===tab).l} · Bar Drill`;
+}
 window.bootApp=(remote)=>{
-  initState(remote); qz=null; fc={item:null,flipped:false,dir:"name"}; closeModal();
+  initState(remote); qz=null; fc={item:null,flipped:false,dir:"name"}; closeDialog();
   renderFolders();renderChips();renderNav();renderMastery();render();
   if(!remote) persist();
 };
-</script>
 
+</script>
 <script type="module">
 /* ---------- Firebase auth + sync ---------- */
 const V = "13.4.0";
 const gate = document.getElementById("gate");
 const esc = s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-gate.innerHTML = '<div class="spinner"></div>';
+gate.innerHTML = '<div class="spinner" role="status" aria-label="Loading"></div>';
 
-let firebaseConfig;
-try { ({ firebaseConfig } = await import("./firebase-config.js")); } catch(e) {}
-if (!firebaseConfig || !firebaseConfig.apiKey || String(firebaseConfig.apiKey).includes("PASTE")) {
-  gate.innerHTML = `<h1 class="gate-h">CANTINA<br>BAR DRILL</h1>
-    <div class="card"><div class="dname" style="font-size:18px">Almost there</div>
-    <div class="note">Firebase isn't connected yet. Paste your project's web config into <b>public/firebase-config.js</b>, then deploy again. The README has the steps.</div></div>`;
-  throw new Error("Firebase config missing");
+let firebaseConfig, cfgProblem = null;
+try {
+  const mod = await import("./firebase-config.js?v=" + Date.now());
+  firebaseConfig = mod.firebaseConfig || mod.default;
+  if (!firebaseConfig) cfgProblem = "The file loaded, but it doesn't export the config. The line must start with <code>export const firebaseConfig = {</code>, not just <code>const firebaseConfig = {</code>.";
+  else if (!firebaseConfig.apiKey || /PASTE/.test(JSON.stringify(firebaseConfig))) cfgProblem = "The file still has <code>PASTE_…</code> placeholders. Replace every value with the one from the Firebase console, save, then run <code>firebase deploy</code> again.";
+} catch (e) {
+  const m = String(e && e.message || e);
+  cfgProblem = /resolve|specifier/i.test(m)
+    ? "The file contains <code>import … from \"firebase/app\"</code> or similar lines. Delete every line except the <code>export const firebaseConfig = { … };</code> block."
+    : /Failed to fetch|404|dynamically imported/i.test(m)
+      ? "The app can't find <b>firebase-config.js</b>. It must sit inside the <b>public</b> folder next to index.html."
+      : "The file has a typing error, so the browser can't read it. Check for a missing comma, quote or bracket. Browser error: <code>" + esc(m) + "</code>";
+}
+if (cfgProblem) {
+  gate.innerHTML = `<main>${'<h1 class="gate-h">BAR<br>DRILL</h1>'}
+    <section class="card" aria-labelledby="cfg-t"><h2 class="panel-title" id="cfg-t">Firebase isn't connected yet</h2>
+    <p style="margin-top:var(--s-2)">${cfgProblem}</p>
+    <p class="lede">The file is <strong>public/firebase-config.js</strong>. The README has the full steps.</p></section></main>`;
+  throw new Error("Firebase config problem");
 }
 
 const [{ initializeApp }, A, F] = await Promise.all([
@@ -565,61 +912,76 @@ const errText = e => ERR[e && e.code] || "Something went wrong. Please try again
 
 /* ---------- Sign-in screens ---------- */
 let mode = "signin", flash = null;
+const brandHead = sub => `<h1 class="gate-h">BAR<br>DRILL</h1><p class="eyebrow" style="margin:var(--s-2) 0 var(--s-2)">${sub||"Corrochio's Cantina trainer"}</p>`;
+function pwField(id,label,ac){
+  return `<div class="field"><label class="field-label" for="${id}">${label}</label><div class="pw">
+    <input class="input" id="${id}" type="password" autocomplete="${ac}" required ${flash&&flash.t==="error"&&flash.f&&flash.f.includes(id)?'aria-invalid="true" aria-describedby="a-msg"':""}>
+    <button type="button" data-show="${id}" aria-pressed="false" aria-label="Show password">Show</button></div></div>`;
+}
 function gateView(){
-  const title = {signin:"Sign in", signup:"Create account", reset:"Reset password"}[mode];
-  gate.innerHTML = `<h1 class="gate-h">CANTINA<br>BAR DRILL</h1>
-  <div class="sub" style="margin:6px 0 4px">Corrochio's Cantina · menu trainer</div>
-  <div class="card">
-    <div class="dname" style="font-size:20px">${title}</div>
+  const title = {signin:"Sign in", signup:"Create your account", reset:"Reset your password"}[mode];
+  const bad = id => flash&&flash.t==="error"&&flash.f&&flash.f.includes(id) ? 'aria-invalid="true" aria-describedby="a-msg"' : "";
+  gate.innerHTML = `<main id="gate-main">${brandHead()}
+  <section class="card" aria-labelledby="a-title">
+    <h2 class="panel-title" id="a-title">${title}</h2>
+    ${mode==="reset"?`<p class="lede">Enter your email and we'll send you a link to choose a new password.</p>`:""}
     <form id="af" novalidate>
-      ${mode==="signup"?`<label class="f">Name<input id="a-name" autocomplete="name" required></label>`:""}
-      <label class="f">Email<input id="a-email" type="email" autocomplete="email" inputmode="email" required></label>
-      ${mode!=="reset"?`<label class="f">Password<input id="a-pass" type="password" autocomplete="${mode==="signup"?"new-password":"current-password"}" minlength="8" required></label>`:""}
-      ${mode==="signup"?`<label class="f">Confirm password<input id="a-pass2" type="password" autocomplete="new-password" required></label>`:""}
-      <button class="btn block dark" style="margin-top:16px" id="a-go">${mode==="reset"?"Send reset link":title}</button>
+      ${mode==="signup"?`<div class="field"><label class="field-label" for="a-name">Name</label><input class="input" id="a-name" autocomplete="name"></div>`:""}
+      <div class="field"><label class="field-label" for="a-email">Email</label><input class="input" id="a-email" type="email" autocomplete="email" inputmode="email" required ${bad("a-email")}></div>
+      ${mode!=="reset"?pwField("a-pass","Password",mode==="signup"?"new-password":"current-password"):""}
+      ${mode==="signup"?`<span class="field-hint">At least 8 characters.</span>`+pwField("a-pass2","Confirm password","new-password"):""}
+      ${flash?`<div id="a-msg" class="msg msg-${flash.t}" role="${flash.t==="error"?"alert":"status"}">${esc(flash.m)}</div>`:""}
+      <button class="btn btn-dark btn-block" style="margin-top:var(--s-4)" id="a-go">${mode==="reset"?"Send reset link":mode==="signup"?"Create account":"Sign in"}</button>
     </form>
-    ${mode==="signin"?`<div style="margin-top:12px;text-align:right"><button class="linkbtn" data-m="reset">Forgot password?</button></div>`:""}
-    ${mode!=="reset"?`<div class="or">or</div><button class="btn block ghost" id="a-google">
-      <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.9 6.1C12.5 13.6 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.2 5.3-4.6 7l7.3 5.6c4.3-3.9 7-9.8 7-17.1z"/><path fill="#FBBC05" d="M10.6 28.6c-.5-1.4-.8-3-.8-4.6s.3-3.2.8-4.6l-7.9-6.1C1 16.6 0 20.2 0 24s1 7.4 2.7 10.7l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.3-5.6c-2.1 1.4-4.9 2.3-8.6 2.3-6.2 0-11.5-4.1-13.4-9.8l-7.9 6.1C6.6 42.6 14.6 48 24 48z"/></svg>
+    ${mode==="signin"?`<div style="text-align:right;margin-top:var(--s-2)"><button type="button" class="link" data-m="reset">Forgot password?</button></div>`:""}
+    ${mode!=="reset"?`<div class="or">or</div><button type="button" class="btn btn-block" id="a-google">
+      <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.9 6.1C12.5 13.6 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.2 5.3-4.6 7l7.3 5.6c4.3-3.9 7-9.8 7-17.1z"/><path fill="#FBBC05" d="M10.6 28.6c-.5-1.4-.8-3-.8-4.6s.3-3.2.8-4.6l-7.9-6.1C1 16.6 0 20.2 0 24s1 7.4 2.7 10.7l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.3-5.6c-2.1 1.4-4.9 2.3-8.6 2.3-6.2 0-11.5-4.1-13.4-9.8l-7.9 6.1C6.6 42.6 14.6 48 24 48z"/></svg>
       Continue with Google</button>`:""}
-    ${flash?`<div class="msg ${flash.t}">${esc(flash.m)}</div>`:""}
-  </div>
-  <div style="text-align:center;margin-top:8px">
-    ${mode==="signin"?`New here? <button class="linkbtn" data-m="signup">Create an account</button>`:`<button class="linkbtn" data-m="signin">Back to sign in</button>`}
-  </div>`;
+  </section>
+  <p style="text-align:center">
+    ${mode==="signin"?`New here? <button type="button" class="link" data-m="signup">Create an account</button>`:`<button type="button" class="link" data-m="signin">Back to sign in</button>`}
+  </p></main>`;
   gate.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{
     const em=document.getElementById("a-email")?.value; mode=b.dataset.m; flash=null; gateView();
-    if(em) document.getElementById("a-email").value=em;
+    const el=document.getElementById("a-email"); if(em) el.value=em; document.getElementById("a-title").setAttribute("tabindex","-1"); document.getElementById("a-title").focus();
+  });
+  gate.querySelectorAll("[data-show]").forEach(b=>b.onclick=()=>{
+    const i=document.getElementById(b.dataset.show), on=i.type==="password";
+    i.type=on?"text":"password"; b.textContent=on?"Hide":"Show"; b.setAttribute("aria-pressed",String(on)); b.setAttribute("aria-label",on?"Hide password":"Show password");
   });
   document.getElementById("af").onsubmit = submit;
   const g=document.getElementById("a-google"); if(g) g.onclick=google;
 }
-function busy(on){const b=document.getElementById("a-go"); if(b){b.disabled=on;b.style.opacity=on?.6:1}}
-function show(t,m){flash={t,m}; const em=document.getElementById("a-email")?.value; gateView(); if(em) document.getElementById("a-email").value=em}
-
+function busy(on){const b=document.getElementById("a-go"); if(b){b.disabled=on;b.setAttribute("aria-busy",String(on))}}
+// t: "error" | "success" | "info"; f: ids of the fields the message is about
+function show(t,m,f){
+  flash={t,m,f}; const em=document.getElementById("a-email")?.value; gateView();
+  if(em) document.getElementById("a-email").value=em;
+  if(f&&f.length) document.getElementById(f[0])?.focus();
+}
 async function submit(e){
   e.preventDefault();
   const email=document.getElementById("a-email").value.trim();
   const pass=document.getElementById("a-pass")?.value||"";
-  if(!email) return show("err","Enter your email.");
+  if(!email) return show("error","Enter your email.",["a-email"]);
   busy(true);
   try{
     if(mode==="reset"){
       try{ await A.sendPasswordResetEmail(auth,email); }
       catch(err){ if(!["auth/user-not-found"].includes(err.code)) throw err; }
-      mode="signin"; return show("ok","If there's an account for that email, a reset link is on its way. Check your spam folder too.");
+      mode="signin"; return show("success","If there's an account for that email, a reset link is on its way. Check your spam folder too.");
     }
     if(mode==="signup"){
       const name=document.getElementById("a-name").value.trim();
-      if(pass.length<8) return show("err","Use at least 8 characters.");
-      if(pass!==document.getElementById("a-pass2").value) return show("err","The passwords don't match.");
+      if(pass.length<8) return show("error","Use at least 8 characters.",["a-pass"]);
+      if(pass!==document.getElementById("a-pass2").value) return show("error","The passwords don't match.",["a-pass2"]);
       const cred=await A.createUserWithEmailAndPassword(auth,email,pass);
       if(name) await A.updateProfile(cred.user,{displayName:name}).catch(()=>{});
       A.sendEmailVerification(cred.user).catch(()=>{});
       return;
     }
     await A.signInWithEmailAndPassword(auth,email,pass);
-  }catch(err){ show("err",errText(err)); }
+  }catch(err){ show("error",errText(err),/email/.test(err.code||"")?["a-email"]:/password|credential/.test(err.code||"")?["a-email","a-pass"]:[]); }
   finally{ busy(false); }
 }
 async function google(){
@@ -628,10 +990,10 @@ async function google(){
     if(err.code==="auth/popup-blocked"||err.code==="auth/operation-not-supported-in-this-environment"){
       try{ await A.signInWithRedirect(auth,new A.GoogleAuthProvider()); return; }catch(e2){ err=e2; }
     }
-    if(err.code!=="auth/cancelled-popup-request") show("err",errText(err));
+    if(err.code!=="auth/cancelled-popup-request") show("error",errText(err));
   }
 }
-A.getRedirectResult(auth).catch(err=>show("err",errText(err)));
+A.getRedirectResult(auth).catch(err=>show("error",errText(err)));
 
 /* ---------- Cloud sync ---------- */
 let user=null, saveTimer=null, pending=null, syncState="ok";
@@ -659,18 +1021,18 @@ addEventListener("online",()=>setSync("ok"));
 addEventListener("offline",()=>setSync("off"));
 addEventListener("pagehide",()=>{ if(pending) flush(); });
 
-/* ---------- Account panel (inside the Edit tab) ---------- */
+/* ---------- Account panel (inside Manage) ---------- */
 window.renderAccount = el => {
   if(!user||!el) return;
   const isPw = user.providerData.some(p=>p.providerId==="password");
   const isG = user.providerData.some(p=>p.providerId==="google.com");
-  el.innerHTML = `<div class="row"><div class="dname" style="font-size:18px">Account</div>${syncHTML()}</div>
-    <div style="margin-top:6px"><b>${esc(user.displayName||"")}</b>${user.displayName?"<br>":""}<span class="muted">${esc(user.email||"")}</span>
-    ${isG?'<span class="tag">Google</span>':""}</div>
-    ${isPw&&!user.emailVerified?`<div class="msg info">Please verify your email so you can always recover your account. <button class="linkbtn" id="ac-ver">Resend link</button></div>`:""}
-    <div class="btns">${isPw?`<button class="btn sm ghost" id="ac-pw">Change password</button>`:""}<button class="btn sm dark" id="ac-out">Sign out</button></div>
-    <div style="margin-top:12px"><button class="linkbtn" id="ac-del" style="color:var(--red)">Delete my account</button></div>`;
-  const m = window; // helpers from the app script
+  el.setAttribute("aria-labelledby","h-acct"); el.removeAttribute("aria-label");
+  el.innerHTML = `<div class="row"><h2 class="panel-title" id="h-acct">Account</h2>${syncHTML()}</div>
+    <p style="margin-top:var(--s-2)">${user.displayName?`<strong>${esc(user.displayName)}</strong><br>`:""}<span class="muted">${esc(user.email||"")}</span>${isG?'<span class="tag">Google</span>':""}</p>
+    ${isPw&&!user.emailVerified?`<div class="msg msg-info">Verify your email so you can always get back into your account. <button type="button" class="link" id="ac-ver">Resend link</button></div>`:""}
+    <div class="btns">${isPw?`<button type="button" class="btn btn-sm" id="ac-pw">Reset password</button>`:""}<button type="button" class="btn btn-sm btn-dark" id="ac-out">Sign out</button></div>
+    <div style="margin-top:var(--s-2)"><button type="button" class="link danger" id="ac-del">Delete my account</button></div>`;
+  const m = window;
   el.querySelector("#ac-out").onclick = async()=>{ await flush(); await A.signOut(auth); };
   const ver=el.querySelector("#ac-ver"); if(ver) ver.onclick=async()=>{try{await A.sendEmailVerification(user);m.toast("Verification email sent")}catch(e){m.toast(errText(e))}};
   const pw=el.querySelector("#ac-pw"); if(pw) pw.onclick=async()=>{try{await A.sendPasswordResetEmail(auth,user.email);m.toast("Password link sent to your email")}catch(e){m.toast(errText(e))}};
@@ -678,11 +1040,11 @@ window.renderAccount = el => {
 };
 function deleteFlow(isPw){
   const m=window;
-  m.modal(`<div class="dname" style="font-size:18px">Delete your account?</div>
-    <div class="note">This permanently removes your account, your progress and any drinks you've edited. It can't be undone.</div>
-    ${isPw?`<label class="f">Confirm with your password<input id="d-pass" type="password" autocomplete="current-password"></label>`:`<div class="note">You'll be asked to confirm with Google.</div>`}
+  m.openDialog(`<h2 class="panel-title" id="dlg-title">Delete your account?</h2>
+    <p class="lede">This permanently removes your account, your progress and any drinks you've edited. It can't be undone.</p>
+    ${isPw?`<div class="field"><label class="field-label" for="d-pass">Confirm with your password</label><input class="input" id="d-pass" type="password" autocomplete="current-password" aria-describedby="d-msg"></div>`:`<p class="lede">You'll be asked to confirm with Google.</p>`}
     <div id="d-msg"></div>
-    <div class="btns"><button class="btn ghost" id="d-no">Cancel</button><button class="btn red" id="d-yes">Delete forever</button></div>`);
+    <div class="btns"><button type="button" class="btn" id="d-no">Cancel</button><button type="button" class="btn btn-danger" id="d-yes">Delete forever</button></div>`,{focus:isPw?"#d-pass":"#d-no"});
   document.getElementById("d-no").onclick=m.closeModal;
   document.getElementById("d-yes").onclick=async()=>{
     const msg=document.getElementById("d-msg");
@@ -693,25 +1055,24 @@ function deleteFlow(isPw){
       await F.deleteDoc(userDoc());
       await A.deleteUser(user);
       m.closeModal();
-    }catch(e){ msg.innerHTML=`<div class="msg err">${esc(errText(e))}</div>`; }
+    }catch(e){ msg.innerHTML=`<div class="msg msg-error" role="alert">${esc(errText(e))}</div>`; if(isPw){const p=document.getElementById("d-pass");p.setAttribute("aria-invalid","true");p.focus()} }
   };
 }
-
 /* ---------- Auth state ---------- */
 A.onAuthStateChanged(auth, async u => {
   user = u;
   if(!u){
     document.body.classList.add("locked"); mode="signin"; gateView(); return;
   }
-  gate.innerHTML='<div class="spinner"></div>';
+  gate.innerHTML='<div class="spinner" role="status" aria-label="Loading your progress"></div>';
   let remote=null;
   try{ const snap=await F.getDoc(userDoc()); if(snap.exists()) remote=snap.data(); }
   catch(err){
     console.error(err);
     // Never start with blank data offline: it could overwrite your saved progress
-    gate.innerHTML=`<h1 class="gate-h">CANTINA<br>BAR DRILL</h1><div class="card"><div class="dname" style="font-size:18px">Can't load your progress</div>
-      <div class="note">You seem to be offline. Connect once on this device and your data will be available offline after that.</div>
-      <div class="btns"><button class="btn sm ghost" id="g-out">Sign out</button><button class="btn sm dark" id="g-retry">Try again</button></div></div>`;
+    gate.innerHTML=`<main>${brandHead()}<section class="card" aria-labelledby="off-t"><h2 class="panel-title" id="off-t">Can't load your progress</h2>
+      <p class="lede">You seem to be offline. Connect once on this device and your data will be available offline after that.</p>
+      <div class="btns"><button type="button" class="btn btn-sm" id="g-out">Sign out</button><button type="button" class="btn btn-sm btn-dark" id="g-retry">Try again</button></div></section></main>`;
     document.getElementById("g-retry").onclick=()=>location.reload();
     document.getElementById("g-out").onclick=()=>A.signOut(auth);
     return;
@@ -720,5 +1081,6 @@ A.onAuthStateChanged(auth, async u => {
   window.bootApp(remote);
 });
 </script>
+
 </body>
 </html>
