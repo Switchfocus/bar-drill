@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cantina Bar Drill</title>
+<meta name="theme-color" content="#1A1714">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Barlow+Condensed:ital,wght@0,500;0,700;1,600;1,700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#F7EEDD; --paper:#FFF9EE; --ink:#1A1714; --muted:#6B6158;
+  --orange:#F2A23A; --orange-d:#D9861C; --pink:#D9366B; --green:#2E7A4E; --red:#C23B2E;
+  --line:#1A1714; --r:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--cream);color:var(--ink);font-family:Barlow,system-ui,sans-serif;font-size:16px;-webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font:inherit;color:inherit}
+.wrap{max-width:560px;margin:0 auto;padding:calc(16px + env(safe-area-inset-top)) 16px calc(96px + env(safe-area-inset-bottom))}
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:14px}
+h1{font-family:"Bowlby One",sans-serif;font-weight:400;font-size:30px;line-height:.95;margin:0;letter-spacing:.5px;color:var(--ink);text-shadow:2px 2px 0 var(--orange)}
+.sub{font-family:"Barlow Condensed";font-style:italic;font-weight:600;color:var(--muted);font-size:15px;margin-top:4px}
+.streak{font-family:"Barlow Condensed";font-weight:700;font-size:14px;text-align:right;line-height:1.1;white-space:nowrap}
+.streak b{display:block;font-family:"Bowlby One";font-weight:400;font-size:22px;color:var(--pink)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none;margin:0 -16px;padding-left:16px;padding-right:16px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;border:2px solid var(--line);background:var(--paper);border-radius:999px;padding:5px 12px;font-family:"Barlow Condensed";font-weight:700;font-size:15px;letter-spacing:.3px;cursor:pointer}
+.chip.on{background:var(--ink);color:var(--paper)}
+.card{background:var(--paper);border:2px solid var(--line);border-radius:var(--r);box-shadow:4px 4px 0 var(--line);padding:16px;margin:12px 0}
+.cat-h{font-family:"Barlow Condensed";font-style:italic;font-weight:700;font-size:22px;margin:22px 0 4px;display:flex;align-items:center;gap:8px}
+.cat-h::after{content:"";flex:1;height:2px;background:var(--line)}
+.dname{font-family:"Bowlby One";font-weight:400;font-size:20px;line-height:1.1;margin:0}
+.row{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.price{font-family:"Barlow Condensed";font-weight:700;font-size:18px;white-space:nowrap}
+.spirit{font-family:"Barlow Condensed";font-style:italic;font-weight:600;color:var(--pink);font-size:16px;margin-top:2px}
+.ings{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.ing{background:#F3E2C4;border-radius:6px;padding:3px 8px;font-size:14px}
+.note{font-size:14px;color:var(--muted);margin-top:8px}
+.spec{margin-top:10px;border-top:2px dashed #CDBFA8;padding-top:8px;font-size:14px;white-space:pre-wrap}
+.spec.empty{color:var(--muted);font-style:italic}
+.dots{display:inline-flex;gap:3px;vertical-align:middle;margin-left:6px}
+.dots i{width:7px;height:7px;border-radius:50%;background:#D9CBB3;display:block}
+.dots i.f{background:var(--green)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:2px solid var(--line);border-radius:12px;background:var(--orange);padding:12px 16px;font-family:"Barlow Condensed";font-weight:700;font-size:18px;letter-spacing:.3px;cursor:pointer;box-shadow:3px 3px 0 var(--line);transition:transform .06s, box-shadow .06s}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--line)}
+.btn.ghost{background:var(--paper)}
+.btn.dark{background:var(--ink);color:var(--paper)}
+.btn.green{background:var(--green);color:#fff}
+.btn.red{background:var(--red);color:#fff}
+.btn.sm{padding:7px 11px;font-size:15px;border-radius:9px;box-shadow:2px 2px 0 var(--line)}
+.btn.block{width:100%}
+.btns{display:flex;gap:10px;margin-top:14px}
+.btns .btn{flex:1}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--ink);padding:8px 8px calc(8px + env(safe-area-inset-bottom));display:flex;justify-content:center;z-index:10}
+nav .in{display:flex;gap:4px;max-width:560px;width:100%}
+nav button{flex:1;background:none;border:0;color:#B9AE9F;font-family:"Barlow Condensed";font-weight:700;font-size:15px;padding:6px 0;border-radius:10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+nav button svg{width:22px;height:22px}
+nav button.on{color:var(--ink);background:var(--orange)}
+.q-meta{display:flex;justify-content:space-between;font-family:"Barlow Condensed";font-weight:700;color:var(--muted);font-size:15px}
+.bar{height:8px;border:2px solid var(--line);border-radius:99px;background:var(--paper);overflow:hidden;margin:6px 0 4px}
+.bar>div{height:100%;background:var(--pink);transition:width .25s}
+.q{font-family:"Bowlby One";font-weight:400;font-size:21px;line-height:1.2;margin:4px 0 0}
+.q small{display:block;font-family:Barlow;font-size:15px;color:var(--muted);margin-top:6px;line-height:1.35}
+.opts{display:flex;flex-direction:column;gap:9px;margin-top:14px}
+.opt{text-align:left;border:2px solid var(--line);border-radius:12px;background:var(--paper);padding:12px 14px;font-size:16px;line-height:1.3;cursor:pointer;box-shadow:2px 2px 0 var(--line)}
+.opt.ok{background:#CFEBD8;border-color:var(--green)}
+.opt.bad{background:#F6D0CB;border-color:var(--red)}
+.opt[disabled]{cursor:default}
+.verdict{font-family:"Barlow Condensed";font-weight:700;font-size:20px;margin-top:14px}
+.verdict.ok{color:var(--green)} .verdict.bad{color:var(--red)}
+.flip{min-height:250px;display:flex;flex-direction:column;justify-content:center;text-align:center;cursor:pointer}
+.flip .big{font-family:"Bowlby One";font-size:28px;line-height:1.1}
+.hint{font-family:"Barlow Condensed";font-style:italic;font-weight:600;color:var(--muted);font-size:16px;margin-top:10px}
+.seg{display:flex;border:2px solid var(--line);border-radius:12px;overflow:hidden;margin-top:6px}
+.seg button{flex:1;border:0;background:var(--paper);padding:8px;font-family:"Barlow Condensed";font-weight:700;font-size:15px;cursor:pointer}
+.seg button+button{border-left:2px solid var(--line)}
+.seg button.on{background:var(--ink);color:var(--paper)}
+.big-score{font-family:"Bowlby One";font-size:56px;line-height:1;text-align:center;margin:8px 0}
+label.f{display:block;font-family:"Barlow Condensed";font-weight:700;font-size:15px;margin-top:12px}
+.f input,.f select,.f textarea{display:block;width:100%;margin-top:4px;border:2px solid var(--line);border-radius:10px;background:#fff;padding:9px 11px;font-family:Barlow;font-weight:400;font-size:16px}
+.f textarea{min-height:90px;resize:vertical}
+.list-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:2px dashed #D8C9AF}
+.list-item:last-child{border-bottom:0}
+.muted{color:var(--muted)}
+.empty{text-align:center;padding:30px 10px;color:var(--muted)}
+.modal{position:fixed;inset:0;background:rgba(26,23,20,.55);display:flex;align-items:flex-end;justify-content:center;z-index:20;padding:12px}
+.modal .card{width:100%;max-width:540px;max-height:88vh;overflow:auto;margin-bottom:calc(8px + env(safe-area-inset-bottom))}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:9px 16px;border-radius:999px;font-family:"Barlow Condensed";font-weight:700;z-index:30}
+.seg.folders{margin:0 0 10px;box-shadow:3px 3px 0 var(--line)}
+.seg.folders button{font-size:17px;padding:10px 6px}
+.seg.folders button.on{background:var(--orange);color:var(--ink)}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;margin-top:10px;font-size:14px}
+.facts dt{font-family:"Barlow Condensed";font-weight:700;color:var(--muted)}
+.facts dd{margin:0}
+.vid{display:inline-block;margin-top:10px;font-family:"Barlow Condensed";font-weight:700;font-size:15px;color:var(--pink);text-decoration:none;border-bottom:2px solid var(--pink)}
+body.locked .wrap,body.locked nav{display:none}
+#gate{max-width:440px;margin:0 auto;padding:calc(28px + env(safe-area-inset-top)) 16px 40px}
+body:not(.locked) #gate{display:none}
+.gate-h{font-family:"Bowlby One";font-size:38px;line-height:.95;text-shadow:3px 3px 0 var(--orange);margin:0}
+.or{display:flex;align-items:center;gap:10px;color:var(--muted);font-family:"Barlow Condensed";font-weight:700;margin:14px 0}
+.or::before,.or::after{content:"";flex:1;height:2px;background:#D8C9AF}
+.linkbtn{background:none;border:0;padding:0;font-family:"Barlow Condensed";font-weight:700;font-size:16px;color:var(--pink);text-decoration:underline;cursor:pointer}
+.msg{margin-top:12px;padding:10px 12px;border-radius:10px;font-size:15px;border:2px solid var(--line)}
+.msg.err{background:#F6D0CB}.msg.ok{background:#CFEBD8}.msg.info{background:#FBE7C5}
+.sync{font-family:"Barlow Condensed";font-weight:700;font-size:14px;color:var(--muted)}
+.sync i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;background:var(--green)}
+.sync.saving i{background:var(--orange)}.sync.off i{background:var(--red)}
+.spinner{width:34px;height:34px;border:4px solid #D8C9AF;border-top-color:var(--ink);border-radius:50%;animation:sp .8s linear infinite;margin:60px auto}
+@keyframes sp{to{transform:rotate(360deg)}}
+.tag{display:inline-block;font-family:"Barlow Condensed";font-weight:700;font-size:13px;border:1.5px solid var(--line);border-radius:6px;padding:0 6px;margin-left:6px;vertical-align:middle;background:#fff}
+</style>
+</head>
+<body class="locked">
+<div id="gate"></div>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>CANTINA<br>BAR DRILL</h1>
+      <div class="sub">Corrochio's Cantina · menu trainer</div>
+    </div>
+    <div class="streak" id="mastery"></div>
+  </header>
+  <div class="seg folders" id="folders"></div>
+  <div class="chips" id="chips"></div>
+  <main id="view"></main>
+</div>
+<nav><div class="in" id="nav"></div></nav>
+<div id="layer"></div>
+
+<script>
+/* ---------- Menu data (from the Cantina menu PDF) ---------- */
+const MENU = [
+ // COCKTAILS
+ {id:"mezcalita",cat:"Cocktails",name:"Mezcalita",price:"£12",spirit:"Pensador Espadín Mezcal",ingredients:["Pensador Espadín Mezcal","Cointreau","Jalapeño","Pineapple","Lime","Hibiscus"],note:"",spec:""},
+ {id:"margarita",cat:"Cocktails",name:"Margarita",price:"£11",spirit:"Tequila Ocho Plata",ingredients:["Tequila Ocho Plata","Cointreau","Lime"],note:"Salt OR Tajín rim. Classic or spicy.",spec:"",qa:[{q:"Which rims can the guest choose for a Margarita?",a:"Salt or Tajín",w:["Sweet & salty","Chilli sugar","No rim, ever"]},{q:"How can a guest have their Margarita?",a:"Classic or spicy",w:["Frozen or on the rocks","Classic only","Sweet or dry"]}]},
+ {id:"mezcalmarg",cat:"Cocktails",name:"Mezcal Marg",price:"£12",spirit:"Pensador Espadín Mezcal",ingredients:["Pensador Espadín Mezcal","Cointreau","Lime"],note:"Mezcal version of the Margarita. Salt OR Tajín rim, classic or spicy.",spec:""},
+ {id:"tommys",cat:"Cocktails",name:"Tommy's",price:"£11",spirit:"Tequila Ocho Plata",ingredients:["Tequila Ocho Plata","Agave","Lime"],note:"No Cointreau: agave does the sweetening.",spec:""},
+ {id:"smokeytommys",cat:"Cocktails",name:"Smokey Tommy's",price:"£12",spirit:"Pensador Espadín Mezcal",ingredients:["Pensador Espadín Mezcal","Agave","Lime"],note:"Tommy's made with mezcal.",spec:""},
+ {id:"palomita",cat:"Cocktails",name:"Palomita",price:"£12",spirit:"Ojo de Dios hibiscus mezcal",ingredients:["Ojo de Dios hibiscus mezcal","King's Ginger liqueur","Grapefruit sherbet","Lime"],note:"Sweet & salty rim.",spec:"",qa:[{q:"What rim does the Palomita get?",a:"Sweet & salty",w:["Salt","Tajín","No rim"]}]},
+ {id:"coqueta",cat:"Cocktails",name:"La Coqueta",price:"£12",spirit:"Condesa Prickly Pear Gin",ingredients:["Condesa Prickly Pear Gin","Burnt Faith Elderflower vermouth","Raspberry cucumber dill pickle cordial","Schweppes soda"],note:"The only gin cocktail on the list.",spec:"",qa:[{q:"Which cocktail is the only one made with gin?",a:"La Coqueta",w:["Palomita","Jalisco Mule","Mezcalita"]}]},
+ {id:"jaliscomule",cat:"Cocktails",name:"Jalisco Mule",price:"£11",spirit:"Tequila Ocho Reposado",ingredients:["Tequila Ocho Reposado","Schweppes ginger beer","Fresh lime"],note:"The only cocktail using reposado (aged) tequila.",spec:"",qa:[{q:"Which tequila goes in the Jalisco Mule?",a:"Tequila Ocho Reposado",w:["Tequila Ocho Plata","Pensador Espadín Mezcal","Ojo de Dios hibiscus mezcal"]}]},
+ {id:"espresso",cat:"Cocktails",name:"Espresso Martini de la Olla",price:"£12",spirit:"Tequila Ocho Plata OR Finlandia vodka",ingredients:["Tequila Ocho Plata OR Finlandia vodka","Kahlúa","Home-brewed café de olla"],note:"Café de olla is brewed in-house with cinnamon, orange peel, piloncillo & spices.",spec:"",qa:[{q:"What goes into the house café de olla?",a:"Cinnamon, orange peel, piloncillo & spices",w:["Vanilla, cardamom & brown sugar","Cinnamon, chocolate & chilli","Star anise, lemon peel & honey"]},{q:"Which two base spirits can a guest pick for the Espresso Martini de la Olla?",a:"Tequila Ocho Plata or Finlandia vodka",w:["Mezcal or vodka","Reposado or rum","Finlandia vodka only"]}]},
+ // HAPPY HOUR
+ {id:"hh-info",cat:"Happy hour",name:"Happy hour",price:"£8",spirit:"",ingredients:[],note:"£8 before 8pm: Ocho Margarita and Ocho Tommy's.",spec:"",qa:[{q:"When does happy hour end?",a:"8pm",w:["7pm","9pm","6pm"]},{q:"How much are happy-hour cocktails?",a:"£8",w:["£7","£9","£6.50"]},{q:"Which two drinks are on happy hour?",a:"Ocho Margarita & Ocho Tommy's",w:["Mezcalita & Palomita","Margarita & Jalisco Mule","Ocho Margarita & Mezcal Marg"]}]},
+ {id:"ochomarg",cat:"Happy hour",name:"Ocho Margarita",price:"£8 (before 8pm)",spirit:"Tequila Ocho Plata",ingredients:["Tequila Ocho Plata","Cointreau","Lime"],note:"Classic or spicy!",spec:""},
+ {id:"ochotommys",cat:"Happy hour",name:"Ocho Tommy's",price:"£8 (before 8pm)",spirit:"Ocho Blanco tequila",ingredients:["Ocho Blanco tequila","Lime","Agave"],note:"Blanco and Plata are the same style: unaged tequila.",spec:""},
+ // SHOTS
+ {id:"verdita",cat:"Shots",name:"Verdita",price:"£7",spirit:"Ocho Blanco tequila",ingredients:["Ocho Blanco tequila","Verdita chaser"],note:"Caballito (shot) + chaser.",spec:""},
+ {id:"bebeguinness",cat:"Shots",name:"Bebé Guinness",price:"£7",spirit:"Licor 43 Horchata",ingredients:["Licor 43 Horchata liqueur","Kahlúa coffee liqueur"],note:"No tequila or mezcal in this one.",spec:""},
+ {id:"picoback",cat:"Shots",name:"Pico Back",price:"£7",spirit:"Pensador Espadín Mezcal",ingredients:["Pensador Espadín Mezcal","Spicy jalapeño brine chaser"],note:"Mezcal shot with a pickleback-style chaser.",spec:""},
+ {id:"mm",cat:"Shots",name:"M&M",price:"£7",spirit:"Pensador Espadín Mezcal",ingredients:["Pensador Espadín Mezcal","Montenegro"],note:"Served ice cold. A CDMX favourite.",spec:"",qa:[{q:"How is the M&M served?",a:"Ice cold",w:["With a chaser","Flaming","With a Tajín rim"]}]},
+ {id:"spirits-info",cat:"Shots",name:"Spirit list",price:"",spirit:"",ingredients:[],note:"Over 100 Mexican & agave distillates: ask for the full list. All spirits come in 200ml sharing carafes.",spec:"",qa:[{q:"Roughly how many Mexican & agave distillates does the Cantina carry?",a:"Over 100",w:["About 30","About 50","Over 250"]},{q:"What size are the spirit sharing carafes?",a:"200ml",w:["500ml","100ml","350ml"]}]},
+ // 0%
+ {id:"palomafresca",cat:"0%",name:"Paloma Fresca",price:"£8.5",spirit:"Lyre's agave spirit 0%",ingredients:["Lyre's agave spirit 0%","Three Spirit Livener","Schweppes Pink soda","Citrus","Rock salt"],note:"Alcohol-free.",spec:""},
+ {id:"margcero",cat:"0%",name:"Margarita Cero",price:"£8",spirit:"Lyre's agave spirit 0%",ingredients:["Lyre's agave spirit 0%","Fresh lime","Fresh pineapple","Agave"],note:"Alcohol-free.",spec:""},
+ {id:"aperolcero",cat:"0%",name:"Aperol Spritz Cero",price:"£7",spirit:"Lyre's Italian Spritz",ingredients:["Lyre's Italian Spritz","Schweppes soda","Fresh orange"],note:"Alcohol-free.",spec:""},
+ {id:"cantarito",cat:"0%",name:"Cantarito Cero",price:"£8",spirit:"",ingredients:["Grapefruit","Orange","Lime","Grapefruit soda top"],note:"Served in a typical clay cup.",spec:"",qa:[{q:"What is the Cantarito Cero served in?",a:"A clay cup",w:["A copper mug","A highball","A coupe"]}]},
+ // AGUA FRESCAS
+ {id:"jarritos",cat:"Softs",name:"Jarritos",price:"£4.50",spirit:"",ingredients:["Flavoured Mexican soda"],note:"Ask for flavours.",spec:""},
+ {id:"squirt",cat:"Softs",name:"Squirt",price:"£4.50",spirit:"",ingredients:["Mexican grapefruit soda"],note:"",spec:""},
+ {id:"electrolit",cat:"Softs",name:"Electrolit",price:"£4.50",spirit:"",ingredients:["Electrolyte drink"],note:"Ask for flavours.",spec:""},
+ // BEER
+ {id:"caguamas",cat:"Beer",name:"Caguamas",price:"£23",spirit:"",ingredients:["Tecate Light lager","1.2L bottle"],note:"For sharing (or not!). Imported directly from Mexico.",spec:"",qa:[{q:"Which beer comes as a 1.2L Caguama?",a:"Tecate Light",w:["Modelo","Corona","Pacifico"]}]},
+ {id:"modelo",cat:"Beer",name:"Modelo",price:"£7",spirit:"",ingredients:["Draught","Lager","4.5%"],note:"",spec:""},
+ {id:"corona",cat:"Beer",name:"Corona",price:"£6.5",spirit:"",ingredients:["Draught","Lager","4.5%"],note:"",spec:""},
+ {id:"dosequis",cat:"Beer",name:"Dos Equis",price:"£6",spirit:"",ingredients:["Bottle","Lager","4.5%"],note:"",spec:""},
+ {id:"pacifico",cat:"Beer",name:"Pacifico",price:"£6.5",spirit:"",ingredients:["Bottle","Lager","4.5%"],note:"",spec:""},
+ {id:"victoria",cat:"Beer",name:"Victoria",price:"£7",spirit:"",ingredients:["Bottle","Lager","4%"],note:"",spec:""},
+ {id:"modelonegra",cat:"Beer",name:"Modelo Negra",price:"£8",spirit:"",ingredients:["Bottle","Dark lager","5.4%"],note:"The only dark beer.",spec:""},
+ {id:"coronacero",cat:"Beer",name:"Corona Cero",price:"£5",spirit:"",ingredients:["Bottle","Lager","0.0%"],note:"",spec:""},
+ {id:"michelada",cat:"Beer",name:"Michelada upgrade",price:"Clamato Michelada +£2 · Chelada +£1",spirit:"",ingredients:["Any bottled beer"],note:"Add to any bottled beer.",spec:"",qa:[{q:"How much is the Clamato Michelada upgrade?",a:"+£2",w:["+£1","+£3","+£1.50"]},{q:"How much is the Chelada upgrade?",a:"+£1",w:["+£2","+£0.50","+£1.50"]}]},
+ {id:"cubetazo",cat:"Beer",name:"Cubetazo",price:"",spirit:"",ingredients:["5 bottled beers","Bucket of ice"],note:"Beer bucket: any 5 bottled beers on ice.",spec:"",qa:[{q:"How many beers come in a Cubetazo?",a:"5",w:["4","6","3"]}]},
+ {id:"beer-draught",cat:"Beer",name:"Draught vs bottle",price:"",spirit:"",ingredients:[],note:"Draught: Modelo, Corona. Everything else is bottled.",spec:"",qa:[{q:"Which two beers are on draught?",a:"Modelo & Corona",w:["Modelo & Pacifico","Corona & Dos Equis","Victoria & Modelo Negra"]}]},
+ // WINE
+ {id:"red",cat:"Wine",name:"Red",price:"£8.5 / £11",spirit:"",ingredients:["Sangiovese/Merlot","Italy"],note:"175ml / 250ml. 500ml carafes available.",spec:""},
+ {id:"white",cat:"Wine",name:"White",price:"£8.5 / £11",spirit:"",ingredients:["Picpoul","France"],note:"175ml / 250ml. 500ml carafes available.",spec:""},
+ {id:"sparkling",cat:"Wine",name:"Sparkling",price:"£35 bottle",spirit:"",ingredients:["Prosecco","Italy"],note:"",spec:""},
+ // FOOD
+ {id:"birria",cat:"Food",name:"Birria Taco",price:"£13",spirit:"",ingredients:["Beef birria short rib OR grilled artichoke","Birria broth on the side","Corn tortilla"],note:"Two pieces. +£2 grilled cheese.",spec:""},
+ {id:"cactus",cat:"Food",name:"Cactus Taco",price:"£13",spirit:"",ingredients:["Grilled cactus","Onions","Tomatoes","Coriander","Salsa verde","Queso fresco"],note:"Two pieces.",spec:""},
+ {id:"carnitas",cat:"Food",name:"Carnitas Taco",price:"£14",spirit:"",ingredients:["Pork cooked in manteca madre","Refried beans","Salsa martajada","Gualsa","Onion","Coriander"],note:"Two pieces.",spec:""},
+ {id:"suadero",cat:"Food",name:"Suadero Tacos",price:"£14",spirit:"",ingredients:["Beef cooked with lard","Frijoles de la olla","Salsa verde","Onion","Coriander"],note:"Two pieces.",spec:""},
+ {id:"pollomamon",cat:"Food",name:"Pollo Mamón Tacos",price:"£14",spirit:"",ingredients:["Jerk chicken","Salsa martajada","Plátano macho"],note:"Two pieces.",spec:""},
+ {id:"madre",cat:"Food",name:"Madre Tostada",price:"£8",spirit:"",ingredients:["Oaxaca-style beans","Oaxaca cheese","Lettuce","Gualsa","Grasshopper salt (optional)"],note:"Single piece.",spec:""},
+ {id:"salmoncita",cat:"Food",name:"Salmoncita Tostada",price:"£11",spirit:"",ingredients:["Cooked salmon ceviche (ginger, lime, salsa negra)","Japanese peanut salsa macha","Avocado","Coriander","Basil"],note:"Single piece. Contains peanuts.",spec:""},
+ {id:"camaron",cat:"Food",name:"Camarón Tostada",price:"£9",spirit:"",ingredients:["Cooked prawn ceviche","Cucumber","Bed of guac","Chipotle mayo","Salsa macha"],note:"Single piece.",spec:""},
+ {id:"guac",cat:"Food",name:"Guacamole",price:"£8.5",spirit:"",ingredients:["Avocado","Onion","Jalapeño","Lime","Fresh tomato"],note:"Botana, served with totopos.",spec:""},
+ {id:"chacha",cat:"Food",name:"Chacha Beans",price:"£7.5",spirit:"",ingredients:["Refried beans","Fresh cheese","Chorizo"],note:"Botana, served with totopos.",spec:""},
+ {id:"oaxacan",cat:"Food",name:"Oaxacan Beans",price:"£9",spirit:"",ingredients:["Refried black beans","Huitlacoche","Hoja santa","Avocado leaf","Queso Oaxaca"],note:"Botana, served with totopos.",spec:""},
+ {id:"martajada",cat:"Food",name:"Salsa Martajada",price:"£5",spirit:"",ingredients:["Charred tomatoes","Jalapeños","Garlic","Lime"],note:"Botana, served with totopos.",spec:""},
+ {id:"durritos",cat:"Food",name:"Durritos",price:"£4.5",spirit:"",ingredients:["Salted Mexican wheat crisps","Valentina hot sauce","Fresh lime"],note:"",spec:""},
+ {id:"palomitas",cat:"Food",name:"Palomitas con Tajín",price:"£3",spirit:"",ingredients:["Popcorn in coconut oil","Tajín"],note:"",spec:""},
+ {id:"velrosita",cat:"Food",name:"Vel Rosita (extra heat)",price:"£2",spirit:"",ingredients:["Beetroot","Habanero","Árbol","Pickled red onions"],note:"Allergen: sulphites.",spec:""},
+ {id:"macha",cat:"Food",name:"Daniel's Salsa Macha (extra heat)",price:"£3",spirit:"",ingredients:["Olive oil","Árbol chilli","Sesame seeds","Garlic"],note:"Allergen: sesame.",spec:""},
+ {id:"escabeche",cat:"Food",name:"Jalapeños en Escabeche (extra heat)",price:"£2",spirit:"",ingredients:["Pickled jalapeños","Chilli"],note:"Allergen: sulphites.",spec:""},
+ {id:"maya",cat:"Food",name:"Salsa Maya (extra heat)",price:"£2",spirit:"",ingredients:["Charred green habanero salsa"],note:"",spec:""},
+ {id:"kitchen",cat:"Food",name:"Kitchen hours",price:"",spirit:"",ingredients:[],note:"Kitchen 7pm–10.30pm. Vegan option on request. Always ask about allergies.",spec:"",qa:[{q:"What are the Cantina kitchen hours?",a:"7pm–10.30pm",w:["6pm–11pm","7pm–midnight","5pm–10pm"]},{q:"Which extra-heat salsa contains sesame?",a:"Daniel's Salsa Macha",w:["Vel Rosita","Salsa Maya","Jalapeños en Escabeche"]}]}
+];
+MENU.forEach(i=>i.folder="cantina");
+
+/* ---------- Top 50 classics (standard specs; video timestamps) ---------- */
+const VID="https://www.youtube.com/watch?v=AWnIqpsfyPU&t=";
+const C=(id,cat,name,t,spirit,ingredients,spec,method,glass,garnish,note="")=>({id:"c-"+id,folder:"classics",cat,name,price:"",spirit,ingredients,spec,method,glass,garnish,note,video:VID+t+"s"});
+const CLASSICS=[
+ C("oldfashioned","Whiskey","Old Fashioned",38,"Bourbon or rye",["Bourbon or rye","Sugar","Angostura bitters"],"60ml bourbon or rye\n1 sugar cube or 7.5ml simple syrup\n2–3 dashes Angostura","Stir","Rocks glass, large cube","Orange peel"),
+ C("manhattan","Whiskey","Manhattan",89,"Rye whiskey",["Rye whiskey","Sweet vermouth","Angostura bitters"],"60ml rye\n30ml sweet vermouth\n2 dashes Angostura","Stir","Coupe, no ice","Cocktail cherry"),
+ C("sazerac","Whiskey","Sazerac",123,"Rye whiskey (or cognac)",["Rye whiskey","Sugar","Peychaud's bitters","Absinthe rinse"],"60ml rye (or cognac)\n1 sugar cube or 7.5ml simple\n3 dashes Peychaud's\nAbsinthe rinse","Stir","Chilled rocks glass, no ice","Lemon peel, expressed and discarded"),
+ C("negroni","Gin","Negroni",161,"Gin",["Gin","Campari","Sweet vermouth"],"30ml gin\n30ml Campari\n30ml sweet vermouth","Stir","Rocks glass, ice","Orange peel or slice","Equal parts."),
+ C("julep","Whiskey","Mint Julep",188,"Bourbon",["Bourbon","Simple syrup","Mint"],"60ml bourbon\n10ml simple syrup\n8–10 mint leaves","Gently muddle mint, build","Julep cup, crushed ice","Mint sprig"),
+ C("tomcollins","Gin","Tom Collins",234,"Gin",["Gin","Lemon juice","Simple syrup","Soda water"],"50ml gin\n25ml lemon\n15ml simple\nTop soda","Shake (or build), top with soda","Collins glass, ice","Lemon wheel & cherry"),
+ C("margarita","Agave","Margarita",269,"Tequila blanco",["Tequila blanco","Cointreau","Lime juice"],"50ml tequila blanco\n25ml Cointreau\n25ml lime","Shake","Rocks glass or coupe, salt rim optional","Lime wedge"),
+ C("daiquiri","Rum & cachaça","Daiquiri",307,"White rum",["White rum","Lime juice","Simple syrup"],"60ml white rum\n25ml lime\n15ml simple","Shake","Coupe","Lime wheel"),
+ C("martini","Gin","Martini",328,"Gin",["Gin","Dry vermouth"],"60ml gin\n15ml dry vermouth\n(optional dash orange bitters)","Stir","Chilled martini glass or coupe","Lemon twist or olive"),
+ C("brandyalex","Brandy & pisco","Brandy Alexander",355,"Cognac",["Cognac","Crème de cacao","Cream"],"30ml cognac\n30ml dark crème de cacao\n30ml cream","Shake","Coupe","Grated nutmeg"),
+ C("improved","Whiskey","Improved Whiskey Cocktail",385,"Rye or bourbon",["Rye or bourbon","Simple syrup","Maraschino liqueur","Angostura bitters","Absinthe rinse"],"60ml rye or bourbon\n5ml simple\n5ml maraschino\n2 dashes Angostura\nAbsinthe rinse","Stir","Rocks glass","Lemon twist"),
+ C("rickey","Gin","Gin Rickey",417,"Gin",["Gin","Lime juice","Soda water"],"60ml gin\n15–25ml lime\nTop soda","Build","Highball, ice","Lime shell","No sugar: dry and tart."),
+ C("paloma","Agave","Paloma",438,"Tequila",["Tequila","Lime juice","Salt","Grapefruit soda"],"50ml tequila\n15ml lime\nPinch salt\nTop grapefruit soda","Build","Highball, ice, salt rim optional","Grapefruit or lime wedge"),
+ C("beesknees","Gin","Bee's Knees",466,"Gin",["Gin","Lemon juice","Honey syrup"],"60ml gin\n22.5ml lemon\n22.5ml honey syrup","Shake","Coupe","Lemon twist"),
+ C("montecarlo","Whiskey","Monte Carlo",492,"Rye whiskey",["Rye whiskey","Bénédictine","Angostura bitters"],"60ml rye\n15ml Bénédictine\n2 dashes Angostura","Stir","Coupe or rocks glass","Lemon twist"),
+ C("boulevardier","Whiskey","Boulevardier",519,"Bourbon",["Bourbon","Campari","Sweet vermouth"],"45ml bourbon\n30ml Campari\n30ml sweet vermouth","Stir","Coupe or rocks glass","Orange twist","A Negroni with bourbon instead of gin."),
+ C("maitai","Rum & cachaça","Mai Tai",544,"Aged rum",["Aged Jamaican rum","Aged Martinique rum","Orange curaçao","Orgeat","Lime juice"],"30ml aged Jamaican rum\n30ml aged Martinique rum\n15ml orange curaçao\n15ml orgeat\n25ml lime","Shake","Double rocks, crushed ice","Mint sprig & spent lime shell"),
+ C("aperol","Aperitivo & wine","Aperol Spritz",584,"Aperol",["Prosecco","Aperol","Soda water"],"90ml prosecco\n60ml Aperol\n30ml soda (3-2-1)","Build","Wine glass, ice","Orange slice"),
+ C("champagne","Aperitivo & wine","Champagne Cocktail",606,"Champagne",["Sugar cube","Angostura bitters","Champagne"],"1 sugar cube soaked in Angostura\nTop ~100ml champagne","Build","Flute","Lemon twist"),
+ C("pinklady","Gin","Pink Lady",639,"Gin",["Gin","Applejack","Lemon juice","Grenadine","Egg white"],"45ml gin\n15ml applejack\n15ml lemon\n15ml grenadine\n1 egg white","Dry shake, then shake with ice","Coupe","Cherry"),
+ C("jackrose","Brandy & pisco","Jack Rose",679,"Applejack (apple brandy)",["Applejack","Lemon juice","Grenadine"],"60ml applejack\n22.5ml lemon\n15ml grenadine","Shake","Coupe","Lemon twist or apple slice"),
+ C("caipirinha","Rum & cachaça","Caipirinha",702,"Cachaça",["Cachaça","Lime wedges","Sugar"],"60ml cachaça\n½ lime in wedges\n2 tsp sugar","Muddle lime & sugar, build","Rocks glass, crushed ice","Lime"),
+ C("firingsquad","Agave","Mexican Firing Squad Special",734,"Tequila blanco",["Tequila blanco","Lime juice","Grenadine","Angostura bitters"],"60ml tequila blanco\n22.5ml lime\n15–22.5ml grenadine\n3–4 dashes Angostura","Shake","Rocks glass, ice","Lime wheel & cherry"),
+ C("lastword","Gin","Last Word",766,"Gin",["Gin","Green Chartreuse","Maraschino liqueur","Lime juice"],"22.5ml gin\n22.5ml green Chartreuse\n22.5ml maraschino\n22.5ml lime","Shake","Coupe","Cherry (or none)","Equal parts."),
+ C("sidecar","Brandy & pisco","Sidecar",795,"Cognac",["Cognac","Cointreau","Lemon juice"],"50ml cognac\n20ml Cointreau\n20ml lemon","Shake","Coupe, sugar rim optional","Orange twist"),
+ C("mojito","Rum & cachaça","Mojito",829,"White rum",["White rum","Lime juice","Sugar","Mint","Soda water"],"50ml white rum\n25ml lime\n15–20ml simple (or 2 tsp sugar)\n6–8 mint leaves\nTop soda","Gently muddle mint, build, top with soda","Highball, crushed ice","Mint sprig"),
+ C("corpse","Gin","Corpse Reviver No. 2",900,"Gin",["Gin","Cointreau","Lillet Blanc","Lemon juice","Absinthe rinse"],"22.5ml gin\n22.5ml Cointreau\n22.5ml Lillet Blanc\n22.5ml lemon\nAbsinthe rinse","Shake","Coupe","Orange twist (or none)","Equal parts."),
+ C("gimlet","Gin","Gimlet",936,"Gin",["Gin","Lime juice","Simple syrup"],"60ml gin\n22.5ml lime\n15ml simple\n(or 22.5ml lime cordial)","Shake","Coupe","Lime wheel"),
+ C("martinez","Gin","Martinez",958,"Old Tom gin",["Old Tom gin","Sweet vermouth","Maraschino liqueur","Bitters"],"45ml Old Tom gin\n45ml sweet vermouth\n5–7.5ml maraschino\n2 dashes orange or Angostura bitters","Stir","Coupe","Orange twist"),
+ C("singapore","Gin","Singapore Sling",991,"Gin",["Gin","Cherry liqueur","Cointreau","Bénédictine","Pineapple juice","Lime juice","Grenadine","Angostura bitters"],"30ml gin\n15ml cherry liqueur (Heering)\n7.5ml Cointreau\n7.5ml Bénédictine\n120ml pineapple\n15ml lime\n10ml grenadine\nDash Angostura","Shake","Highball or hurricane, ice","Pineapple & cherry"),
+ C("silverfizz","Gin","Silver Fizz",1025,"Gin",["Gin","Lemon juice","Simple syrup","Egg white","Soda water"],"60ml gin\n25ml lemon\n20ml simple\n1 egg white\nTop soda","Dry shake, shake with ice, top with soda","Fizz glass or small highball, no ice","None (or lemon peel)","A Gin Fizz with egg white."),
+ C("daisy","Brandy & pisco","Daisy",1069,"Brandy (classic) or gin",["Brandy","Lemon juice","Orange liqueur","Soda water"],"60ml brandy\n22.5ml lemon\n15ml orange liqueur\nSplash soda","Shake, splash of soda","Coupe or rocks glass","Lemon or orange twist","A family of drinks: the Margarita is a tequila daisy (margarita is Spanish for daisy)."),
+ C("junglebird","Rum & cachaça","Jungle Bird",1095,"Blackstrap rum",["Blackstrap rum","Campari","Pineapple juice","Lime juice","Demerara syrup"],"45ml blackstrap rum\n22.5ml Campari\n45ml pineapple\n15ml lime\n15ml demerara syrup","Shake","Rocks glass, ice","Pineapple wedge or leaves"),
+ C("americano","Aperitivo & wine","Americano",1134,"Campari",["Campari","Sweet vermouth","Soda water"],"30ml Campari\n30ml sweet vermouth\nTop soda","Build","Highball or rocks glass, ice","Orange slice"),
+ C("bamboo","Aperitivo & wine","Bamboo",1172,"Fino or amontillado sherry",["Dry sherry","Dry vermouth","Orange bitters","Angostura bitters"],"45ml fino or amontillado sherry\n45ml dry vermouth\n2 dashes orange bitters\n1 dash Angostura","Stir","Coupe","Lemon twist"),
+ C("darknstormy","Rum & cachaça","Dark 'n Stormy",1205,"Gosling's Black Seal rum",["Dark rum","Ginger beer","Lime"],"60ml Gosling's Black Seal\nTop ginger beer (~120ml)","Build, rum floated on top","Highball, ice","Lime wedge"),
+ C("smash","Whiskey","Whiskey Smash",1228,"Bourbon",["Bourbon","Lemon wedges","Simple syrup","Mint"],"60ml bourbon\n½ lemon in wedges\n15–22.5ml simple\n6–8 mint leaves","Muddle lemon, shake with mint","Rocks glass, crushed ice","Mint sprig"),
+ C("ginfix","Gin","Gin Fix",1273,"Gin",["Gin","Lemon juice","Simple syrup"],"60ml gin\n22.5ml lemon\n15ml simple (classically pineapple syrup)","Shake","Rocks glass, crushed ice","Seasonal fruit or lemon"),
+ C("vesper","Gin","Vesper",1298,"Gin",["Gin","Vodka","Lillet Blanc"],"45ml gin\n15ml vodka\n7.5ml Lillet Blanc","Shake (Bond's way) or stir","Martini glass or coupe","Lemon peel","James Bond's martini from Casino Royale."),
+ C("20thcentury","Gin","20th Century",1319,"Gin",["Gin","Lillet Blanc","White crème de cacao","Lemon juice"],"45ml gin\n22.5ml Lillet Blanc\n15ml white crème de cacao\n22.5ml lemon","Shake","Coupe","Lemon twist"),
+ C("french75","Gin","French 75",1352,"Gin",["Gin","Lemon juice","Simple syrup","Champagne"],"30ml gin\n15ml lemon\n15ml simple\nTop champagne (~60ml)","Shake, strain, top with champagne","Flute","Lemon twist"),
+ C("aviation","Gin","Aviation",1388,"Gin",["Gin","Maraschino liqueur","Crème de violette","Lemon juice"],"60ml gin\n15ml maraschino\n7.5ml crème de violette\n22.5ml lemon","Shake","Coupe","Cherry"),
+ C("ryebuck","Whiskey","Rye Buck",1420,"Rye whiskey",["Rye whiskey","Lemon or lime juice","Ginger beer"],"60ml rye\n15ml lemon or lime\nTop ginger beer or ginger ale","Build","Highball, ice","Lemon or lime wedge","A 'buck' is spirit + citrus + ginger."),
+ C("moscowmule","Vodka","Moscow Mule",1452,"Vodka",["Vodka","Lime juice","Ginger beer"],"50ml vodka\n15ml lime\nTop ginger beer (~120ml)","Build","Copper mug, ice","Lime wedge"),
+ C("kangaroo","Vodka","Kangaroo",1483,"Vodka",["Vodka","Dry vermouth"],"60ml vodka\n15ml dry vermouth","Stir","Martini glass or coupe","Lemon twist or olive","The original name for a vodka martini."),
+ C("hemingway","Rum & cachaça","Hemingway Daiquiri",1512,"White rum",["White rum","Lime juice","Grapefruit juice","Maraschino liqueur"],"60ml white rum\n22.5ml lime\n15ml grapefruit\n7.5–15ml maraschino","Shake","Coupe","Lime wheel"),
+ C("vieuxcarre","Whiskey","Vieux Carré",1541,"Rye & cognac",["Rye whiskey","Cognac","Sweet vermouth","Bénédictine","Peychaud's bitters","Angostura bitters"],"22.5ml rye\n22.5ml cognac\n22.5ml sweet vermouth\n7.5ml Bénédictine\n2 dashes Peychaud's\n2 dashes Angostura","Stir","Rocks glass, ice","Lemon twist or cherry","New Orleans classic."),
+ C("presbyterian","Whiskey","Presbyterian",1570,"Scotch (or bourbon)",["Scotch whisky","Ginger ale","Soda water"],"60ml Scotch\nTop equal parts ginger ale & soda","Build","Highball, ice","Lemon twist"),
+ C("piscosour","Brandy & pisco","Pisco Sour",1593,"Pisco",["Pisco","Lime juice","Simple syrup","Egg white","Angostura bitters"],"60ml pisco\n30ml lime\n22.5ml simple\n1 egg white\n3 drops Angostura on the foam","Dry shake, then shake with ice","Coupe","Angostura drops on the foam"),
+ C("whiskeysour","Whiskey","Whiskey Sour",1625,"Bourbon",["Bourbon","Lemon juice","Simple syrup","Egg white (optional)"],"60ml bourbon\n30ml lemon\n22.5ml simple\nEgg white (optional)","Dry shake, then shake with ice","Rocks glass over ice (or coupe)","Angostura drops, or cherry & orange flag")
+];
+const FOLDERS={
+ cantina:{name:"Cantina menu",cats:["Cocktails","Happy hour","Shots","0%","Softs","Beer","Wine","Food"]},
+ classics:{name:"Top 50 classics",cats:["Whiskey","Gin","Rum & cachaça","Agave","Brandy & pisco","Vodka","Aperitivo & wine"]}
+};
+const CATS_ALL=[...FOLDERS.cantina.cats,...FOLDERS.classics.cats];
+let folder = "cantina";
+const CATS_OF=f=>FOLDERS[f].cats;
+Object.defineProperty(window,"CATS",{get:()=>CATS_OF(folder)});
+
+/* ---------- Storage (per-browser, safe) ---------- */
+function load(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+const DEFAULT_ITEMS=()=>JSON.parse(JSON.stringify(MENU.concat(CLASSICS)));
+let items=[], stats={}, decksBy={}, tab="learn";
+function initState(remote){
+  if(remote&&Array.isArray(remote.items)){
+    items=remote.items; stats=remote.stats||{}; decksBy=remote.decksBy||{};
+    folder=remote.folder; tab=remote.tab||"learn";
+  }else{
+    // First sign-in: bring over anything saved in this browser by the old version
+    items=load("cbd_items",null)||DEFAULT_ITEMS(); stats=load("cbd_stats",{});
+    decksBy=load("cbd_decks2",null)||{cantina:load("cbd_decks",["Cocktails","Happy hour","Shots"])};
+    folder=load("cbd_folder","cantina"); tab=load("cbd_tab","learn");
+  }
+  items.forEach(i=>{if(!i.folder)i.folder="cantina"});
+  if(!items.some(i=>i.folder==="classics")&&!(remote&&remote.classicsAdded)) items=items.concat(JSON.parse(JSON.stringify(CLASSICS)));
+  if(!FOLDERS[folder]) folder="cantina";
+  for(const k in FOLDERS) if(!Array.isArray(decksBy[k])||!decksBy[k].length) decksBy[k]=k==="cantina"?["Cocktails","Happy hour","Shots"]:[...FOLDERS[k].cats];
+  if(!["learn","cards","quiz","edit"].includes(tab)) tab="learn";
+}
+Object.defineProperty(window,"decks",{get:()=>decksBy[folder],set:v=>{decksBy[folder]=v}});
+const snapshot=()=>({items,stats,decksBy,folder,tab,classicsAdded:true});
+const persist=()=>{if(window.cloudSave) window.cloudSave(snapshot())};
+
+/* ---------- Helpers ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const uniq=a=>[...new Set(a)];
+const pool=()=>items.filter(i=>i.folder===folder&&decks.includes(i.cat));
+const st=id=>stats[id]||(stats[id]={hit:0,miss:0,streak:0});
+function weight(i){const s=st(i.id);let w=1+s.miss*1.6-s.hit*.5-s.streak*.4;if(!s.hit&&!s.miss)w+=1;return Math.max(.25,Math.min(6,w))}
+function pickWeighted(arr,avoid){const c=arr.length>1?arr.filter(x=>x.id!==avoid):arr;let t=c.reduce((a,x)=>a+weight(x),0),r=Math.random()*t;for(const x of c){r-=weight(x);if(r<=0)return x}return c[c.length-1]}
+function level(i){const s=st(i.id);return Math.max(0,Math.min(3,s.streak))}
+function dots(i){const l=level(i);return `<span class="dots" title="Mastery">${[0,1,2].map(n=>`<i class="${n<l?'f':''}"></i>`).join("")}</span>`}
+function record(id,ok){const s=st(id);if(ok){s.hit++;s.streak++}else{s.miss++;s.streak=0}persist();renderMastery()}
+function toast(t){const d=document.createElement("div");d.className="toast";d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),1600)}
+function renderMastery(){const p=pool().filter(i=>i.ingredients.length||i.qa);const m=p.filter(i=>level(i)>=3).length;$("#mastery").innerHTML=`<b>${m}/${p.length}</b>mastered`}
+
+/* ---------- Chips ---------- */
+function renderFolders(){
+  $("#folders").innerHTML=Object.entries(FOLDERS).map(([k,f])=>`<button data-f="${k}" class="${folder===k?'on':''}">${esc(f.name)}</button>`).join("");
+  $("#folders").querySelectorAll("button").forEach(b=>b.onclick=()=>{folder=b.dataset.f;qz=null;fc.item=null;persist();renderFolders();renderChips();renderMastery();render();window.scrollTo(0,0)});
+}
+function renderChips(){
+  $("#chips").innerHTML=CATS.map(c=>`<button class="chip ${decks.includes(c)?'on':''}" data-c="${esc(c)}">${esc(c)}</button>`).join("");
+  $("#chips").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{
+    const c=b.dataset.c; decks=decks.includes(c)?decks.filter(x=>x!==c):[...decks,c];
+    if(!decks.length) decks=[c];
+    persist();renderChips();renderMastery();render();
+  });
+}
+
+/* ---------- Card markup ---------- */
+function drinkCard(i,opts={}){
+  return `<div class="card">
+    <div class="row"><h3 class="dname">${esc(i.name)}${opts.dots===false?'':dots(i)}</h3><span class="price">${esc(i.price)}</span></div>
+    ${i.spirit?`<div class="spirit">${esc(i.spirit)}</div>`:""}
+    ${i.ingredients.length?`<div class="ings">${i.ingredients.map(x=>`<span class="ing">${esc(x)}</span>`).join("")}</div>`:""}
+    ${i.note?`<div class="note">${esc(i.note)}</div>`:""}
+    ${i.method||i.glass||i.garnish?`<dl class="facts">${i.method?`<dt>Method</dt><dd>${esc(i.method)}</dd>`:""}${i.glass?`<dt>Glass</dt><dd>${esc(i.glass)}</dd>`:""}${i.garnish?`<dt>Garnish</dt><dd>${esc(i.garnish)}</dd>`:""}</dl>`:""}
+    ${["Food","Beer","Wine","Softs"].includes(i.cat)||!i.ingredients.length?"":(i.spec?`<div class="spec">${esc(i.spec)}</div>`:`<div class="spec empty">House spec (measures, glass, ice, garnish): not added yet</div>`)}
+    ${i.video&&/^https:\/\//.test(i.video)?`<a class="vid" href="${esc(i.video)}" target="_blank" rel="noopener">▶ Watch in the video</a>`:""}
+    ${opts.edit?`<div class="btns" style="margin-top:10px"><button class="btn sm ghost" data-edit="${esc(i.id)}">Edit</button></div>`:""}
+  </div>`;
+}
+
+/* ---------- LEARN ---------- */
+function renderLearn(){
+  const p=pool();
+  let h=`<div class="note" style="margin-top:0">Tap a category above to add or remove it. ${folder==="cantina"?"Specs from the Cantina menu. Add the house measures under <b>Edit</b> once you've seen them on shift.":"Standard classic specs in ml. Bars vary, so follow the house spec when there is one."}</div>`;
+  CATS.filter(c=>decks.includes(c)).forEach(c=>{
+    const list=p.filter(i=>i.cat===c); if(!list.length) return;
+    h+=`<div class="cat-h">${esc(c)}</div>`+list.map(i=>drinkCard(i,{edit:true})).join("");
+  });
+  $("#view").innerHTML=h||`<div class="empty">Nothing in these categories.</div>`;
+  bindEditButtons();
+}
+
+/* ---------- FLASHCARDS ---------- */
+let fc={item:null,flipped:false,dir:"name"};
+function renderCards(){
+  const p=pool().filter(i=>i.ingredients.length);
+  if(!p.length){$("#view").innerHTML=`<div class="empty">No drinks with ingredients in these categories.</div>`;return}
+  if(!fc.item||!p.find(x=>x.id===fc.item.id)) fc.item=pickWeighted(p);
+  const i=fc.item;
+  const front = fc.dir==="name"
+    ? `<div class="big">${esc(i.name)}</div><div class="hint">Say the build out loud: spirit, modifiers, citrus, rim. Then tap.</div>`
+    : `<div class="ings" style="justify-content:center">${i.ingredients.map(x=>`<span class="ing">${esc(x)}</span>`).join("")}</div>${i.note?`<div class="note">${esc(i.note.replace(new RegExp(i.name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'),'___'))}</div>`:""}<div class="hint">Which drink is this? Tap to reveal.</div>`;
+  $("#view").innerHTML=`
+    <div class="seg"><button data-d="name" class="${fc.dir==='name'?'on':''}">Name → build</button><button data-d="ing" class="${fc.dir==='ing'?'on':''}">Build → name</button></div>
+    ${fc.flipped?drinkCard(i):`<div class="card flip" id="flip"><div class="q-meta" style="justify-content:center">${esc(i.cat)}</div>${front}</div>`}
+    ${fc.flipped?`<div class="btns"><button class="btn red" id="miss">Missed it</button><button class="btn green" id="got">Got it</button></div>`:`<button class="btn block dark" id="reveal" style="margin-top:4px">Reveal</button>`}`;
+  document.querySelectorAll("#view .seg button").forEach(b=>b.onclick=()=>{fc.dir=b.dataset.d;fc.flipped=false;renderCards()});
+  const flip=()=>{fc.flipped=true;renderCards()};
+  if($("#flip")) $("#flip").onclick=flip;
+  if($("#reveal")) $("#reveal").onclick=flip;
+  if($("#got")) $("#got").onclick=()=>{record(i.id,true);next()};
+  if($("#miss")) $("#miss").onclick=()=>{record(i.id,false);next()};
+  function next(){fc.item=pickWeighted(p,i.id);fc.flipped=false;renderCards()}
+}
+
+/* ---------- QUIZ ---------- */
+let qz=null;
+const ingStr=i=>i.ingredients.join(", ");
+function makeOptions(correct,cands){const w=shuffle(uniq(cands.filter(c=>c&&c!==correct))).slice(0,3);return w.length<2?null:shuffle([correct,...w])}
+function genQuestion(i){
+  const all=items.filter(x=>x.folder===i.folder&&x.ingredients.length);
+  const same=all.filter(x=>x.cat===i.cat&&x.id!==i.id);
+  const others=shuffle(same).concat(shuffle(all.filter(x=>x.cat!==i.cat&&x.id!==i.id)));
+  const gens=[];
+  if(i.ingredients.length>=2) gens.push(()=>{const o=makeOptions(ingStr(i),others.map(ingStr));return o&&{q:`What goes into the <u>${esc(i.name)}</u>?`,opts:o,a:ingStr(i)}});
+  if(i.ingredients.length>=2) gens.push(()=>{const o=makeOptions(i.name,others.filter(x=>ingStr(x)!==ingStr(i)).map(x=>x.name));return o&&{q:`Which drink is this?<small>${esc(ingStr(i))}</small>`,opts:o,a:i.name}});
+  if(i.price&&i.price.startsWith("£")) gens.push(()=>{const o=makeOptions(i.price,shuffle(uniq(items.filter(x=>x.cat===i.cat||x.cat==="Cocktails").map(x=>x.price))).filter(p=>p&&p.startsWith("£")));return o&&{q:`How much is the <u>${esc(i.name)}</u>?`,opts:o,a:i.price}});
+  if(i.spirit) gens.push(()=>{const o=makeOptions(i.spirit,items.filter(x=>x.spirit&&x.spirit!==i.spirit&&!x.spirit.includes(i.spirit)&&!i.spirit.includes(x.spirit)).map(x=>x.spirit));return o&&{q:`What's the base spirit in the <u>${esc(i.name)}</u>?`,opts:o,a:i.spirit}});
+  if(i.ingredients.length>=3) gens.push(()=>{
+    const mine=i.ingredients.map(s=>s.toLowerCase());
+    const foreign=shuffle(uniq(others.flatMap(x=>x.ingredients))).find(s=>!mine.some(m=>m.includes(s.toLowerCase())||s.toLowerCase().includes(m)));
+    if(!foreign) return null;
+    const opts=shuffle([foreign,...shuffle(i.ingredients).slice(0,3)]);
+    return {q:`Which of these is <b>NOT</b> in the <u>${esc(i.name)}</u>?`,opts,a:foreign};
+  });
+  [["method","How is the <u>%s</u> made?"],["glass","What's the <u>%s</u> served in?"],["garnish","What's the garnish on the <u>%s</u>?"]].forEach(([f,t])=>{
+    if(!i[f]) return;
+    gens.push(()=>{const o=makeOptions(i[f],all.filter(x=>x[f]&&x[f]!==i[f]).map(x=>x[f]));return o&&{q:t.replace("%s",esc(i.name)),opts:o,a:i[f]}});
+  });
+  (i.qa||[]).forEach(x=>gens.push(()=>({q:esc(x.q),opts:shuffle([x.a,...x.w.slice(0,3)]),a:x.a})));
+  for(const g of shuffle(gens)){const r=g();if(r)return {...r,item:i}}
+  return null;
+}
+function startQuiz(n=10){
+  const p=pool().filter(i=>i.ingredients.length||(i.qa&&i.qa.length));
+  if(!p.length){qz=null;$("#view").innerHTML=`<div class="empty">Pick a category with drinks first.</div>`;return}
+  const qs=[];let last=null,guard=0;
+  while(qs.length<n&&guard++<200){const it=pickWeighted(p,last);const q=genQuestion(it);if(q&&!qs.some(x=>x.q===q.q)){qs.push(q);last=it.id}}
+  qz={qs,idx:0,score:0,answered:false,picked:null,missed:[]};
+  renderQuiz();
+}
+function renderQuiz(){
+  if(!qz){startQuiz();return}
+  if(qz.idx>=qz.qs.length){
+    const pct=Math.round(qz.score/qz.qs.length*100);
+    const missed=uniq(qz.missed);
+    $("#view").innerHTML=`<div class="card" style="text-align:center">
+      <div class="q-meta" style="justify-content:center">Round done</div>
+      <div class="big-score">${qz.score}/${qz.qs.length}</div>
+      <div class="hint" style="margin-top:0">${pct===100?"Flawless. Behind the bar you go.":pct>=80?"Solid. A couple to tighten up.":pct>=50?"Getting there. Run another round.":"Back to the Learn tab for a bit, then go again."}</div>
+      <button class="btn block" id="again" style="margin-top:16px">Another round</button></div>
+      ${missed.length?`<div class="cat-h">Review these</div>`+missed.map(id=>drinkCard(items.find(x=>x.id===id))).join(""):""}`;
+    $("#again").onclick=()=>startQuiz();
+    return;
+  }
+  const q=qz.qs[qz.idx];
+  $("#view").innerHTML=`<div class="card">
+    <div class="q-meta"><span>Question ${qz.idx+1} of ${qz.qs.length}</span><span>${esc(q.item.cat)}</span></div>
+    <div class="bar"><div style="width:${qz.idx/qz.qs.length*100}%"></div></div>
+    <p class="q">${q.q}</p>
+    <div class="opts">${q.opts.map((o,k)=>{
+      let cls="";if(qz.answered){if(o===q.a)cls="ok";else if(k===qz.picked)cls="bad"}
+      return `<button class="opt ${cls}" data-k="${k}" ${qz.answered?"disabled":""}>${esc(o)}</button>`}).join("")}</div>
+    ${qz.answered?`<div class="verdict ${q.opts[qz.picked]===q.a?'ok':'bad'}">${q.opts[qz.picked]===q.a?"¡Eso! Correct.":"Not quite."}</div>`:""}
+  </div>
+  ${qz.answered?drinkCard(q.item)+`<button class="btn block dark" id="nextq">${qz.idx+1<qz.qs.length?"Next question":"See score"}</button>`:""}`;
+  document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+    if(qz.answered) return;
+    qz.picked=+b.dataset.k;qz.answered=true;
+    const ok=q.opts[qz.picked]===q.a; if(ok) qz.score++; else qz.missed.push(q.item.id);
+    record(q.item.id,ok); renderQuiz();
+  });
+  if($("#nextq")) $("#nextq").onclick=()=>{qz.idx++;qz.answered=false;qz.picked=null;renderQuiz();window.scrollTo(0,0)};
+}
+
+/* ---------- EDIT ---------- */
+function bindEditButtons(){document.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>openEditor(b.dataset.edit))}
+function renderEdit(){
+  const p=pool();
+  $("#view").innerHTML=`<div class="card" id="acct"></div>
+    <div class="card">
+      <div class="dname" style="font-size:18px">Your menu</div>
+      <div class="note">Add drinks, fix specs, or fill in measures, glass and garnish once you've seen the house spec sheet. Changes sync to your account on every device.</div>
+      <div class="btns"><button class="btn" id="add">+ Add drink</button></div>
+    </div>
+    <div class="card">${p.length?p.map(i=>`<div class="list-item"><div><b>${esc(i.name)}</b><span class="tag">${esc(i.cat)}</span>${i.spec?'<span class="tag" style="background:#CFEBD8">spec</span>':''}<div class="muted" style="font-size:14px">${esc(i.ingredients.slice(0,4).join(", "))}${i.ingredients.length>4?"…":""}</div></div><button class="btn sm ghost" data-edit="${esc(i.id)}">Edit</button></div>`).join(""):`<div class="empty">Nothing in the selected categories.</div>`}</div>
+    <div class="card">
+      <div class="dname" style="font-size:18px">Backup & reset</div>
+      <div class="note">Copy your menu as text to keep a backup or share it with a colleague, then paste it back in with Import.</div>
+      <div class="btns"><button class="btn sm ghost" id="exp">Copy menu</button><button class="btn sm ghost" id="imp">Import</button></div>
+      <div class="btns"><button class="btn sm ghost" id="rstats">Reset progress</button><button class="btn sm red" id="rmenu">Reset to menu</button></div>
+    </div>`;
+  bindEditButtons();
+  if(window.renderAccount) window.renderAccount($("#acct"));
+  $("#add").onclick=()=>openEditor(null);
+  $("#exp").onclick=async()=>{try{await navigator.clipboard.writeText(JSON.stringify(items));toast("Menu copied")}catch(e){openText("Copy this text",JSON.stringify(items))}};
+  $("#imp").onclick=()=>openImport();
+  $("#rstats").onclick=()=>confirmBox("Reset all quiz progress?",()=>{stats={};persist();renderMastery();toast("Progress reset")});
+  $("#rmenu").onclick=()=>confirmBox("Replace all your edits with the original Cantina menu and the 50 classics?",()=>{items=DEFAULT_ITEMS();persist();renderEdit();renderMastery();toast("Menu restored")});
+}
+function modal(html){$("#layer").innerHTML=`<div class="modal" id="m"><div class="card">${html}</div></div>`;$("#m").onclick=e=>{if(e.target.id==="m")closeModal()}}
+function closeModal(){$("#layer").innerHTML=""}
+function confirmBox(msg,yes){modal(`<div class="dname" style="font-size:18px">${esc(msg)}</div><div class="btns"><button class="btn ghost" id="no">Cancel</button><button class="btn red" id="yes">Yes</button></div>`);$("#no").onclick=closeModal;$("#yes").onclick=()=>{closeModal();yes()}}
+function openText(t,txt){modal(`<div class="dname" style="font-size:18px">${esc(t)}</div><label class="f"><textarea readonly>${esc(txt)}</textarea></label><div class="btns"><button class="btn ghost" id="cl">Close</button></div>`);$("#cl").onclick=closeModal}
+function openImport(){
+  modal(`<div class="dname" style="font-size:18px">Import menu</div><label class="f">Paste menu text<textarea id="impt"></textarea></label><div class="btns"><button class="btn ghost" id="cl">Cancel</button><button class="btn" id="go">Import</button></div>`);
+  $("#cl").onclick=closeModal;
+  $("#go").onclick=()=>{try{const d=JSON.parse($("#impt").value);if(!Array.isArray(d)||!d.every(x=>x.id&&x.name&&Array.isArray(x.ingredients)))throw 0;items=d;persist();closeModal();render();renderMastery();toast("Menu imported")}catch(e){toast("That text isn't a valid menu")}};
+}
+function openEditor(id){
+  const it=id?items.find(x=>x.id===id):{id:"",folder,cat:decks[0]||CATS[0],name:"",price:"",spirit:"",ingredients:[],note:"",spec:"",method:"",glass:"",garnish:""};
+  modal(`<div class="dname" style="font-size:18px">${id?"Edit drink":"New drink"}</div>
+    <label class="f">Name<input id="e-name" value="${esc(it.name)}"></label>
+    <div style="display:flex;gap:10px"><label class="f" style="flex:1">Category<select id="e-cat">${CATS_OF(it.folder||folder).map(c=>`<option ${c===it.cat?"selected":""}>${esc(c)}</option>`).join("")}</select></label>
+    <label class="f" style="flex:1">Price<input id="e-price" value="${esc(it.price)}" placeholder="£12"></label></div>
+    <label class="f">Base spirit<input id="e-spirit" value="${esc(it.spirit)}" placeholder="Tequila Ocho Plata"></label>
+    <label class="f">Ingredients (one per line)<textarea id="e-ing">${esc(it.ingredients.join("\n"))}</textarea></label>
+    <label class="f">Notes (rim, serve, upsell)<input id="e-note" value="${esc(it.note)}"></label>
+    <label class="f">Spec (measures, ice, rim)<textarea id="e-spec" placeholder="50ml Ocho Plata&#10;25ml Cointreau&#10;25ml lime&#10;Shake · rocks glass · cubed ice&#10;Half salt rim, lime wedge">${esc(it.spec)}</textarea></label>
+    <label class="f">Method<input id="e-method" value="${esc(it.method||"")}" placeholder="Shake"></label>
+    <div style="display:flex;gap:10px"><label class="f" style="flex:1">Glass<input id="e-glass" value="${esc(it.glass||"")}" placeholder="Coupe"></label>
+    <label class="f" style="flex:1">Garnish<input id="e-garnish" value="${esc(it.garnish||"")}" placeholder="Lime wheel"></label></div>
+    <div class="btns">${id?`<button class="btn red" id="del">Delete</button>`:""}<button class="btn ghost" id="cl">Cancel</button><button class="btn" id="sv">Save</button></div>`);
+  $("#cl").onclick=closeModal;
+  $("#sv").onclick=()=>{
+    const name=$("#e-name").value.trim(); if(!name){toast("Give it a name");return}
+    const d={...it,name,cat:$("#e-cat").value,price:$("#e-price").value.trim(),spirit:$("#e-spirit").value.trim(),
+      ingredients:$("#e-ing").value.split("\n").map(s=>s.trim()).filter(Boolean),note:$("#e-note").value.trim(),spec:$("#e-spec").value.trim(),
+      method:$("#e-method").value.trim(),glass:$("#e-glass").value.trim(),garnish:$("#e-garnish").value.trim(),folder:it.folder||folder};
+    if(id){items[items.findIndex(x=>x.id===id)]=d}else{d.id="u"+Date.now().toString(36);items.push(d);if(!decks.includes(d.cat)){decks.push(d.cat);renderChips()}}
+    persist();closeModal();render();renderMastery();toast("Saved");
+  };
+  if($("#del")) $("#del").onclick=()=>confirmBox(`Delete ${it.name}?`,()=>{items=items.filter(x=>x.id!==id);persist();render();renderMastery();toast("Deleted")});
+}
+
+/* ---------- Nav ---------- */
+const TABS=[
+ {k:"learn",l:"Learn",i:'<path d="M4 5h11a3 3 0 0 1 3 3v12H7a3 3 0 0 1-3-3z"/><path d="M8 9h6M8 13h6"/>'},
+ {k:"cards",l:"Flashcards",i:'<rect x="3" y="6" width="14" height="13" rx="2"/><path d="M7 3h12a2 2 0 0 1 2 2v12"/>'},
+ {k:"quiz",l:"Quiz",i:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17.5v.1"/>'},
+ {k:"edit",l:"Manage",i:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/>'}
+];
+function renderNav(){
+  $("#nav").innerHTML=TABS.map(t=>`<button class="${tab===t.k?'on':''}" data-k="${t.k}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${t.i}</svg>${t.l}</button>`).join("");
+  $("#nav").querySelectorAll("button").forEach(b=>b.onclick=()=>{tab=b.dataset.k;if(tab==="quiz")qz=null;persist();renderNav();render();window.scrollTo(0,0)});
+}
+function render(){({learn:renderLearn,cards:renderCards,quiz:renderQuiz,edit:renderEdit})[tab]()}
+window.toast=toast;window.modal=modal;window.closeModal=closeModal;
+window.bootApp=(remote)=>{
+  initState(remote); qz=null; fc={item:null,flipped:false,dir:"name"}; closeModal();
+  renderFolders();renderChips();renderNav();renderMastery();render();
+  if(!remote) persist();
+};
+</script>
+
+<script type="module">
+/* ---------- Firebase auth + sync ---------- */
+const V = "13.4.0";
+const gate = document.getElementById("gate");
+const esc = s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+gate.innerHTML = '<div class="spinner"></div>';
+
+let firebaseConfig;
+try { ({ firebaseConfig } = await import("./firebase-config.js")); } catch(e) {}
+if (!firebaseConfig || !firebaseConfig.apiKey || String(firebaseConfig.apiKey).includes("PASTE")) {
+  gate.innerHTML = `<h1 class="gate-h">CANTINA<br>BAR DRILL</h1>
+    <div class="card"><div class="dname" style="font-size:18px">Almost there</div>
+    <div class="note">Firebase isn't connected yet. Paste your project's web config into <b>public/firebase-config.js</b>, then deploy again. The README has the steps.</div></div>`;
+  throw new Error("Firebase config missing");
+}
+
+const [{ initializeApp }, A, F] = await Promise.all([
+  import(`https://www.gstatic.com/firebasejs/${V}/firebase-app.js`),
+  import(`https://www.gstatic.com/firebasejs/${V}/firebase-auth.js`),
+  import(`https://www.gstatic.com/firebasejs/${V}/firebase-firestore.js`)
+]);
+const app = initializeApp(firebaseConfig);
+const auth = A.getAuth(app);
+await A.setPersistence(auth, A.browserLocalPersistence).catch(()=>{});
+let db;
+try { db = F.initializeFirestore(app, { localCache: F.persistentLocalCache({ tabManager: F.persistentMultipleTabManager() }) }); }
+catch(e) { db = F.getFirestore(app); }
+
+/* ---------- Error messages ---------- */
+const ERR = {
+  "auth/invalid-credential":"That email and password don't match.",
+  "auth/wrong-password":"That email and password don't match.",
+  "auth/user-not-found":"That email and password don't match.",
+  "auth/invalid-email":"That doesn't look like a valid email.",
+  "auth/email-already-in-use":"There's already an account with that email. Try signing in, or reset your password.",
+  "auth/weak-password":"Use at least 8 characters.",
+  "auth/missing-password":"Enter your password.",
+  "auth/too-many-requests":"Too many attempts. Wait a few minutes, or reset your password.",
+  "auth/network-request-failed":"No connection. Check your signal and try again.",
+  "auth/popup-closed-by-user":"Google sign-in was closed before it finished.",
+  "auth/popup-blocked":"Your browser blocked the Google pop-up. Allow pop-ups and try again.",
+  "auth/requires-recent-login":"For security, confirm it's you first.",
+  "auth/user-disabled":"This account has been disabled.",
+  "auth/account-exists-with-different-credential":"This email already uses a different sign-in method. Try email and password."
+};
+const errText = e => ERR[e && e.code] || "Something went wrong. Please try again.";
+
+/* ---------- Sign-in screens ---------- */
+let mode = "signin", flash = null;
+function gateView(){
+  const title = {signin:"Sign in", signup:"Create account", reset:"Reset password"}[mode];
+  gate.innerHTML = `<h1 class="gate-h">CANTINA<br>BAR DRILL</h1>
+  <div class="sub" style="margin:6px 0 4px">Corrochio's Cantina · menu trainer</div>
+  <div class="card">
+    <div class="dname" style="font-size:20px">${title}</div>
+    <form id="af" novalidate>
+      ${mode==="signup"?`<label class="f">Name<input id="a-name" autocomplete="name" required></label>`:""}
+      <label class="f">Email<input id="a-email" type="email" autocomplete="email" inputmode="email" required></label>
+      ${mode!=="reset"?`<label class="f">Password<input id="a-pass" type="password" autocomplete="${mode==="signup"?"new-password":"current-password"}" minlength="8" required></label>`:""}
+      ${mode==="signup"?`<label class="f">Confirm password<input id="a-pass2" type="password" autocomplete="new-password" required></label>`:""}
+      <button class="btn block dark" style="margin-top:16px" id="a-go">${mode==="reset"?"Send reset link":title}</button>
+    </form>
+    ${mode==="signin"?`<div style="margin-top:12px;text-align:right"><button class="linkbtn" data-m="reset">Forgot password?</button></div>`:""}
+    ${mode!=="reset"?`<div class="or">or</div><button class="btn block ghost" id="a-google">
+      <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.9 6.1C12.5 13.6 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.2 5.3-4.6 7l7.3 5.6c4.3-3.9 7-9.8 7-17.1z"/><path fill="#FBBC05" d="M10.6 28.6c-.5-1.4-.8-3-.8-4.6s.3-3.2.8-4.6l-7.9-6.1C1 16.6 0 20.2 0 24s1 7.4 2.7 10.7l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.3-5.6c-2.1 1.4-4.9 2.3-8.6 2.3-6.2 0-11.5-4.1-13.4-9.8l-7.9 6.1C6.6 42.6 14.6 48 24 48z"/></svg>
+      Continue with Google</button>`:""}
+    ${flash?`<div class="msg ${flash.t}">${esc(flash.m)}</div>`:""}
+  </div>
+  <div style="text-align:center;margin-top:8px">
+    ${mode==="signin"?`New here? <button class="linkbtn" data-m="signup">Create an account</button>`:`<button class="linkbtn" data-m="signin">Back to sign in</button>`}
+  </div>`;
+  gate.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{
+    const em=document.getElementById("a-email")?.value; mode=b.dataset.m; flash=null; gateView();
+    if(em) document.getElementById("a-email").value=em;
+  });
+  document.getElementById("af").onsubmit = submit;
+  const g=document.getElementById("a-google"); if(g) g.onclick=google;
+}
+function busy(on){const b=document.getElementById("a-go"); if(b){b.disabled=on;b.style.opacity=on?.6:1}}
+function show(t,m){flash={t,m}; const em=document.getElementById("a-email")?.value; gateView(); if(em) document.getElementById("a-email").value=em}
+
+async function submit(e){
+  e.preventDefault();
+  const email=document.getElementById("a-email").value.trim();
+  const pass=document.getElementById("a-pass")?.value||"";
+  if(!email) return show("err","Enter your email.");
+  busy(true);
+  try{
+    if(mode==="reset"){
+      try{ await A.sendPasswordResetEmail(auth,email); }
+      catch(err){ if(!["auth/user-not-found"].includes(err.code)) throw err; }
+      mode="signin"; return show("ok","If there's an account for that email, a reset link is on its way. Check your spam folder too.");
+    }
+    if(mode==="signup"){
+      const name=document.getElementById("a-name").value.trim();
+      if(pass.length<8) return show("err","Use at least 8 characters.");
+      if(pass!==document.getElementById("a-pass2").value) return show("err","The passwords don't match.");
+      const cred=await A.createUserWithEmailAndPassword(auth,email,pass);
+      if(name) await A.updateProfile(cred.user,{displayName:name}).catch(()=>{});
+      A.sendEmailVerification(cred.user).catch(()=>{});
+      return;
+    }
+    await A.signInWithEmailAndPassword(auth,email,pass);
+  }catch(err){ show("err",errText(err)); }
+  finally{ busy(false); }
+}
+async function google(){
+  try{ await A.signInWithPopup(auth,new A.GoogleAuthProvider()); }
+  catch(err){
+    if(err.code==="auth/popup-blocked"||err.code==="auth/operation-not-supported-in-this-environment"){
+      try{ await A.signInWithRedirect(auth,new A.GoogleAuthProvider()); return; }catch(e2){ err=e2; }
+    }
+    if(err.code!=="auth/cancelled-popup-request") show("err",errText(err));
+  }
+}
+A.getRedirectResult(auth).catch(err=>show("err",errText(err)));
+
+/* ---------- Cloud sync ---------- */
+let user=null, saveTimer=null, pending=null, syncState="ok";
+const userDoc = () => F.doc(db,"users",user.uid);
+function setSync(s){ syncState=s; const el=document.getElementById("sync"); if(el) el.outerHTML=syncHTML(); }
+function syncHTML(){
+  const t={ok:"Synced",saving:"Saving…",off:"Offline: changes will sync when you reconnect"}[syncState];
+  return `<span id="sync" class="sync ${syncState==="saving"?"saving":syncState==="off"?"off":""}"><i></i>${t}</span>`;
+}
+window.cloudSave = data => {
+  if(!user) return;
+  pending = data; setSync("saving");
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(flush, 700);
+};
+async function flush(){
+  if(!user||!pending) return;
+  const data = JSON.parse(JSON.stringify(pending)); pending=null;
+  try{
+    await F.setDoc(userDoc(), {...data, updatedAt:F.serverTimestamp()});
+    setSync(navigator.onLine===false?"off":"ok");
+  }catch(err){ console.error(err); setSync("off"); }
+}
+addEventListener("online",()=>setSync("ok"));
+addEventListener("offline",()=>setSync("off"));
+addEventListener("pagehide",()=>{ if(pending) flush(); });
+
+/* ---------- Account panel (inside the Edit tab) ---------- */
+window.renderAccount = el => {
+  if(!user||!el) return;
+  const isPw = user.providerData.some(p=>p.providerId==="password");
+  const isG = user.providerData.some(p=>p.providerId==="google.com");
+  el.innerHTML = `<div class="row"><div class="dname" style="font-size:18px">Account</div>${syncHTML()}</div>
+    <div style="margin-top:6px"><b>${esc(user.displayName||"")}</b>${user.displayName?"<br>":""}<span class="muted">${esc(user.email||"")}</span>
+    ${isG?'<span class="tag">Google</span>':""}</div>
+    ${isPw&&!user.emailVerified?`<div class="msg info">Please verify your email so you can always recover your account. <button class="linkbtn" id="ac-ver">Resend link</button></div>`:""}
+    <div class="btns">${isPw?`<button class="btn sm ghost" id="ac-pw">Change password</button>`:""}<button class="btn sm dark" id="ac-out">Sign out</button></div>
+    <div style="margin-top:12px"><button class="linkbtn" id="ac-del" style="color:var(--red)">Delete my account</button></div>`;
+  const m = window; // helpers from the app script
+  el.querySelector("#ac-out").onclick = async()=>{ await flush(); await A.signOut(auth); };
+  const ver=el.querySelector("#ac-ver"); if(ver) ver.onclick=async()=>{try{await A.sendEmailVerification(user);m.toast("Verification email sent")}catch(e){m.toast(errText(e))}};
+  const pw=el.querySelector("#ac-pw"); if(pw) pw.onclick=async()=>{try{await A.sendPasswordResetEmail(auth,user.email);m.toast("Password link sent to your email")}catch(e){m.toast(errText(e))}};
+  el.querySelector("#ac-del").onclick = ()=>deleteFlow(isPw);
+};
+function deleteFlow(isPw){
+  const m=window;
+  m.modal(`<div class="dname" style="font-size:18px">Delete your account?</div>
+    <div class="note">This permanently removes your account, your progress and any drinks you've edited. It can't be undone.</div>
+    ${isPw?`<label class="f">Confirm with your password<input id="d-pass" type="password" autocomplete="current-password"></label>`:`<div class="note">You'll be asked to confirm with Google.</div>`}
+    <div id="d-msg"></div>
+    <div class="btns"><button class="btn ghost" id="d-no">Cancel</button><button class="btn red" id="d-yes">Delete forever</button></div>`);
+  document.getElementById("d-no").onclick=m.closeModal;
+  document.getElementById("d-yes").onclick=async()=>{
+    const msg=document.getElementById("d-msg");
+    try{
+      if(isPw) await A.reauthenticateWithCredential(user, A.EmailAuthProvider.credential(user.email, document.getElementById("d-pass").value));
+      else await A.reauthenticateWithPopup(user, new A.GoogleAuthProvider());
+      clearTimeout(saveTimer); pending=null;
+      await F.deleteDoc(userDoc());
+      await A.deleteUser(user);
+      m.closeModal();
+    }catch(e){ msg.innerHTML=`<div class="msg err">${esc(errText(e))}</div>`; }
+  };
+}
+
+/* ---------- Auth state ---------- */
+A.onAuthStateChanged(auth, async u => {
+  user = u;
+  if(!u){
+    document.body.classList.add("locked"); mode="signin"; gateView(); return;
+  }
+  gate.innerHTML='<div class="spinner"></div>';
+  let remote=null;
+  try{ const snap=await F.getDoc(userDoc()); if(snap.exists()) remote=snap.data(); }
+  catch(err){
+    console.error(err);
+    // Never start with blank data offline: it could overwrite your saved progress
+    gate.innerHTML=`<h1 class="gate-h">CANTINA<br>BAR DRILL</h1><div class="card"><div class="dname" style="font-size:18px">Can't load your progress</div>
+      <div class="note">You seem to be offline. Connect once on this device and your data will be available offline after that.</div>
+      <div class="btns"><button class="btn sm ghost" id="g-out">Sign out</button><button class="btn sm dark" id="g-retry">Try again</button></div></div>`;
+    document.getElementById("g-retry").onclick=()=>location.reload();
+    document.getElementById("g-out").onclick=()=>A.signOut(auth);
+    return;
+  }
+  document.body.classList.remove("locked");
+  window.bootApp(remote);
+});
+</script>
+</body>
+</html>
