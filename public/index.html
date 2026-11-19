@@ -156,8 +156,8 @@ body:not(.locked) #gate{display:none}
 /* --- Drink card content --- */
 .drink-head{display:flex;align-items:flex-start;gap:var(--s-3)}
 .drink-head .grow{min-width:0}
-.price{font:700 var(--fs-lg)/1.2 var(--f-label);white-space:nowrap;padding-top:2px}
 .drink-head .price,.m-head .price{white-space:normal;text-align:right;max-width:45%}
+.price{font:700 var(--fs-lg)/1.2 var(--f-label);white-space:nowrap;padding-top:2px}
 .spirit{font:italic 600 var(--fs-md)/1.2 var(--f-label);color:var(--c-accent);margin-top:var(--s-1)}
 .ings{display:flex;flex-wrap:wrap;gap:var(--s-1) var(--s-2);margin:var(--s-3) 0 0;padding:0;list-style:none}
 .ings li,.ings>span{background:var(--c-sunken);border-radius:var(--r-sm);padding:var(--s-1) var(--s-2);font-size:var(--fs-sm)}
@@ -169,6 +169,49 @@ body:not(.locked) #gate{display:none}
 .spec-label{display:block;font:700 var(--fs-sm)/1.45 var(--f-label);color:var(--c-muted);text-transform:uppercase;letter-spacing:.04em}
 .card-foot{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s-2) var(--s-4);margin-top:var(--s-3)}
 
+/* --- Bar mode --- */
+.ticket{background:var(--c-ink);color:var(--c-bg);border-radius:var(--r-lg);padding:var(--s-4);margin-top:var(--s-4);box-shadow:var(--sh-md)}
+.ticket .eyebrow,.ticket .meter-label{color:inherit;opacity:.85}
+.ticket .link{color:var(--c-brand)}
+.ticket .msg{color:var(--c-ink);margin-top:var(--s-3)}
+.ticket-name{font:400 var(--fs-2xl)/1.1 var(--f-display);margin-top:var(--s-2)}
+.variant{display:inline-block;font:700 var(--fs-md)/1 var(--f-label);background:var(--c-brand);color:var(--c-on-brand);border-radius:var(--r-pill);padding:6px 12px;vertical-align:middle}
+.bar-step{border:0;padding:0;margin:var(--s-5) 0 0;min-width:0}
+.step-title{font:italic 700 var(--fs-xl)/1 var(--f-label);padding:0;margin-bottom:var(--s-2)}
+.picks{display:flex;flex-wrap:wrap;gap:var(--s-2)}
+.pick{min-height:var(--tap);border:var(--bw) solid var(--c-line);border-radius:var(--r-md);background:var(--c-surface);padding:var(--s-2) var(--s-3);font:600 var(--fs-sm)/1.25 var(--f-body);text-align:left}
+.pick[aria-pressed="true"]{background:var(--c-ink);color:var(--c-bg)}
+.rail-h{font:700 var(--fs-sm)/1.2 var(--f-label);text-transform:uppercase;letter-spacing:.05em;color:var(--c-muted);margin:var(--s-4) 0 var(--s-2)}
+.buildlist{list-style:none;margin:0;padding:var(--s-2) var(--s-3);background:var(--c-surface);border:var(--bw) dashed var(--c-line);border-radius:var(--r-md)}
+.bl-row{display:flex;align-items:center;gap:var(--s-2);padding:var(--s-1) 0}
+.bl-row+.bl-row{border-top:1px solid var(--c-line-soft)}
+.bl-row .grow{font-weight:600;font-size:var(--fs-sm)}
+.amt{width:auto;min-width:112px;min-height:var(--tap);padding:var(--s-1) var(--s-2)}
+.amt-fixed{font:700 var(--fs-md) var(--f-label);min-width:112px;text-align:center}
+.checks{list-style:none;margin:var(--s-3) 0 0;padding:0}
+.checks li{display:flex;gap:var(--s-3);align-items:flex-start;padding:var(--s-2) 0;border-top:1px solid var(--c-line-soft)}
+.checks .ck{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center}
+.checks .ck svg{width:16px;height:16px}
+.checks li.ok .ck{background:var(--c-success);color:var(--c-on-success)}
+.checks li.bad .ck{background:var(--c-danger);color:var(--c-on-danger)}
+.ck-detail{display:block;font-size:var(--fs-sm);color:var(--c-muted)}
+.checks li.bad .ck-detail{color:var(--c-ink)}
+.verdict.panel-title svg{width:24px;height:24px}
+/* --- Families --- */
+body.fam-mode .chips{display:none}
+.template{background:var(--c-sunken);border-radius:var(--r-lg);padding:var(--s-4);margin-top:var(--s-3)}
+.tpl-build{font:700 var(--fs-lg)/1.3 var(--f-label);margin-top:var(--s-1)}
+.rules{margin:var(--s-1) 0 0;padding-left:1.1em;font-size:var(--fs-sm)}
+.rules li+li{margin-top:var(--s-1)}
+.member{border:var(--bw) solid var(--c-line);border-radius:var(--r-md);background:var(--c-surface);margin-top:var(--s-2)}
+.member summary{list-style:none;cursor:pointer;min-height:var(--tap);padding:var(--s-3) var(--s-4) var(--s-3) 40px;position:relative;border-radius:var(--r-md)}
+.member summary::-webkit-details-marker{display:none}
+.member summary::before{content:"";position:absolute;left:var(--s-4);top:22px;width:8px;height:8px;border-right:2.5px solid var(--c-ink);border-bottom:2.5px solid var(--c-ink);transform:rotate(-45deg);transition:transform var(--dur) var(--ease)}
+.member[open] summary::before{transform:rotate(45deg);top:19px}
+.m-head{display:flex;justify-content:space-between;gap:var(--s-3);align-items:baseline}
+.m-name{font:400 var(--fs-lg)/1.2 var(--f-display)}
+.m-diff{display:block;font-size:var(--fs-sm);margin-top:var(--s-1);color:var(--c-ink)}
+.member .card{margin:0 var(--s-2) var(--s-2);box-shadow:none}
 /* --- Mastery meter (3 segments + text for AT) --- */
 .mastery{display:inline-flex;gap:3px;vertical-align:middle}
 .mastery i{width:10px;height:10px;border-radius:50%;border:2px solid var(--c-meter-off);display:block}
@@ -281,22 +324,6 @@ body.modal-open{overflow:hidden}
 .list-item{display:flex;justify-content:space-between;align-items:center;gap:var(--s-3);padding:var(--s-2) 0;border-bottom:var(--bw) dashed var(--c-line-soft)}
 .list-item:last-child{border-bottom:0}
 .empty{text-align:center;padding:var(--s-6) var(--s-3);color:var(--c-muted)}
-
-/* --- Families --- */
-body.fam-mode .chips{display:none}
-.template{background:var(--c-sunken);border-radius:var(--r-lg);padding:var(--s-4);margin-top:var(--s-3)}
-.tpl-build{font:700 var(--fs-lg)/1.3 var(--f-label);margin-top:var(--s-1)}
-.rules{margin:var(--s-1) 0 0;padding-left:1.1em;font-size:var(--fs-sm)}
-.rules li+li{margin-top:var(--s-1)}
-.member{border:var(--bw) solid var(--c-line);border-radius:var(--r-md);background:var(--c-surface);margin-top:var(--s-2)}
-.member summary{list-style:none;cursor:pointer;min-height:var(--tap);padding:var(--s-3) var(--s-4) var(--s-3) 40px;position:relative;border-radius:var(--r-md)}
-.member summary::-webkit-details-marker{display:none}
-.member summary::before{content:"";position:absolute;left:var(--s-4);top:22px;width:8px;height:8px;border-right:2.5px solid var(--c-ink);border-bottom:2.5px solid var(--c-ink);transform:rotate(-45deg);transition:transform var(--dur) var(--ease)}
-.member[open] summary::before{transform:rotate(45deg);top:19px}
-.m-head{display:flex;justify-content:space-between;gap:var(--s-3);align-items:baseline}
-.m-name{font:400 var(--fs-lg)/1.2 var(--f-display)}
-.m-diff{display:block;font-size:var(--fs-sm);margin-top:var(--s-1);color:var(--c-ink)}
-.member .card{margin:0 var(--s-2) var(--s-2);box-shadow:none}
 </style>
 </head>
 <body class="locked">
@@ -449,6 +476,11 @@ const FOLDERS={
  extras:{name:"Extras",cats:["Brunch","House classics","Off-menu"]},
  classics:{name:"Top 50",cats:["Whiskey","Gin","Rum & cachaça","Agave","Brandy & pisco","Vodka","Aperitivo & wine"]}
 };
+let folder = "cantina";
+const CATS_OF=f=>FOLDERS[f].cats;
+Object.defineProperty(window,"CATS",{get:()=>CATS_OF(folder)});
+
+
 /* ---------- House specs (Corrochio's Cocktail Specs, Nov 26) ---------- */
 const PB_ORANGE="50ml ORANGE prebatch (35 Ocho Blanco + 15 Cointreau)";
 const PB_WHITE="50ml WHITE prebatch (35 Pensador mezcal + 15 Cointreau)";
@@ -552,10 +584,6 @@ const EXTRAS=[
 MENU.push(...COCINA,...EXTRAS);
 const DATA_VERSION=2;
 
-let folder = "cantina";
-const CATS_OF=f=>FOLDERS[f].cats;
-Object.defineProperty(window,"CATS",{get:()=>CATS_OF(folder)});
-
 /* ---------- Drink families (Cantina) ---------- */
 const FAMILIES={cantina:[
  {id:"marg",name:"Margarita family",
@@ -610,6 +638,79 @@ const FAMILIES={cantina:[
 const FAM_OF={};
 for(const f in FAMILIES) FAMILIES[f].forEach(fam=>fam.members.forEach(([id,diff])=>{FAM_OF[id]={fam,diff}}));
 
+/* ---------- Bar mode: structured house builds ---------- */
+// unit: ml | top | pinch | side | whole | dash | drop | count
+const RAIL={
+ "Spirits & prebatches":{
+  ochoBlanco:["Ocho Blanco tequila","ml"],ochoRepo:["Ocho Reposado","ml"],pensador:["Pensador mezcal","ml"],tequileno:["El Tequileño Blanco","ml"],
+  pbOrange:["ORANGE prebatch (Ocho + Cointreau)","ml"],pbWhite:["WHITE prebatch (mezcal + Cointreau)","ml"],pbPalomita:["Palomita prebatch (Ojo de Dios + King's Ginger)","ml"],
+  pbCoqueta:["Coqueta prebatch (gin, elderflower, Lillet, Campari)","ml"],pbCelso:["Celso prebatch (Ocho, mezcal, Cointreau)","ml"],pbBella:["Bellanova prebatch (mezcal + smoked saline)","ml"],
+  pbSangrita:["Sangrita prebatch (sangrita + saline)","ml"],finlandia:["Finlandia vodka","ml"],evan:["Evan Williams bourbon","ml"],beefeater:["Beefeater gin","ml"],eldorado:["El Dorado 3yr rum","ml"],
+  aperol:["Aperol","ml"],lyresAgave:["Lyre's Agave Blanco 0%","ml"],lyresSpritz:["Lyre's Italian Spritz 0%","ml"],livener:["Three Spirit Livener","ml"]},
+ "Liqueurs & vermouth":{cointreau:["Cointreau","ml"],kahlua:["Kahlúa","ml"],campari:["Campari","ml"],cocchi:["Cocchi vermouth","ml"]},
+ "Juices":{lime:["Lime juice","ml"],grapefruit:["Grapefruit juice","ml"],orange:["Orange juice","ml"],pineapple:["Pineapple juice","ml"],clamato:["Clamato","ml"],cafeOlla:["Café de olla","ml"],acid:["Acid blend","ml"],water:["Water","ml"]},
+ "Syrups & cordials":{gomme:["Gomme","ml"],agave:["Agave syrup","ml"],jalapeno:["Jalapeño syrup","ml"],habanero:["Habanero syrup","ml"],horchata:["Horchata syrup","ml"],mezcalSour:["Mezcal sour syrup","ml"],
+  cordial:["Raspberry/cucumber/dill cordial","ml"],demerara:["Demerara syrup","ml"],sirenita:["Sirenita premix","ml"]},
+ "Tops & mixers":{ting:["Ting","top"],soda:["Soda","top"],gingerBeer:["Ginger beer","top"],tonic:["Tonic","top"],mexCoke:["Mexican Coke","top"],sirentiaMix:["Sirentia mix","top"],beer:["Bottled beer","side"]},
+ "Bitters, sauces & extras":{angostura:["Angostura bitters","dash"],orangeBitters:["Orange bitters","dash"],maggi:["Maggi","dash"],worcestershire:["Worcestershire","dash"],yucateco:["Yucateco habanero sauce","ml"],
+  achiote:["Achiote oil","drop"],eggWhite:["Egg white","count"],salt:["Salt","pinch"],mint:["Mint leaves","count"],limeWedges:["Lime wedges","count"],freshLime:["Whole lime, squeezed in front of the guest","whole"]}
+};
+const ING={};for(const g in RAIL)for(const k in RAIL[g])ING[k]={label:RAIL[g][k][0],unit:RAIL[g][k][1],group:g};
+const AMOUNTS={ml:[5,7,10,15,20,25,30,35,40,45,50,60,70,100],dash:[1,2,3,4,5,6],drop:[1,2,3,4,5,6],count:[1,2,3,4,5,6,8]};
+const FIXED={top:"Top",pinch:"Pinch",side:"On the side",whole:"1 lime"};
+const fmtAmt=(k,v)=>{const u=ING[k].unit;if(FIXED[u])return FIXED[u];if(u==="ml")return v+"ml";if(u==="dash")return v+(v==1?" dash":" dashes");if(u==="drop")return v+(v==1?" drop":" drops");return String(v)};
+const GLASSES=["Coupette","Rocks","Highball","Wine glass","Clay vaso","Half beer stein"];
+const METHODS=["Build","Shake","Shake & double strain","Dry shake, wet shake, double strain","Stir"];
+const RIMS=["No rim","Half rock salt","Half Tajín","Half pink salt","Full pink salt","Full Tajín","Full smoked salt","Full Tajín + sugar","Full chamoy + Tajín","Half charred tortilla salt","Full charred tortilla salt","Full toasted coconut & Tajín sugar","Maldon rock salt","Tamarind + chamoy + candied sesame"];
+const GARNISHES=["None","Dehydrated lime wheel","Dehydrated grapefruit slice","Dehydrated orange slice","Fresh grapefruit slice","Fresh orange slice","Hibiscus syrup inside the glass","Cucumber twirl","3 coffee beans","Whole dried red chilli","Dried hibiscus flower","Citrus half wheels fanned on sticks","Wooden stirrer, no straw","Tamarind straw","Pineapple skewer & cecina al pastor","Fish chicharrón & oyster dressing (kitchen)","Duro with prawn ceviche (kitchen)","Mint sprig","Orange twist","Orange peel","Cinnamon powder"];
+
+const B=(glass,method,rim,garnish,ings)=>({glass:[].concat(glass),method,rim,garnish,ings});
+const MICHE_I={clamato:50,lime:25,maggi:4,worcestershire:3,yucateco:5,beer:1};
+const BUILD={
+ margarita:{classic:B(["Coupette","Rocks"],"Shake","Half rock salt","None",{pbOrange:50,lime:25,gomme:7}),
+            spicy:B(["Coupette","Rocks"],"Shake","Half Tajín","None",{pbOrange:50,lime:25,jalapeno:7})},
+ mezcalmarg:{classic:B(["Coupette","Rocks"],"Shake","Full pink salt","None",{pbWhite:50,lime:25,gomme:7}),
+             spicy:B(["Coupette","Rocks"],"Shake","Full Tajín","None",{pbWhite:50,lime:25,jalapeno:7})},
+ tommys:{"":B("Rocks","Shake & double strain","No rim","None",{ochoBlanco:50,lime:25,agave:15})},
+ smokeytommys:{"":B("Rocks","Shake & double strain","Full smoked salt","None",{pensador:40,lime:25,agave:15})},
+ mezcalita:{"":B("Rocks","Shake","Full Tajín","Hibiscus syrup inside the glass",{pbWhite:50,lime:10,pineapple:10,jalapeno:10})},
+ palomita:{"":B("Rocks","Shake","Full Tajín + sugar","Dehydrated grapefruit slice",{pbPalomita:50,lime:20,grapefruit:15,agave:10})},
+ coqueta:{"":B("Highball","Build","No rim","Cucumber twirl",{pbCoqueta:70,cordial:15,soda:1})},
+ jaliscomule:{"":B("Highball","Build","No rim","Dehydrated lime wheel",{ochoRepo:50,lime:20,gingerBeer:1})},
+ espresso:{tequila:B("Coupette","Dry shake, wet shake, double strain","No rim","3 coffee beans",{ochoBlanco:40,kahlua:20,cafeOlla:50}),
+           vodka:B("Coupette","Dry shake, wet shake, double strain","No rim","3 coffee beans",{finlandia:40,kahlua:20,cafeOlla:50})},
+ palomafresca:{"":B("Highball","Shake","Full pink salt","Fresh grapefruit slice",{lyresAgave:40,livener:15,grapefruit:40,lime:15,gomme:10,ting:1})},
+ margcero:{classic:B("Rocks","Shake","Half pink salt","Dehydrated lime wheel",{lyresAgave:35,lime:25,agave:10,pineapple:15}),
+           spicy:B("Rocks","Shake","Half Tajín","Dehydrated lime wheel",{lyresAgave:35,lime:25,agave:10,pineapple:15,jalapeno:10})},
+ aperolcero:{"":B("Wine glass","Build","No rim","Fresh orange slice",{lyresSpritz:50,soda:1})},
+ cantarito:{"":B("Clay vaso","Build","Full chamoy + Tajín","Citrus half wheels fanned on sticks",{orange:20,grapefruit:20,lime:20,gomme:5,salt:1,ting:1})},
+ michelada:{"Clásica":B("Half beer stein","Build","Full Tajín","Wooden stirrer, no straw",MICHE_I)},
+ "k-celso":{"":B("Rocks","Shake","Full toasted coconut & Tajín sugar","None",{pbCelso:25,lime:10,horchata:15,pineapple:25})},
+ "k-bellanova":{"":B("Coupette","Dry shake, wet shake, double strain","No rim","Dried hibiscus flower",{pbBella:40,lime:25,mezcalSour:25,eggWhite:1})},
+ "k-vampirito":{"":B("Highball","Build","Full Tajín","Fresh orange slice",{ochoBlanco:50,pbSangrita:50,orange:25,lime:25,ting:1})},
+ "k-diabla":{tequila:B("Rocks","Shake","Half charred tortilla salt","Whole dried red chilli",{ochoBlanco:40,cointreau:10,lime:25,habanero:10,agave:10}),
+             mezcal:B("Rocks","Shake","Full charred tortilla salt","Whole dried red chilli",{pensador:40,cointreau:10,lime:25,habanero:10,agave:10})},
+ "k-celsocero":{"":B("Rocks","Shake","Full toasted coconut & Tajín sugar","Dehydrated lime wheel",{pineapple:25,lime:10,horchata:15,water:30})},
+ "k-m-dulce":{"":B("Half beer stein","Build","Tamarind + chamoy + candied sesame","Tamarind straw",{sirenita:70,lime:25,maggi:4,worcestershire:3,yucateco:5,beer:1})},
+ "k-m-michilanga":{"":B("Half beer stein","Build","Full Tajín","Pineapple skewer & cecina al pastor",{...MICHE_I,pineapple:5,achiote:5})},
+ "k-m-vallarta":{"":B("Half beer stein","Build","Full Tajín","Fish chicharrón & oyster dressing (kitchen)",MICHE_I)},
+ "k-m-micheviche":{"":B("Half beer stein","Build","Full Tajín","Duro with prawn ceviche (kitchen)",MICHE_I)},
+ "x-solmexico":{"":B("Highball","Build","No rim","Dehydrated orange slice",{aperol:40,acid:10,pineapple:30,gomme:5,tonic:1})},
+ "x-sirentia":{"":B("Highball","Build","No rim","Dehydrated grapefruit slice",{pensador:40,sirentiaMix:1})},
+ "x-cafehorchata":{"":B("Highball","Shake","No rim","Cinnamon powder",{horchata:50,cafeOlla:100})},
+ "x-oldfashioned":{"":B("Rocks","Build","No rim","Orange twist",{evan:50,angostura:3,orangeBitters:3,demerara:10})},
+ "x-negroni":{"":B("Rocks","Build","No rim","Orange peel",{beefeater:25,campari:25,cocchi:25})},
+ "x-mojito":{"":B("Highball","Build","No rim","Mint sprig",{eldorado:50,limeWedges:2,mint:5,lime:20,gomme:10})},
+ "x-paloma":{"":B("Highball","Shake","Full pink salt","Dehydrated grapefruit slice",{ochoBlanco:50,grapefruit:25,lime:10,agave:10,ting:1})},
+ "x-cantarito":{"":B("Clay vaso","Build","Full chamoy + Tajín","Citrus half wheels fanned on sticks",{ochoBlanco:50,orange:20,grapefruit:20,lime:20,gomme:5,salt:1,ting:1})},
+ "x-vampiritocero":{"":B("Highball","Build","Full Tajín","Fresh orange slice",{pbSangrita:50,orange:25,lime:25,ting:1})},
+ "x-batanga":{"":B("Highball","Build","Maldon rock salt","None",{tequileno:50,freshLime:1,salt:1,mexCoke:1})}
+};
+// same spec, different menu
+Object.assign(BUILD,{ochomarg:BUILD.margarita,ochotommys:BUILD.tommys,"k-margarita":BUILD.margarita,"k-mezcalmarg":BUILD.mezcalmarg,"k-tommys":BUILD.tommys,"k-smokey":BUILD.smokeytommys,
+ "k-coqueta":BUILD.coqueta,"k-palomita":BUILD.palomita,"k-mezcalita":BUILD.mezcalita,"k-espresso":{tequila:BUILD.espresso.tequila},"k-palomafresca":BUILD.palomafresca,
+ "k-margcero":BUILD.margcero,"k-aperolcero":BUILD.aperolcero,"k-cantaritocero":BUILD.cantarito,"k-m-clasica":BUILD.michelada});
+
 /* ---------- Storage (per-browser, safe) ---------- */
 function load(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
@@ -632,8 +733,9 @@ function initState(remote){
   if(!FOLDERS[folder]) folder="cantina";
   const DEF={cantina:["Cocktails","Happy hour","Shots"],cocina:["Clásicos","De la casa","Happy hour","Low & no"]};
   for(const k in FOLDERS) if(!Array.isArray(decksBy[k])||!decksBy[k].length) decksBy[k]=DEF[k]||[...FOLDERS[k].cats];
-  if(!["learn","cards","quiz","edit"].includes(tab)) tab="learn";
+  if(!["learn","cards","quiz","bar","edit"].includes(tab)) tab="learn";
 }
+// Adds new drinks and fills in house specs without overwriting anything the user edited
 function upgradeItems(){
   const byId=new Map(items.map(i=>[i.id,i]));
   for(const d of DEFAULT_ITEMS()){
@@ -732,7 +834,7 @@ function renderFolders(){
   $("#folders").innerHTML=Object.entries(FOLDERS).map(([k,f])=>`<button type="button" data-f="${k}" aria-pressed="${folder===k}">${esc(f.name)}</button>`).join("");
   $("#folders").querySelectorAll("button").forEach(b=>b.onclick=()=>{
     if(folder===b.dataset.f)return;
-    folder=b.dataset.f;qz=null;fc.item=null;learnQ="";persist();renderFolders();renderChips();renderMastery();render();
+    folder=b.dataset.f;qz=null;fc.item=null;learnQ="";persist();bar=null;renderFolders();renderChips();renderMastery();render();
   });
 }
 function renderChips(){
@@ -782,18 +884,18 @@ function renderLearn(){
   const hasFam=!!FAMILIES[folder];
   document.body.classList.toggle("fam-mode",!!famMode());
   $("#main").innerHTML=`<h2 class="sr-only">Learn</h2>
+    ${hasFam?`<div class="seg" role="group" aria-label="Arrange drinks" style="margin-top:var(--s-3)">
+      <button type="button" data-lm="fam" aria-pressed="${learnMode==="fam"}">By family</button>
+      <button type="button" data-lm="cat" aria-pressed="${learnMode==="cat"}">By category</button></div>`:""}
     <div class="search" role="search">
       ${ICON.search}
       <label for="q" class="sr-only">Search drinks or ingredients</label>
       <input id="q" type="search" placeholder="Search drinks or ingredients" autocomplete="off" value="${esc(learnQ)}">
     </div>
-    ${hasFam?`<div class="seg" role="group" aria-label="Arrange drinks" style="margin-top:var(--s-3)">
-      <button type="button" data-lm="fam" aria-pressed="${learnMode==="fam"}">By family</button>
-      <button type="button" data-lm="cat" aria-pressed="${learnMode==="cat"}">By category</button></div>`:""}
     <p class="lede" style="margin-top:var(--s-3)">${famMode()?"Learn the base build once, then only what changes. Tap a drink for its full spec.":"The dots fill as you answer correctly. Three right in a row and a drink counts as mastered."}</p>
     <div id="results"></div>`;
-  let t;$("#q").oninput=e=>{learnQ=e.target.value;renderResults();clearTimeout(t);t=setTimeout(()=>{const r=$("#results");if(r)announce(r.dataset.count+(r.dataset.count==="1"?" result":" results"))},500)};
   $("#main").querySelectorAll("[data-lm]").forEach(b=>b.onclick=()=>{learnMode=b.dataset.lm;save("cbd_learnmode",learnMode);renderLearn();$(`[data-lm="${learnMode}"]`).focus()});
+  let t;$("#q").oninput=e=>{learnQ=e.target.value;renderResults();clearTimeout(t);t=setTimeout(()=>{const r=$("#results");if(r)announce(r.dataset.count+(r.dataset.count==="1"?" result":" results"))},500)};
   renderResults();
 }
 function renderFamilies(q){
@@ -809,7 +911,7 @@ function renderFamilies(q){
     </section>`;
   });
   r.dataset.count=count;
-  r.innerHTML=(h||`<p class="empty">Nothing matches "${esc(learnQ)}".</p>`)+`<p class="lede" style="margin-top:var(--s-5)">Beer, wine, softs and food are under <button type="button" class="link" data-lm2>By category</button>.</p>`;
+  r.innerHTML=(h||`<p class="empty">Nothing matches “${esc(learnQ)}”.</p>`)+`<p class="lede" style="margin-top:var(--s-5)">Beer, wine, softs and food are under <button type="button" class="link" data-lm2>By category</button>.</p>`;
   r.querySelector("[data-lm2]").onclick=()=>{learnMode="cat";save("cbd_learnmode",learnMode);renderLearn()};
   bindEdit(r);
 }
@@ -898,6 +1000,7 @@ function genQuestion(i){
     gens.push(()=>{const d=FAM_OF[i.id].diff;const others=shuffle(Object.entries(FAM_OF).filter(([id,v])=>id!==i.id&&v.fam===FAM_OF[i.id].fam&&v.diff!==d).map(([id])=>items.find(x=>x.id===id)).filter(Boolean));
       if(others.length<2)return null;const o=makeOptions(i.name,others.map(x=>x.name).concat(similar(i,all).map(x=>x.name)));return o&&{q:"Which drink is this?",detail:d.replace(new RegExp(i.name.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),"gi"),"___"),opts:o,a:i.name}});
   }
+  // measures from the house spec, e.g. "25ml lime juice"
   const lines=(i.spec||"").split("\n").map(l=>l.match(/^(\d+(?:\.\d+)?)ml\s+(.+)$/i)).filter(Boolean).filter(m=>!/ OR /i.test(m[2]));
   if(lines.length&&i.folder!=="classics") gens.push(()=>{
     const m=lines[Math.random()*lines.length|0],v=+m[1],what=m[2].replace(/\s*\(.*\)$/,"");
@@ -1053,8 +1156,9 @@ function openEditor(id){
 /* ---------- Tab bar ---------- */
 const TABS=[
  {k:"learn",l:"Learn",i:'<path d="M4 5h11a3 3 0 0 1 3 3v12H7a3 3 0 0 1-3-3z"/><path d="M8 9h6M8 13h6"/>'},
- {k:"cards",l:"Flashcards",i:'<rect x="3" y="6" width="14" height="13" rx="2"/><path d="M7 3h12a2 2 0 0 1 2 2v12"/>'},
+ {k:"cards",l:"Cards",i:'<rect x="3" y="6" width="14" height="13" rx="2"/><path d="M7 3h12a2 2 0 0 1 2 2v12"/>'},
  {k:"quiz",l:"Quiz",i:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17.5v.1"/>'},
+ {k:"bar",l:"Bar",i:'<path d="M4 4h16l-8 9z"/><path d="M12 13v7M8 20h8"/><path d="M15 4l3-2"/>'},
  {k:"edit",l:"Manage",i:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/>'}
 ];
 function renderNav(){
@@ -1066,7 +1170,7 @@ function renderNav(){
 }
 function render(){
   document.body.classList.toggle("fam-mode",!!famMode());
-  ({learn:renderLearn,cards:renderCards,quiz:renderQuiz,edit:renderEdit})[tab]();
+  ({learn:renderLearn,cards:renderCards,quiz:renderQuiz,bar:renderBar,edit:renderEdit})[tab]();
   document.title=`${TABS.find(t=>t.k===tab).l} · Bar Drill`;
 }
 window.bootApp=(remote)=>{
@@ -1074,6 +1178,126 @@ window.bootApp=(remote)=>{
   renderFolders();renderChips();renderNav();renderMastery();render();
   if(!remote) persist();
 };
+
+/* ---------- BAR MODE ---------- */
+let bar=null;
+const VLABEL={classic:"Classic",spicy:"Spicy",tequila:"Tequila",mezcal:"Mezcal",vodka:"Vodka","Clásica":"Clásica"};
+const barPool=()=>pool().filter(i=>BUILD[i.id]);
+function newTicket(avoid){
+  const p=barPool();if(!p.length){bar=null;return}
+  const item=pickWeighted(p,avoid),vs=Object.keys(BUILD[item.id]),variant=vs[Math.random()*vs.length|0];
+  bar={item,variant,spec:BUILD[item.id][variant],sel:{glass:null,rim:null,method:null,garnish:null,ings:{}},hint:false,result:null,railQ:"",practice:false};
+}
+function pickGroup(key,label,opts,cur){
+  return `<fieldset class="bar-step"><legend class="step-title">${label}</legend><div class="picks" role="group">${opts.map(o=>`<button type="button" class="pick" data-pick="${key}" data-v="${esc(o)}" aria-pressed="${cur===o}">${esc(o)}</button>`).join("")}</div></fieldset>`;
+}
+function amountControl(k){
+  const u=ING[k].unit,v=bar.sel.ings[k];
+  if(FIXED[u]) return `<span class="amt-fixed">${FIXED[u]}</span>`;
+  return `<select class="input amt" data-amt="${k}" aria-label="Amount of ${esc(ING[k].label)}"><option value="">Amount…</option>${AMOUNTS[u].map(a=>`<option value="${a}" ${String(v)===String(a)?"selected":""}>${esc(fmtAmt(k,a))}</option>`).join("")}</select>`;
+}
+function renderRail(){
+  const q=norm(bar.railQ.trim());let h="";
+  for(const g in RAIL){
+    const keys=Object.keys(RAIL[g]).filter(k=>!q||norm(ING[k].label).includes(q));if(!keys.length)continue;
+    h+=`<h4 class="rail-h">${esc(g)}</h4><div class="picks">${keys.map(k=>`<button type="button" class="pick" data-ing="${k}" aria-pressed="${k in bar.sel.ings}">${esc(ING[k].label)}</button>`).join("")}</div>`;
+  }
+  $("#rail").innerHTML=h||`<p class="lede">Nothing on the rail matches.</p>`;
+  $("#rail").querySelectorAll("[data-ing]").forEach(b=>b.onclick=()=>toggleIng(b.dataset.ing));
+}
+function renderBuildList(){
+  const ks=Object.keys(bar.sel.ings);
+  $("#buildlist").innerHTML=ks.length?ks.map(k=>`<li class="bl-row"><span class="grow">${esc(ING[k].label)}</span>${amountControl(k)}<button type="button" class="btn btn-icon" data-rm="${k}" aria-label="Remove ${esc(ING[k].label)}">${ICON.cross}</button></li>`).join(""):`<li class="lede">Nothing in the tin yet. Pick from the rail below.</li>`;
+  $("#buildlist").querySelectorAll("[data-amt]").forEach(s=>s.onchange=()=>{bar.sel.ings[s.dataset.amt]=s.value?+s.value:null});
+  $("#buildlist").querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{toggleIng(b.dataset.rm);$("#rail-q")?.focus()});
+}
+function toggleIng(k){
+  if(k in bar.sel.ings) delete bar.sel.ings[k]; else bar.sel.ings[k]=FIXED[ING[k].unit]?1:null;
+  renderBuildList();
+  const b=$(`#rail [data-ing="${k}"]`);if(b)b.setAttribute("aria-pressed",String(k in bar.sel.ings));
+  announce(`${ING[k].label} ${k in bar.sel.ings?"added":"removed"}`);
+}
+function checkBuild(spec,sel){
+  const rows=[],one=(label,you,want,ok)=>rows.push({label,you:you||"Nothing picked",want,ok});
+  one("Glass",sel.glass,spec.glass.join(" or "),spec.glass.includes(sel.glass));
+  one("Rim",sel.rim,spec.rim,sel.rim===spec.rim);
+  for(const k in spec.ings){
+    const want=fmtAmt(k,spec.ings[k]);
+    if(!(k in sel.ings)) rows.push({label:ING[k].label,you:"Missing",want,ok:false,kind:"missing"});
+    else{const v=sel.ings[k],ok=FIXED[ING[k].unit]?true:v===spec.ings[k];rows.push({label:ING[k].label,you:v==null?"No amount":fmtAmt(k,v),want,ok,kind:ok?"":"amount"})}
+  }
+  for(const k in sel.ings) if(!(k in spec.ings)) rows.push({label:ING[k].label,you:"Added",want:"Not in this drink",ok:false,kind:"extra"});
+  one("Method",sel.method,spec.method,sel.method===spec.method);
+  one("Garnish",sel.garnish,spec.garnish,sel.garnish===spec.garnish);
+  return rows;
+}
+function renderBar(focusSel){
+  if(!bar||!barPool().find(i=>i.id===bar.item.id)) newTicket();
+  const p=barPool(),nailed=p.filter(i=>peek(i.id).bar===true).length;
+  if(!bar){$("#main").innerHTML=`<h2 class="sr-only">Bar mode</h2><p class="empty">Bar mode uses the house specs. Switch to Cantina, Cocina or Extras, or turn on a cocktail category above.</p>`;return}
+  const {item,variant,spec}=bar,vl=VLABEL[variant]||variant;
+  const ticket=`<section class="ticket" aria-labelledby="t-name">
+      <div class="row"><span class="eyebrow" style="margin:0">Order up · ${esc(item.cat)}</span><span class="meter-label">${nailed}/${p.length} builds nailed</span></div>
+      <h2 class="ticket-name" id="t-name" tabindex="-1">${esc(item.name)}${vl?` <span class="variant">${esc(vl)}</span>`:""}</h2>
+      ${bar.hint?`<div class="msg msg-info"><strong>On the menu:</strong> ${esc(item.ingredients.join(", "))}${item.note?`. ${esc(item.note)}`:""}<br><em>Hint used, so this one won't count.</em></div>`
+        :(bar.result?"":`<button type="button" class="link" id="b-hint">Show the menu description (won't count)</button>`)}
+    </section>`;
+  if(bar.result){
+    const rows=bar.result,right=rows.filter(r=>r.ok).length,all=right===rows.length;
+    $("#main").innerHTML=`<h2 class="sr-only">Bar mode</h2>${ticket}
+      <section class="card" aria-labelledby="r-h">
+        <h2 class="panel-title verdict ${all?"ok":"bad"}" id="r-h" tabindex="-1">${all?ICON.check+" Nailed it":`${ICON.cross} ${right} of ${rows.length} right`}</h2>
+        ${bar.practice?`<p class="lede">Practice run, so it doesn't count.</p>`:""}
+        <ul class="checks">${rows.map(r=>`<li class="${r.ok?"ok":"bad"}"><span class="ck" aria-hidden="true">${r.ok?ICON.check:ICON.cross}</span><span class="grow"><strong>${esc(r.label)}</strong>
+          <span class="sr-only">${r.ok?"correct":"wrong"}.</span><span class="ck-detail">${r.ok?esc(r.want):r.kind==="extra"?"Not in this drink":r.kind==="missing"?`Missing: ${esc(r.want)}`:`You: ${esc(r.you)} · Spec: ${esc(r.want)}`}</span></span></li>`).join("")}</ul>
+      </section>
+      <h2 class="section-title">The spec</h2>${drinkCard(item)}
+      <div class="actionbar"><div class="btns" style="margin-top:0"><button type="button" class="btn" id="b-retry">Try again</button><button type="button" class="btn btn-dark" id="b-next">Next ticket →</button></div></div>`;
+    $("#b-next").onclick=()=>{newTicket(item.id);renderBar("#t-name");window.scrollTo(0,0)};
+    $("#b-retry").onclick=()=>{bar.sel={glass:null,rim:null,method:null,garnish:null,ings:{}};bar.result=null;bar.practice=true;renderBar("#t-name");window.scrollTo(0,0)};
+    $("#r-h").focus();
+    return;
+  }
+  const s=bar.sel;
+  $("#main").innerHTML=`<h2 class="sr-only">Bar mode</h2>${ticket}
+    ${pickGroup("glass","1 · Glass",GLASSES,s.glass)}
+    ${pickGroup("rim","2 · Rim",RIMS,s.rim)}
+    <fieldset class="bar-step"><legend class="step-title">3 · Ingredients</legend>
+      <ul class="buildlist" id="buildlist" aria-label="Your build"></ul>
+      <div class="search" style="margin-top:var(--s-3)">${ICON.search}<label for="rail-q" class="sr-only">Search the rail</label><input id="rail-q" type="search" placeholder="Search the rail" autocomplete="off" value="${esc(bar.railQ)}"></div>
+      <div id="rail"></div>
+    </fieldset>
+    ${pickGroup("method","4 · Method",METHODS,s.method)}
+    ${pickGroup("garnish","5 · Garnish",GARNISHES,s.garnish)}
+    <p class="field-error" id="b-err" role="alert"></p>
+    <div class="actionbar">${bar.hint
+      ?`<div class="btns" style="margin-top:0"><button type="button" class="btn" id="b-show">Show the spec</button><button type="button" class="btn btn-dark" id="b-next">Next ticket →</button></div>`
+      :`<button type="button" class="btn btn-primary btn-block" id="b-submit">Submit build</button>`}</div>`;
+  renderBuildList();renderRail();
+  $("#rail-q").oninput=e=>{bar.railQ=e.target.value;renderRail()};
+  $("#main").querySelectorAll("[data-pick]").forEach(b=>b.onclick=()=>{
+    const k=b.dataset.pick,v=b.dataset.v;s[k]=s[k]===v?null:v;
+    b.closest(".picks").querySelectorAll(".pick").forEach(x=>x.setAttribute("aria-pressed",String(s[k]===x.dataset.v)));
+  });
+  if($("#b-hint")) $("#b-hint").onclick=()=>{bar.hint=true;renderBar("#t-name")};
+  if($("#b-next")) $("#b-next").onclick=()=>{newTicket(item.id);renderBar("#t-name");window.scrollTo(0,0)};
+  if($("#b-show")) $("#b-show").onclick=()=>{bar.result=checkBuild(spec,s);bar.practice=true;renderBar()};
+  if($("#b-submit")) $("#b-submit").onclick=()=>{
+    const miss=[["glass","a glass"],["rim","a rim (or No rim)"],["method","a method"],["garnish","a garnish (or None)"]].filter(([k])=>!s[k]).map(x=>x[1]);
+    if(!Object.keys(s.ings).length) miss.splice(2,0,"some ingredients");
+    const noAmt=Object.keys(s.ings).filter(k=>s.ings[k]==null);
+    if(miss.length||noAmt.length){
+      $("#b-err").textContent=miss.length?`Still to pick: ${miss.join(", ")}.`:`Set an amount for ${noAmt.map(k=>ING[k].label).join(", ")}.`;
+      (noAmt.length&&!miss.length?$(`[data-amt="${noAmt[0]}"]`):$("#b-err"))?.focus?.();return;
+    }
+    bar.result=checkBuild(spec,s);
+    const ok=bar.result.every(r=>r.ok);
+    if(!bar.practice){record(item.id,ok);st(item.id).bar=ok;persist()}
+    renderBar();window.scrollTo(0,0);
+    announce(ok?"Nailed it.":`${bar.result.filter(r=>r.ok).length} of ${bar.result.length} right.`);
+  };
+  if(focusSel) $(focusSel)?.focus();
+}
 
 </script>
 <script type="module">
