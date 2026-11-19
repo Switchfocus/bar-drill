@@ -157,6 +157,7 @@ body:not(.locked) #gate{display:none}
 .drink-head{display:flex;align-items:flex-start;gap:var(--s-3)}
 .drink-head .grow{min-width:0}
 .price{font:700 var(--fs-lg)/1.2 var(--f-label);white-space:nowrap;padding-top:2px}
+.drink-head .price,.m-head .price{white-space:normal;text-align:right;max-width:45%}
 .spirit{font:italic 600 var(--fs-md)/1.2 var(--f-label);color:var(--c-accent);margin-top:var(--s-1)}
 .ings{display:flex;flex-wrap:wrap;gap:var(--s-1) var(--s-2);margin:var(--s-3) 0 0;padding:0;list-style:none}
 .ings li,.ings>span{background:var(--c-sunken);border-radius:var(--r-sm);padding:var(--s-1) var(--s-2);font-size:var(--fs-sm)}
@@ -280,6 +281,22 @@ body.modal-open{overflow:hidden}
 .list-item{display:flex;justify-content:space-between;align-items:center;gap:var(--s-3);padding:var(--s-2) 0;border-bottom:var(--bw) dashed var(--c-line-soft)}
 .list-item:last-child{border-bottom:0}
 .empty{text-align:center;padding:var(--s-6) var(--s-3);color:var(--c-muted)}
+
+/* --- Families --- */
+body.fam-mode .chips{display:none}
+.template{background:var(--c-sunken);border-radius:var(--r-lg);padding:var(--s-4);margin-top:var(--s-3)}
+.tpl-build{font:700 var(--fs-lg)/1.3 var(--f-label);margin-top:var(--s-1)}
+.rules{margin:var(--s-1) 0 0;padding-left:1.1em;font-size:var(--fs-sm)}
+.rules li+li{margin-top:var(--s-1)}
+.member{border:var(--bw) solid var(--c-line);border-radius:var(--r-md);background:var(--c-surface);margin-top:var(--s-2)}
+.member summary{list-style:none;cursor:pointer;min-height:var(--tap);padding:var(--s-3) var(--s-4) var(--s-3) 40px;position:relative;border-radius:var(--r-md)}
+.member summary::-webkit-details-marker{display:none}
+.member summary::before{content:"";position:absolute;left:var(--s-4);top:22px;width:8px;height:8px;border-right:2.5px solid var(--c-ink);border-bottom:2.5px solid var(--c-ink);transform:rotate(-45deg);transition:transform var(--dur) var(--ease)}
+.member[open] summary::before{transform:rotate(45deg);top:19px}
+.m-head{display:flex;justify-content:space-between;gap:var(--s-3);align-items:baseline}
+.m-name{font:400 var(--fs-lg)/1.2 var(--f-display)}
+.m-diff{display:block;font-size:var(--fs-sm);margin-top:var(--s-1);color:var(--c-ink)}
+.member .card{margin:0 var(--s-2) var(--s-2);box-shadow:none}
 </style>
 </head>
 <body class="locked">
@@ -315,8 +332,8 @@ const MENU = [
  {id:"espresso",cat:"Cocktails",name:"Espresso Martini de la Olla",price:"£12",spirit:"Tequila Ocho Plata OR Finlandia vodka",ingredients:["Tequila Ocho Plata OR Finlandia vodka","Kahlúa","Home-brewed café de olla"],note:"Café de olla is brewed in-house with cinnamon, orange peel, piloncillo & spices.",spec:"",qa:[{q:"What goes into the house café de olla?",a:"Cinnamon, orange peel, piloncillo & spices",w:["Vanilla, cardamom & brown sugar","Cinnamon, chocolate & chilli","Star anise, lemon peel & honey"]},{q:"Which two base spirits can a guest pick for the Espresso Martini de la Olla?",a:"Tequila Ocho Plata or Finlandia vodka",w:["Mezcal or vodka","Reposado or rum","Finlandia vodka only"]}]},
  // HAPPY HOUR
  {id:"hh-info",cat:"Happy hour",name:"Happy hour",price:"£8",spirit:"",ingredients:[],note:"£8 before 8pm: Ocho Margarita and Ocho Tommy's.",spec:"",qa:[{q:"When does happy hour end?",a:"8pm",w:["7pm","9pm","6pm"]},{q:"How much are happy-hour cocktails?",a:"£8",w:["£7","£9","£6.50"]},{q:"Which two drinks are on happy hour?",a:"Ocho Margarita & Ocho Tommy's",w:["Mezcalita & Palomita","Margarita & Jalisco Mule","Ocho Margarita & Mezcal Marg"]}]},
- {id:"ochomarg",cat:"Happy hour",name:"Ocho Margarita",price:"£8 (before 8pm)",spirit:"Tequila Ocho Plata",ingredients:["Tequila Ocho Plata","Cointreau","Lime"],note:"Classic or spicy!",spec:""},
- {id:"ochotommys",cat:"Happy hour",name:"Ocho Tommy's",price:"£8 (before 8pm)",spirit:"Ocho Blanco tequila",ingredients:["Ocho Blanco tequila","Lime","Agave"],note:"Blanco and Plata are the same style: unaged tequila.",spec:""},
+ {id:"ochomarg",cat:"Happy hour",name:"Ocho Margarita",price:"£8 happy hour",spirit:"Tequila Ocho Plata",ingredients:["Tequila Ocho Plata","Cointreau","Lime"],note:"Classic or spicy!",spec:""},
+ {id:"ochotommys",cat:"Happy hour",name:"Ocho Tommy's",price:"£8 happy hour",spirit:"Ocho Blanco tequila",ingredients:["Ocho Blanco tequila","Lime","Agave"],note:"Blanco and Plata are the same style: unaged tequila.",spec:""},
  // SHOTS
  {id:"verdita",cat:"Shots",name:"Verdita",price:"£7",spirit:"Ocho Blanco tequila",ingredients:["Ocho Blanco tequila","Verdita chaser"],note:"Caballito (shot) + chaser.",spec:""},
  {id:"bebeguinness",cat:"Shots",name:"Bebé Guinness",price:"£7",spirit:"Licor 43 Horchata",ingredients:["Licor 43 Horchata liqueur","Kahlúa coffee liqueur"],note:"No tequila or mezcal in this one.",spec:""},
@@ -539,6 +556,59 @@ let folder = "cantina";
 const CATS_OF=f=>FOLDERS[f].cats;
 Object.defineProperty(window,"CATS",{get:()=>CATS_OF(folder)});
 
+/* ---------- Drink families (Cantina) ---------- */
+const FAMILIES={cantina:[
+ {id:"marg",name:"Margarita family",
+  build:"50ml prebatch · 25ml lime · 7ml sweetener · shake · coupette or rocks",
+  rules:["Tequila → ORANGE prebatch (Ocho Blanco + Cointreau) and a HALF rim","Mezcal → WHITE prebatch (Pensador + Cointreau) and a FULL rim","Classic → 7ml gomme + salt rim · Spicy → 7ml jalapeño syrup + Tajín rim"],
+  members:[
+   ["margarita","The base: ORANGE prebatch · half rock salt (classic) or half Tajín (spicy)."],
+   ["ochomarg","Exactly the Margarita build, £8 before 8pm."],
+   ["mezcalmarg","Swap to WHITE prebatch · FULL pink salt (classic) or full Tajín (spicy)."],
+   ["mezcalita","WHITE prebatch but only 10ml lime, plus 10 pineapple + 10 jalapeño syrup · always rocks · full Tajín · hibiscus syrup painted inside the glass."],
+   ["margcero","0%, no prebatch: 35 Lyre's Agave · 25 lime · 10 agave · 15 pineapple (+10 jalapeño if spicy) · rocks · half pink salt or half Tajín · dehydrated lime wheel."]]},
+ {id:"tommy",name:"Tommy's family",
+  build:"Spirit · 25ml lime · 15ml agave syrup · NO Cointreau · shake & double strain · rocks",
+  rules:["Tequila version: 50ml, no rim","Mezcal version: only 40ml, full smoked salt rim"],
+  members:[
+   ["tommys","50ml Ocho Blanco · no rim."],
+   ["ochotommys","Exactly the Tommy's build, £8 before 8pm."],
+   ["smokeytommys","40ml Pensador mezcal (10ml less) · full smoked salt rim."]]},
+ {id:"paloma",name:"Paloma family",
+  build:"Grapefruit + lime, with a salt or Tajín rim",
+  rules:["Palomita is the only short one: shaken, on the rocks, no top","The two 0% drinks are long and topped with Ting","Pink salt → Paloma Fresca · chamoy + Tajín in a clay cup → Cantarito Cero"],
+  members:[
+   ["palomita","50ml prebatch (35 Ojo de Dios hibiscus mezcal + 15 King's Ginger) · 20 lime · 15 grapefruit · 10 agave · shake · rocks · full Tajín + sugar rim · dehydrated grapefruit."],
+   ["palomafresca","0%: 40 Lyre's Agave · 15 Three Spirit Livener · 40 grapefruit · 15 lime · 10 gomme · shake, top Ting · highball · full pink salt · fresh grapefruit slice."],
+   ["cantarito","0%: 20 OJ · 20 grapefruit · 20 lime · 5 gomme · pinch of salt · build, top Ting · clay vaso · chamoy + Tajín rim · citrus half wheels fanned on sticks."]]},
+ {id:"long",name:"Long & built",
+  build:"Build in the glass, top with a mixer · no shaker, no rim",
+  rules:["Ginger beer → Jalisco Mule (the only reposado)","Soda in a highball → La Coqueta (the only gin)","Soda in a wine glass → Aperol Spritz Cero (0%)"],
+  members:[
+   ["jaliscomule","50 Ocho Reposado · 20 lime · top ginger beer · highball · dehydrated lime."],
+   ["coqueta","70ml gin prebatch (Condesa, elderflower, Lillet, Campari) · 15ml raspberry/cucumber/dill cordial · top soda · highball · cucumber twirl."],
+   ["aperolcero","50 Lyre's Italian Spritz · top soda · wine glass · fresh orange slice."]]},
+ {id:"coffee",name:"Coffee",
+  build:"Dry shake, wet shake, double strain · coupette",
+  rules:["Guest picks the base: Ocho Blanco or Finlandia vodka","Say it \"de la oi-ya\""],
+  members:[
+   ["espresso","40 Ocho Blanco OR Finlandia · 20 Kahlúa · 50 café de olla · 3 coffee beans."]]},
+ {id:"shots",name:"Shots (caballitos), £7",
+  build:"A spirit, usually with something on the side",
+  rules:["Tequila shot → Verdita","Mezcal + chaser → Pico Back · mezcal + Montenegro, ice cold → M&M","No agave at all → Bebé Guinness"],
+  members:[
+   ["verdita","Ocho Blanco + verdita chaser."],
+   ["picoback","Pensador mezcal + spicy jalapeño brine chaser."],
+   ["mm","Pensador mezcal + Montenegro, served ice cold. A CDMX favourite."],
+   ["bebeguinness","Licor 43 Horchata + Kahlúa."]]},
+ {id:"miche",name:"Michelada upgrades",
+  build:"Any bottled beer, beer served on the side",
+  rules:["Clásica +£2: the full Clamato mix in a half stein with a Tajín rim","Chelada +£1: just lime and a salt rim"],
+  members:[
+   ["michelada","Clásica: 50 Clamato · 25 lime · 4 dashes Maggi · 3 Worcestershire · 5ml Yucateco · half stein half filled with ice · full Tajín · wooden stirrer, no straw."]]}
+]};
+const FAM_OF={};
+for(const f in FAMILIES) FAMILIES[f].forEach(fam=>fam.members.forEach(([id,diff])=>{FAM_OF[id]={fam,diff}}));
 
 /* ---------- Storage (per-browser, safe) ---------- */
 function load(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
@@ -557,9 +627,9 @@ function initState(remote){
   }
   items.forEach(i=>{if(!i.folder)i.folder="cantina"});
   if(!items.some(i=>i.folder==="classics")&&!(remote&&remote.classicsAdded)) items=items.concat(JSON.parse(JSON.stringify(CLASSICS)));
-  if(!FOLDERS[folder]) folder="cantina";
   const ver=remote?remote.dataVersion||1:load("cbd_ver",1);
   if(ver<DATA_VERSION) upgradeItems();
+  if(!FOLDERS[folder]) folder="cantina";
   const DEF={cantina:["Cocktails","Happy hour","Shots"],cocina:["Clásicos","De la casa","Happy hour","Low & no"]};
   for(const k in FOLDERS) if(!Array.isArray(decksBy[k])||!decksBy[k].length) decksBy[k]=DEF[k]||[...FOLDERS[k].cats];
   if(!["learn","cards","quiz","edit"].includes(tab)) tab="learn";
@@ -706,20 +776,46 @@ function bindEdit(root=document){root.querySelectorAll("[data-edit]").forEach(b=
 
 /* ---------- LEARN ---------- */
 let learnQ="";
+let learnMode=load("cbd_learnmode","fam");
+const famMode=()=>tab==="learn"&&FAMILIES[folder]&&learnMode==="fam";
 function renderLearn(){
+  const hasFam=!!FAMILIES[folder];
+  document.body.classList.toggle("fam-mode",!!famMode());
   $("#main").innerHTML=`<h2 class="sr-only">Learn</h2>
     <div class="search" role="search">
       ${ICON.search}
       <label for="q" class="sr-only">Search drinks or ingredients</label>
       <input id="q" type="search" placeholder="Search drinks or ingredients" autocomplete="off" value="${esc(learnQ)}">
     </div>
-    <p class="lede" style="margin-top:var(--s-3)">The dots fill as you answer correctly. Three right in a row and a drink counts as mastered.</p>
+    ${hasFam?`<div class="seg" role="group" aria-label="Arrange drinks" style="margin-top:var(--s-3)">
+      <button type="button" data-lm="fam" aria-pressed="${learnMode==="fam"}">By family</button>
+      <button type="button" data-lm="cat" aria-pressed="${learnMode==="cat"}">By category</button></div>`:""}
+    <p class="lede" style="margin-top:var(--s-3)">${famMode()?"Learn the base build once, then only what changes. Tap a drink for its full spec.":"The dots fill as you answer correctly. Three right in a row and a drink counts as mastered."}</p>
     <div id="results"></div>`;
   let t;$("#q").oninput=e=>{learnQ=e.target.value;renderResults();clearTimeout(t);t=setTimeout(()=>{const r=$("#results");if(r)announce(r.dataset.count+(r.dataset.count==="1"?" result":" results"))},500)};
+  $("#main").querySelectorAll("[data-lm]").forEach(b=>b.onclick=()=>{learnMode=b.dataset.lm;save("cbd_learnmode",learnMode);renderLearn();$(`[data-lm="${learnMode}"]`).focus()});
   renderResults();
+}
+function renderFamilies(q){
+  const r=$("#results");let h="",count=0;
+  FAMILIES[folder].forEach(fam=>{
+    const mem=fam.members.map(([id,diff])=>({it:items.find(x=>x.id===id),diff})).filter(m=>m.it&&(!q||norm([fam.name,m.diff,m.it.name,m.it.spec,...m.it.ingredients].join(" ")).includes(q)));
+    if(!mem.length)return;count+=mem.length;
+    h+=`<section class="family" aria-labelledby="f-${fam.id}">
+      <h2 class="section-title" id="f-${fam.id}">${esc(fam.name)} <span class="n">${mem.length}</span></h2>
+      <div class="template"><span class="spec-label">The base build</span><p class="tpl-build">${esc(fam.build)}</p>
+        <span class="spec-label" style="margin-top:var(--s-3)">Tell them apart</span><ul class="rules">${fam.rules.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
+      ${mem.map(({it,diff})=>`<details class="member"><summary><span class="m-head"><span class="m-name">${esc(it.name)}</span>${it.price?`<span class="price">${esc(it.price)}</span>`:""}</span><span class="m-diff">${esc(diff)}</span></summary>${drinkCard(it,{edit:true})}</details>`).join("")}
+    </section>`;
+  });
+  r.dataset.count=count;
+  r.innerHTML=(h||`<p class="empty">Nothing matches "${esc(learnQ)}".</p>`)+`<p class="lede" style="margin-top:var(--s-5)">Beer, wine, softs and food are under <button type="button" class="link" data-lm2>By category</button>.</p>`;
+  r.querySelector("[data-lm2]").onclick=()=>{learnMode="cat";save("cbd_learnmode",learnMode);renderLearn()};
+  bindEdit(r);
 }
 function renderResults(){
   const q=norm(learnQ.trim());
+  if(famMode()) return renderFamilies(q);
   const list=pool().filter(i=>!q||norm([i.name,i.spirit,i.note,i.cat,i.spec,i.rim,i.garnish,...i.ingredients].join(" ")).includes(q));
   let h="";
   CATS.filter(c=>decks.includes(c)).forEach(c=>{
@@ -771,7 +867,7 @@ function similar(i,cands){
   // rank plausible distractors: same kind, shared ingredients, same category
   const w=words(i);
   return cands.filter(x=>x.id!==i.id&&KIND(x)===KIND(i))
-    .map(x=>{let s=0;words(x).forEach(t=>{if(w.has(t))s+=2});if(x.cat===i.cat)s+=1;return {x,s:s+Math.random()*1.5}})
+    .map(x=>{let s=0;words(x).forEach(t=>{if(w.has(t))s+=2});if(x.cat===i.cat)s+=1;if(FAM_OF[x.id]&&FAM_OF[i.id]&&FAM_OF[x.id].fam===FAM_OF[i.id].fam)s+=3;return {x,s:s+Math.random()*1.5}})
     .sort((a,b)=>b.s-a.s).map(o=>o.x);
 }
 function makeOptions(correct,cands){const w=uniq(cands.filter(c=>c&&c!==correct)).slice(0,3);return w.length<3?null:shuffle([correct,...w])}
@@ -796,6 +892,12 @@ function genQuestion(i){
     if(!i[f])return;
     gens.push(()=>{const o=makeOptions(i[f],shuffle(all.filter(x=>x[f]&&x[f]!==i[f]).map(x=>x[f])));return o&&{q:t.replace("%s",nm),opts:o,a:i[f]}});
   });
+  if(FAM_OF[i.id]&&i.folder==="cantina"){
+    const fams=FAMILIES.cantina.map(f=>f.name);
+    gens.push(()=>{const o=makeOptions(FAM_OF[i.id].fam.name,shuffle(fams));return o&&{q:`Which family is the ${nm} in?`,opts:o,a:FAM_OF[i.id].fam.name}});
+    gens.push(()=>{const d=FAM_OF[i.id].diff;const others=shuffle(Object.entries(FAM_OF).filter(([id,v])=>id!==i.id&&v.fam===FAM_OF[i.id].fam&&v.diff!==d).map(([id])=>items.find(x=>x.id===id)).filter(Boolean));
+      if(others.length<2)return null;const o=makeOptions(i.name,others.map(x=>x.name).concat(similar(i,all).map(x=>x.name)));return o&&{q:"Which drink is this?",detail:d.replace(new RegExp(i.name.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),"gi"),"___"),opts:o,a:i.name}});
+  }
   const lines=(i.spec||"").split("\n").map(l=>l.match(/^(\d+(?:\.\d+)?)ml\s+(.+)$/i)).filter(Boolean).filter(m=>!/ OR /i.test(m[2]));
   if(lines.length&&i.folder!=="classics") gens.push(()=>{
     const m=lines[Math.random()*lines.length|0],v=+m[1],what=m[2].replace(/\s*\(.*\)$/,"");
@@ -963,6 +1065,7 @@ function renderNav(){
   });
 }
 function render(){
+  document.body.classList.toggle("fam-mode",!!famMode());
   ({learn:renderLearn,cards:renderCards,quiz:renderQuiz,edit:renderEdit})[tab]();
   document.title=`${TABS.find(t=>t.k===tab).l} · Bar Drill`;
 }
