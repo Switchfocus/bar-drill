@@ -289,7 +289,7 @@ body.modal-open{overflow:hidden}
   <header class="topbar">
     <div>
       <h1 class="wordmark">BAR DRILL</h1>
-      <span class="eyebrow">Corrochio's Cantina trainer</span>
+      <span class="eyebrow">Corrochio's bar trainer</span>
     </div>
     <div class="meter-wrap" id="mastery"></div>
   </header>
@@ -427,10 +427,114 @@ const CLASSICS=[
  C("whiskeysour","Whiskey","Whiskey Sour",1625,"Bourbon",["Bourbon","Lemon juice","Simple syrup","Egg white (optional)"],"60ml bourbon\n30ml lemon\n22.5ml simple\nEgg white (optional)","Dry shake, then shake with ice","Rocks glass over ice (or coupe)","Angostura drops, or cherry & orange flag")
 ];
 const FOLDERS={
- cantina:{name:"Cantina menu",cats:["Cocktails","Happy hour","Shots","0%","Softs","Beer","Wine","Food"]},
- classics:{name:"Top 50 classics",cats:["Whiskey","Gin","Rum & cachaça","Agave","Brandy & pisco","Vodka","Aperitivo & wine"]}
+ cantina:{name:"Cantina",cats:["Cocktails","Happy hour","Shots","0%","Softs","Beer","Wine","Food"]},
+ cocina:{name:"Cocina",cats:["Clásicos","De la casa","Happy hour","Low & no","Micheladas","Cerveza","Vino","Softs","House info"]},
+ extras:{name:"Extras",cats:["Brunch","House classics","Off-menu"]},
+ classics:{name:"Top 50",cats:["Whiskey","Gin","Rum & cachaça","Agave","Brandy & pisco","Vodka","Aperitivo & wine"]}
 };
-const CATS_ALL=[...FOLDERS.cantina.cats,...FOLDERS.classics.cats];
+/* ---------- House specs (Corrochio's Cocktail Specs, Nov 26) ---------- */
+const PB_ORANGE="50ml ORANGE prebatch (35 Ocho Blanco + 15 Cointreau)";
+const PB_WHITE="50ml WHITE prebatch (35 Pensador mezcal + 15 Cointreau)";
+const MICHE_BASE="50ml Clamato\n25ml lime juice\n4 dashes Maggi\n3 dashes Worcestershire\n5ml Yucateco habanero sauce (more if they want it extra spicy)\nStir · bottled beer of choice on the side";
+const MICHE={glass:"Half beer stein, half filled with ice",method:"Build",rim:"Full Tajín",garnish:"Wooden stirrer, no straw"};
+const SPEC={
+ margarita:{glass:"Coupette or rocks",method:"Shake",rim:"Half rock salt (classic) or half Tajín (spicy)",garnish:"",spec:PB_ORANGE+"\n25ml lime juice\n7ml gomme (classic) OR 7ml jalapeño syrup (spicy)"},
+ mezcalmarg:{glass:"Coupette or rocks",method:"Shake",rim:"Full pink salt (classic) or full Tajín (spicy)",garnish:"",spec:PB_WHITE+"\n25ml lime juice\n7ml gomme (classic) OR 7ml jalapeño syrup (spicy)"},
+ tommys:{glass:"Rocks",method:"Shake & double strain",rim:"None",garnish:"",spec:"50ml Ocho Blanco\n25ml lime juice\n15ml agave syrup"},
+ smokeytommys:{glass:"Rocks",method:"Shake & double strain",rim:"Full smoked salt",garnish:"",spec:"40ml Pensador mezcal\n25ml lime juice\n15ml agave syrup"},
+ mezcalita:{glass:"Rocks",method:"Shake",rim:"Full Tajín",garnish:"Hibiscus syrup painted around the inside of the glass",spec:PB_WHITE+"\n10ml lime juice\n10ml pineapple juice\n10ml jalapeño syrup"},
+ palomita:{glass:"Rocks",method:"Shake",rim:"Full Tajín + sugar",garnish:"Dehydrated grapefruit slice",spec:"50ml prebatch (35 Ojo de Dios hibiscus mezcal + 15 King's Ginger)\n20ml lime juice\n15ml grapefruit juice\n10ml agave syrup"},
+ coqueta:{glass:"Highball",method:"Build",rim:"None",garnish:"Cucumber twirl",spec:"70ml prebatch (30 Condesa Prickly Pear gin, 15 Burnt Faith elderflower, 15 Lillet Blanc, 5 Campari)\n15ml raspberry/cucumber/dill pickle cordial\nTop soda"},
+ jaliscomule:{glass:"Highball",method:"Build",rim:"None",garnish:"Dehydrated lime",spec:"50ml Ocho Reposado\n20ml lime juice\nTop ginger beer"},
+ espresso:{glass:"Coupette",method:"Dry shake, wet shake, double strain",rim:"None",garnish:"3 coffee beans",spec:"40ml Ocho Blanco OR 40ml Finlandia vodka\n20ml Kahlúa\n50ml café de olla"},
+ palomafresca:{glass:"Highball",method:"Shake, top with Ting",rim:"Full pink salt",garnish:"Fresh grapefruit slice",spec:"40ml Lyre's Agave Blanco\n15ml Three Spirit Livener\n40ml grapefruit juice\n15ml lime juice\n10ml gomme\nTop Ting"},
+ margcero:{glass:"Rocks",method:"Shake",rim:"Half pink salt (classic) or half Tajín (spicy)",garnish:"Dehydrated lime wheel",spec:"35ml Lyre's Agave Blanco\n25ml lime juice\n10ml agave syrup\n15ml pineapple juice\nSpicy: +10ml jalapeño syrup"},
+ aperolcero:{glass:"Wine glass",method:"Build",rim:"None",garnish:"Fresh orange slice",spec:"50ml Lyre's Italian Spritz\nTop soda"},
+ cantarito:{glass:"Mexican clay vaso",method:"Build",rim:"Full chamoy + Tajín",garnish:"Half wheels of grapefruit, orange & lime, fanned on cocktail sticks",spec:"20ml orange juice\n20ml grapefruit juice\n20ml lime juice\n5ml gomme\nPinch of salt\nTop Ting (~100ml)"},
+ michelada:{...MICHE,spec:"Michelada Clásica:\n"+MICHE_BASE}
+};
+SPEC.ochomarg=SPEC.margarita; SPEC.ochotommys=SPEC.tommys;
+MENU.forEach(i=>{if(SPEC[i.id])Object.assign(i,SPEC[i.id])});
+MENU.push({id:"prebatch",folder:"cantina",cat:"Cocktails",name:"Prebatch colours",price:"",spirit:"",ingredients:[],note:"ORANGE = 35 Ocho Blanco + 15 Cointreau (Margaritas). WHITE = 35 Pensador mezcal + 15 Cointreau (Mezcal Marg, Mezcalita).",spec:"",
+  qa:[{q:"What's in the ORANGE prebatch?",a:"Ocho Blanco + Cointreau",w:["Pensador mezcal + Cointreau","Ocho Reposado + agave","Ojo de Dios mezcal + King's Ginger"]},
+      {q:"What's in the WHITE prebatch?",a:"Pensador mezcal + Cointreau",w:["Ocho Blanco + Cointreau","Pensador mezcal + agave","Condesa gin + Lillet Blanc"]},
+      {q:"Which prebatch goes in the Mezcalita?",a:"WHITE (mezcal + Cointreau)",w:["ORANGE (tequila + Cointreau)","Palomita prebatch","No prebatch"]}]});
+
+/* ---------- Cocina (ground-floor restaurant) drinks menu, 19 Oct ---------- */
+const K=(id,cat,name,price,spirit,ingredients,note,extra={})=>({id:"k-"+id,folder:"cocina",cat,name,price,spirit,ingredients,note,spec:"",...extra});
+const COCINA=[
+ K("margarita","Clásicos","Margarita","£11","Tequila Ocho Plata",["Tequila Ocho Plata","Cointreau","Lime","Gomme"],"Spicy or classic.",SPEC.margarita),
+ K("mezcalmarg","Clásicos","Mezcal Margarita","£12","Pensador Espadín Mezcal",["Pensador Espadín Mezcal","Agave","Lime"],"Spicy or classic.",SPEC.mezcalmarg),
+ K("tommys","Clásicos","Tommy's Margarita","£11","Tequila Ocho Plata",["Tequila Ocho Plata","Agave","Lime"],"",SPEC.tommys),
+ K("smokey","Clásicos","Smokey Tommy's","£12","Pensador Espadín Mezcal",["Pensador Espadín Mezcal","Agave","Lime","Smoked salt rim"],"",SPEC.smokeytommys),
+ K("coqueta","De la casa","La Coqueta","£12","Condesa Prickly Pear Gin",["Condesa Prickly Pear Gin","Burnt Faith Elderflower","Vermouth","Raspberry & cucumber dill pickle cordial","Schweppes soda"],"Long, refreshing and flirty: one for hot days.",SPEC.coqueta),
+ K("celso","De la casa","Celso Piña","£11","Tequila Ocho Plata + Pensador mezcal",["Tequila Ocho Plata","Pensador Espadín Mezcal","Cointreau","Horchata","Pineapple","Lime"],"A piña colada, but make it Mexican.",
+   {glass:"Rocks",method:"Shake",rim:"Full toasted coconut & Tajín sugar",garnish:"",spec:"25ml prebatch (25 Ocho, 5 mezcal, 5 Cointreau)\n10ml lime juice\n15ml horchata syrup\n25ml pineapple juice"}),
+ K("bellanova","De la casa","Bellanova Sour","£12","Pensador Espadín Mezcal",["Pensador Espadín Mezcal","Hibiscus","Jalapeño","Citrus","Agave","Egg white"],"Silky, smoky, slightly sweet. Vegan option available.",
+   {glass:"Coupette",method:"Dry shake, wet shake, double strain",rim:"None",garnish:"Dried hibiscus flower",spec:"40ml mezcal prebatch (mezcal + smoked salt saline)\n25ml lime juice\n25ml mezcal sour syrup\n1 egg white"}),
+ K("palomita","De la casa","Palomita","£12","Ojo de Dios hibiscus mezcal",["Ojo de Dios Hibiscus Mezcal","King's Ginger","Grapefruit sherbet","Peychaud's bitters"],"A moreish twist on the Paloma. Picafresa rim.",SPEC.palomita),
+ K("vampirito","De la casa","Vampirito","£12","Tequila Ocho Plata",["Tequila Ocho Plata","Viuda de Sánchez Sangrita","Orange","Lime","Salt"],"Citrusy and saline, from the streets of Soyatlán.",
+   {glass:"Highball",method:"Build",rim:"Full Tajín",garnish:"Fresh orange slice",spec:"50ml Ocho Blanco\n50ml prebatch (sangrita + saline)\n25ml orange juice\n25ml lime juice\nTop Ting"}),
+ K("diabla","De la casa","Margarita a la Diabla","£11 / £12","Tequila Ocho Plata OR Pensador mezcal",["Tequila Ocho Plata OR Pensador Espadín Mezcal","Cointreau","Agave","Habanero","Charred tortilla salt"],"£11 with tequila, £12 with mezcal. \"Hottest Margarita in the World\" (as voted by the staff).",
+   {glass:"Rocks",method:"Shake",rim:"Charred tortilla salt: HALF rim for tequila, FULL rim for mezcal",garnish:"Whole dried red chilli",spec:"40ml tequila blanco OR 40ml mezcal\n10ml Cointreau\n25ml lime juice\n10ml habanero syrup\n10ml agave syrup",
+    qa:[{q:"Tequila or mezcal Diabla: how does the rim change?",a:"Half rim for tequila, full rim for mezcal",w:["Full rim for tequila, half for mezcal","Full rim for both","No rim on the mezcal version"]}]}),
+ K("mezcalita","De la casa","Mezcalita","£12","Pensador Espadín Mezcal",["Pensador Espadín Mezcal","Pineapple","Lime","Jalapeño syrup","Hibiscus caramel"],"Sweet, smoky, spicy. A signature since day one.",SPEC.mezcalita),
+ K("espresso","De la casa","Espresso Martini de Olla","£12","Tequila Ocho Plata",["Tequila Ocho Plata","Kahlúa","Homemade café de olla","Piloncillo"],"Say it \"de la oi-ya\".",SPEC.espresso),
+ K("hh","Happy hour","Happy hour (Cocina)","£8.50","",[],"£8.50 Ocho Margaritas, classic or spicy. Wed–Sat 6–7pm and all day Sunday.",
+   {qa:[{q:"When is happy hour at the Cocina?",a:"Wed–Sat 6–7pm, all day Sunday",w:["Every day before 8pm","Tue–Fri 5–7pm","Weekends only"]},{q:"How much is a happy-hour Ocho Margarita at the Cocina?",a:"£8.50",w:["£8","£9","£7.50"]}]}),
+ K("corona","Cerveza","Corona","£6.5","",["Draught","Mexican lager","4.5%"],""),
+ K("modelo","Cerveza","Modelo","£7","",["Draught","Mexican lager","4.5%"],""),
+ K("deya","Cerveza","Deya Steady Rolling Man","£7.2","",["Draught","Hazy pale ale","5.2%"],"The only non-Mexican beer and the only pale ale.",{qa:[{q:"Which Cocina beer is a hazy pale ale?",a:"Deya Steady Rolling Man",w:["Modelo Negra","Barrilito","Pacifico"]}]}),
+ K("dosequis","Cerveza","Dos Equis","£7","",["Bottle","Mexican lager","4.5%"],""),
+ K("pacifico","Cerveza","Pacifico","£6.5","",["Bottle","Mexican lager","4.5%"],""),
+ K("negra","Cerveza","Modelo Negra","£8","",["Bottle","Dark Mexican lager","5.4%"],""),
+ K("victoria","Cerveza","Victoria","£7","",["Bottle","Mexican lager","4%"],""),
+ K("barrilito","Cerveza","Barrilito","£5.7","",["Bottle","Mexican lager","3.6%"],"Spelt \"Barraltio\" on the menu."),
+ K("coronacero","Cerveza","Corona Cero","£5","",["Bottle","Alcohol-free lager","0.0%"],"+£2.50 Clamato michelada, +£1 chelada."),
+ K("caguama","Cerveza","Caguama","£23","",["Tecate Light","1.2L bottle","3.9%"],"Imported from Mexico."),
+ K("m-clasica","Micheladas","Michelada Clásica","+£2","",["Clamato","Salsa negra","Lime","Tajín rim"],"Corrochio's OG house michelada. Allergens (removable): gluten, fish, molluscs.",{...MICHE,spec:MICHE_BASE}),
+ K("m-chelada","Micheladas","Chelada","+£1","",["Fresh lime","Rock salt rim"],""),
+ K("m-vallarta","Micheladas","Michelada Vallarta","+£4.50","",["Michelada Clásica","Crispy fried fish chicharrón","Oyster dressing","Fried leeks"],"Not available on Tuesdays. Allergens: gluten, fish, molluscs.",{...MICHE,garnish:"From the kitchen: crispy fried fish chicharrón with oyster dressing",spec:MICHE_BASE,qa:[{q:"Which day is the Michelada Vallarta not available?",a:"Tuesday",w:["Monday","Sunday","Wednesday"]}]}),
+ K("m-dulce","Micheladas","Michelada Dulce Beat","+£4","",["Tamarind","Sangrita","Chamoy","Achiote","Coriander","Candied sesame rim"],"ALLERGEN: sesame. Comes with a tamarind straw.",{...MICHE,rim:"Full rim: dip in tamarind + chamoy, then candied sesame seeds",garnish:"Tamarind straw",spec:"70ml Sirenita premix\n25ml lime juice\n4 dashes Maggi\n3 dashes Worcestershire\n5ml Yucateco habanero sauce\nStir · bottled beer on the side",qa:[{q:"Which michelada carries a sesame allergen?",a:"Michelada Dulce Beat",w:["Michelada Vallarta","Michilanga","Micheviche"]}]}),
+ K("m-michilanga","Micheladas","Michilanga","+£4.50","",["Michelada Clásica","Cecina al pastor","Pineapple skewer"],"Allergens: gluten, fish, molluscs, sulphites.",{...MICHE,garnish:"Dehydrated pineapple skewer and cecina al pastor",spec:MICHE_BASE+"\n5ml pineapple juice\n5 drops achiote oil"}),
+ K("m-micheviche","Micheladas","Micheviche","+£6","",["Michelada Clásica","Duro (wheat crisp)","Prawn ceviche"],"Allergens: gluten, fish, molluscs.",{...MICHE,garnish:"From the kitchen: duro topped with prawn ceviche",spec:MICHE_BASE}),
+ K("red","Vino","Oveja Roja (red)","£7 / £8.5 / £20","",["Sangiovese/Merlot","Italy"],"125ml / 175ml / 500ml carafe."),
+ K("white","Vino","Xalisquillo (white)","£7 / £8.5 / £20","",["Picpoul","France"],"125ml / 175ml / 500ml carafe."),
+ K("orange","Vino","Albana (orange)","£38 bottle","",["Albana","Italy"],"Bottle only."),
+ K("prosecco","Vino","Serena Prosecco","£35 bottle","",["Brut","Italy"],"Bottle only."),
+ K("celsocero","Low & no","Celso Piña Cero","£8","",["Pineapple","Lime","Horchata","Water"],"Alcohol-free piña colada, Mexican style.",{glass:"Rocks",method:"Shake",rim:"Full toasted coconut & Tajín",garnish:"Dehydrated lime wheel",spec:"25ml pineapple juice\n10ml lime juice\n15ml horchata\n30ml water"}),
+ K("palomafresca","Low & no","Paloma Fresca","£8.50","Lyre's agave 0%",["Lyre's agave 0%","Three Spirit Livener","Schweppes Pink Grapefruit","Citrus"],"Contains caffeine.",{...SPEC.palomafresca,qa:[{q:"Which alcohol-free drink contains caffeine?",a:"Paloma Fresca",w:["Margarita Cero","Celso Piña Cero","Cantarito Cero"]}]}),
+ K("margcero","Low & no","Margarita Cero","£8","Lyre's agave 0%",["Lyre's agave spirit 0%","Fresh lime","Fresh pineapple","Agave"],"",SPEC.margcero),
+ K("aperolcero","Low & no","Aperol Spritz Cero","£7","Lyre's Italian Spritz",["Lyre's Italian Spritz 0%","Schweppes soda","Fresh orange"],"",SPEC.aperolcero),
+ K("cantaritocero","Low & no","Cantarito Cero","£7","",["Fresh grapefruit","Orange","Lime","Grapefruit soda","Chamoy & Tajín rim"],"Served in a clay cup.",SPEC.cantarito),
+ K("topochico","Softs","Topo Chico","£5.5","",["Sparkling mineral water"],"\"The Champagne of Monterrey.\""),
+ K("aguas","Softs","Agua frescas","£4","",["Homemade flavoured water"],"Ask for today's flavours."),
+ K("squirt","Softs","Squirt","£4.50","",["Mexican sparkling grapefruit soda"],""),
+ K("cacto","Softs","Cacto","£5","",["Sparkling prickly pear soda"],""),
+ K("jarritos","Softs","Jarritos","£4.50","",["Flavoured Mexican soda"],"Ask for flavours."),
+ K("electrolit","Softs","Electrolit","£4.50","",["Electrolyte drink"],"Cures tomorrow's cruda (hangover)."),
+ K("water","Softs","Mineral water","£4.5","",["Still or sparkling","750ml"],""),
+ K("service","House info","Service charge","12.5%","",[],"A discretionary 12.5% is added to the bill. All tips go to staff.",{qa:[{q:"What service charge goes on the bill?",a:"Discretionary 12.5%",w:["Discretionary 10%","Mandatory 12.5%","None, tips only"]}]})
+];
+
+/* ---------- Extras: brunch, house classics, off-menu specs ---------- */
+const X=(id,cat,name,spirit,ingredients,note,extra)=>({id:"x-"+id,folder:"extras",cat,name,price:"",spirit,ingredients,note,spec:"",...extra});
+const EXTRAS=[
+ X("solmexico","Brunch","El Sol de Mexico","Aperol",["Aperol","Acid blend or lime","Pineapple juice","Gomme","Tonic"],"",{glass:"Highball",method:"Build",rim:"None",garnish:"Dehydrated orange slice",spec:"40ml Aperol\n10ml acid blend / lime juice\n30ml pineapple juice\n5ml gomme\nTop tonic water"}),
+ X("sirentia","Brunch","Sirentia","Mezcal",["Mezcal","Sirentia mix"],"",{glass:"Highball",method:"Build",rim:"None",garnish:"Dehydrated grapefruit slice",spec:"40ml mezcal\nTop Sirentia mix"}),
+ X("cafehorchata","Brunch","Café de Horchata","",["Horchata syrup","Café de olla"],"",{glass:"Highball",method:"Shake",rim:"None",garnish:"Cinnamon powder on top",spec:"50ml horchata syrup\n100ml café de olla"}),
+ X("cafeolla","Brunch","Café de Olla (batch)","",["Coffee","Café de olla bags","Orange peel","Piloncillo"],"Served in short clay glasses. Also the base of the Espresso Martini de la Olla.",{glass:"Short clay glasses",method:"Brew coffee & bags together 45 min, then remove bags",rim:"",garnish:"",spec:"3 pots of coffee\n2 café de olla bags (6 cloves, 2 cinnamon sticks, 2.5 star anise)\n1 tea bag of orange peel (wash the orange)\n1.5 blocks piloncillo (Mexican sugar)\nBrew 45 min, remove and discard the bags",qa:[{q:"How long does the café de olla brew with the bags?",a:"45 minutes",w:["15 minutes","30 minutes","2 hours"]}]}),
+ X("oldfashioned","House classics","Old Fashioned (house)","Evan Williams bourbon",["Evan Williams","Angostura bitters","Orange bitters","Demerara syrup"],"",{glass:"Rocks",method:"Build",rim:"None",garnish:"Orange twist",spec:"50ml Evan Williams\n3 dashes Angostura + 3 dashes orange bitters\n10ml demerara syrup (or a sugar cube)"}),
+ X("negroni","House classics","Negroni (house)","Beefeater gin",["Beefeater gin","Campari","Cocchi vermouth"],"",{glass:"Rocks",method:"Build",rim:"None",garnish:"Orange peel",spec:"25ml Beefeater\n25ml Campari\n25ml Cocchi vermouth"}),
+ X("mojito","House classics","Mojito (house)","El Dorado 3 year rum",["El Dorado 3yr rum","Lime wedges","Mint","Lime juice","Gomme"],"",{glass:"Highball",method:"Build",rim:"None",garnish:"Mint sprig",spec:"50ml El Dorado 3yr\n2 lime wedges\n5 mint leaves\n20ml lime juice\n10ml gomme"}),
+ X("paloma","Off-menu","Paloma (house)","Ocho Blanco",["Ocho Blanco","Grapefruit juice","Lime juice","Agave syrup","Ting"],"",{glass:"Highball",method:"Shake, top with Ting",rim:"Full pink salt",garnish:"Dehydrated grapefruit slice",spec:"50ml Ocho Blanco\n25ml grapefruit juice\n10ml lime juice\n10ml agave syrup\nTop Ting"}),
+ X("cantarito","Off-menu","Cantarito","Ocho Blanco",["Ocho Blanco","Orange juice","Grapefruit juice","Lime juice","Gomme","Salt","Ting"],"The full-strength version of the Cantarito Cero.",{glass:"Mexican clay vaso",method:"Build",rim:"Full chamoy + Tajín",garnish:"Half wheels of grapefruit, orange & lime, fanned on cocktail sticks",spec:"50ml Ocho Blanco\n20ml orange juice\n20ml grapefruit juice\n20ml lime juice\n5ml gomme\nPinch of salt\nTop Ting (~60ml)"}),
+ X("vampiritocero","Off-menu","Vampirito Cero","",["Sangrita prebatch","Orange juice","Lime juice","Ting"],"",{glass:"Highball",method:"Build",rim:"Full Tajín",garnish:"Fresh orange slice",spec:"50ml prebatch (sangrita + saline)\n25ml orange juice\n25ml lime juice\nTop Ting"}),
+ X("batanga","Off-menu","Batanga","El Tequileño Blanco",["El Tequileño Blanco","Fresh lime","Sea salt","Mexican Coke"],"Theatre: cut and squeeze the lime in front of the guest, then stir with the same knife.",{glass:"Highball",method:"Build, stir with the knife you cut the lime with",rim:"Maldon rock salt (NOT pink salt)",garnish:"",spec:"50ml El Tequileño Blanco\nJuice of a lime, cut and squeezed in front of the guest\nPinch of sea salt\nTop Mexican Coke\nStir with the knife you cut the lime with",qa:[{q:"What do you stir a Batanga with?",a:"The knife you cut the lime with",w:["A bar spoon","A wooden stirrer","A cinnamon stick"]},{q:"Which salt goes on the Batanga rim?",a:"Maldon rock salt",w:["Pink salt","Smoked salt","Tajín"]}]})
+];
+MENU.push(...COCINA,...EXTRAS);
+const DATA_VERSION=2;
+
 let folder = "cantina";
 const CATS_OF=f=>FOLDERS[f].cats;
 Object.defineProperty(window,"CATS",{get:()=>CATS_OF(folder)});
@@ -454,11 +558,23 @@ function initState(remote){
   items.forEach(i=>{if(!i.folder)i.folder="cantina"});
   if(!items.some(i=>i.folder==="classics")&&!(remote&&remote.classicsAdded)) items=items.concat(JSON.parse(JSON.stringify(CLASSICS)));
   if(!FOLDERS[folder]) folder="cantina";
-  for(const k in FOLDERS) if(!Array.isArray(decksBy[k])||!decksBy[k].length) decksBy[k]=k==="cantina"?["Cocktails","Happy hour","Shots"]:[...FOLDERS[k].cats];
+  const ver=remote?remote.dataVersion||1:load("cbd_ver",1);
+  if(ver<DATA_VERSION) upgradeItems();
+  const DEF={cantina:["Cocktails","Happy hour","Shots"],cocina:["Clásicos","De la casa","Happy hour","Low & no"]};
+  for(const k in FOLDERS) if(!Array.isArray(decksBy[k])||!decksBy[k].length) decksBy[k]=DEF[k]||[...FOLDERS[k].cats];
   if(!["learn","cards","quiz","edit"].includes(tab)) tab="learn";
 }
+function upgradeItems(){
+  const byId=new Map(items.map(i=>[i.id,i]));
+  for(const d of DEFAULT_ITEMS()){
+    const u=byId.get(d.id);
+    if(!u){items.push(d);continue}
+    for(const f of ["spec","method","glass","rim","garnish"]) if(!u[f]&&d[f]) u[f]=d[f];
+    if(d.qa&&!u.qa) u.qa=d.qa;
+  }
+}
 Object.defineProperty(window,"decks",{get:()=>decksBy[folder],set:v=>{decksBy[folder]=v}});
-const snapshot=()=>({items,stats,decksBy,folder,tab,classicsAdded:true});
+const snapshot=()=>({items,stats,decksBy,folder,tab,classicsAdded:true,dataVersion:DATA_VERSION});
 const persist=()=>{if(window.cloudSave) window.cloudSave(snapshot())};
 
 /* ---------- Theme (per device) ---------- */
@@ -563,12 +679,13 @@ function renderChips(){
 }
 
 /* ---------- Drink card ---------- */
-const MIXED=["Cocktails","Happy hour","Shots","0%"];
+const MIXED=["Cocktails","Happy hour","Shots","0%","Clásicos","De la casa","Low & no","Brunch","House classics","Off-menu"];
 function drinkCard(i,{edit=false,level:showLevel=true}={}){
   const hid="d-"+i.id;
-  const facts=i.method||i.glass||i.garnish?`<dl class="facts">${i.method?`<dt>Method</dt><dd>${esc(i.method)}</dd>`:""}${i.glass?`<dt>Glass</dt><dd>${esc(i.glass)}</dd>`:""}${i.garnish?`<dt>Garnish</dt><dd>${esc(i.garnish)}</dd>`:""}</dl>`:"";
-  const spec=i.spec?`<div class="spec"><span class="spec-label">${i.folder==="cantina"?"House spec":"Spec"}</span>${esc(i.spec)}</div>`:"";
-  const addSpec=!i.spec&&edit&&i.folder==="cantina"&&MIXED.includes(i.cat)&&i.ingredients.length?`<button type="button" class="link" data-edit="${esc(i.id)}">+ Add house spec</button>`:"";
+  const FACT=[["glass","Glass"],["method","Method"],["rim","Rim"],["garnish","Garnish"]].filter(([k])=>i[k]&&!(k==="rim"&&i[k]==="None"));
+  const facts=FACT.length?`<dl class="facts">${FACT.map(([k,l])=>`<dt>${l}</dt><dd>${esc(i[k])}</dd>`).join("")}</dl>`:"";
+  const spec=i.spec?`<div class="spec"><span class="spec-label">${i.folder==="classics"?"Spec":"House spec"}</span>${esc(i.spec)}</div>`:"";
+  const addSpec=!i.spec&&edit&&i.folder!=="classics"&&MIXED.includes(i.cat)&&i.ingredients.length?`<button type="button" class="link" data-edit="${esc(i.id)}">+ Add house spec</button>`:"";
   const vid=i.video&&/^https:\/\//.test(i.video)?`<a class="link" href="${esc(i.video)}" target="_blank" rel="noopener">▶ Watch the build<span class="sr-only"> for ${esc(i.name)} on YouTube (opens in a new tab)</span></a>`:"";
   return `<article class="card" aria-labelledby="${hid}">
     <div class="drink-head">
@@ -603,7 +720,7 @@ function renderLearn(){
 }
 function renderResults(){
   const q=norm(learnQ.trim());
-  const list=pool().filter(i=>!q||norm([i.name,i.spirit,i.note,i.cat,...i.ingredients].join(" ")).includes(q));
+  const list=pool().filter(i=>!q||norm([i.name,i.spirit,i.note,i.cat,i.spec,i.rim,i.garnish,...i.ingredients].join(" ")).includes(q));
   let h="";
   CATS.filter(c=>decks.includes(c)).forEach(c=>{
     const l=list.filter(i=>i.cat===c);if(!l.length)return;
@@ -647,7 +764,7 @@ function renderCards(focusSel){
 
 /* ---------- QUIZ ---------- */
 let qz=null;
-const KIND=i=>i.folder==="classics"?"mixed":({Food:"food",Softs:"other",Beer:"other",Wine:"other"}[i.cat]||"mixed");
+const KIND=i=>i.folder==="classics"?"mixed":({Food:"food",Softs:"other",Beer:"other",Wine:"other",Cerveza:"other",Vino:"other",Micheladas:"miche","House info":"info"}[i.cat]||"mixed");
 const ingStr=i=>i.ingredients.join(", ");
 const words=i=>new Set(i.ingredients.flatMap(x=>norm(x).split(/[^a-z0-9%]+/)).filter(w=>w.length>2));
 function similar(i,cands){
@@ -667,7 +784,7 @@ function genQuestion(i){
     gens.push(()=>{const o=makeOptions(ingStr(i),near.filter(x=>ingStr(x)!==ingStr(i)).slice(0,6).map(ingStr).sort(()=>Math.random()-.5));return o&&{q:`What goes into the ${nm}?`,opts:o,a:ingStr(i)}});
     gens.push(()=>{const o=makeOptions(i.name,near.filter(x=>ingStr(x)!==ingStr(i)).slice(0,6).map(x=>x.name).sort(()=>Math.random()-.5));return o&&{q:"Which drink is this?",detail:ingStr(i),opts:o,a:i.name}});
   }
-  if(i.price&&i.price.startsWith("£")) gens.push(()=>{const o=makeOptions(i.price,shuffle(uniq(items.filter(x=>x.folder===i.folder&&KIND(x)===KIND(i)).map(x=>x.price))).filter(p=>p&&p.startsWith("£")));return o&&{q:`How much is the ${nm}?`,opts:o,a:i.price}});
+  if(i.ingredients.length&&i.price&&i.price.startsWith("£")) gens.push(()=>{const o=makeOptions(i.price,shuffle(uniq(items.filter(x=>x.folder===i.folder&&KIND(x)===KIND(i)).map(x=>x.price))).filter(p=>p&&p.startsWith("£")));return o&&{q:`How much is the ${nm}?`,opts:o,a:i.price}});
   if(i.spirit) gens.push(()=>{const o=makeOptions(i.spirit,shuffle(items.filter(x=>x.folder===i.folder&&x.spirit&&x.spirit!==i.spirit&&!x.spirit.includes(i.spirit)&&!i.spirit.includes(x.spirit)).map(x=>x.spirit)));return o&&{q:`What's the base spirit in the ${nm}?`,opts:o,a:i.spirit}});
   if(i.ingredients.length>=3) gens.push(()=>{
     const mine=i.ingredients.map(norm);
@@ -675,9 +792,15 @@ function genQuestion(i){
     if(!foreign) return null;
     return {q:`Which of these is <em>not</em> in the ${nm}?`,opts:shuffle([foreign,...shuffle(i.ingredients).slice(0,3)]),a:foreign};
   });
-  [["method","How is the %s made?"],["glass","What's the %s served in?"],["garnish","What's the garnish on the %s?"]].forEach(([f,t])=>{
+  [["method","How is the %s made?"],["glass","What's the %s served in?"],["rim","What's the rim on the %s?"],["garnish","What's the garnish on the %s?"]].forEach(([f,t])=>{
     if(!i[f])return;
     gens.push(()=>{const o=makeOptions(i[f],shuffle(all.filter(x=>x[f]&&x[f]!==i[f]).map(x=>x[f])));return o&&{q:t.replace("%s",nm),opts:o,a:i[f]}});
+  });
+  const lines=(i.spec||"").split("\n").map(l=>l.match(/^(\d+(?:\.\d+)?)ml\s+(.+)$/i)).filter(Boolean).filter(m=>!/ OR /i.test(m[2]));
+  if(lines.length&&i.folder!=="classics") gens.push(()=>{
+    const m=lines[Math.random()*lines.length|0],v=+m[1],what=m[2].replace(/\s*\(.*\)$/,"");
+    const pool=[5,7,10,15,20,25,30,35,40,50,60,70].filter(x=>x!==v).sort((p,q)=>Math.abs(p-v)-Math.abs(q-v)).slice(0,4);
+    return {q:`How much ${esc(what)} goes in the ${nm}?`,opts:shuffle([v+"ml",...shuffle(pool).slice(0,3).map(x=>x+"ml")]),a:v+"ml"};
   });
   (i.qa||[]).forEach(x=>gens.push(()=>({q:esc(x.q),opts:shuffle([x.a,...x.w.slice(0,3)]),a:x.a})));
   for(const g of shuffle(gens)){const r=g();if(r)return {...r,item:i}}
@@ -787,7 +910,7 @@ function renderEdit(){
   $("#exp").onclick=async()=>{try{await navigator.clipboard.writeText(JSON.stringify(items));toast("Menu copied")}catch(e){openText("Copy this text",JSON.stringify(items))}};
   $("#imp").onclick=openImport;
   $("#rstats").onclick=()=>confirmDialog("Reset all quiz progress?","Your mastery dots and weak spots go back to zero. Your menu stays.","Reset progress",()=>{stats={};persist();renderMastery();toast("Progress reset")});
-  $("#rmenu").onclick=()=>confirmDialog("Reset the menu?","Replaces all your edits with the original Cantina menu and the 50 classics.","Reset menu",()=>{items=DEFAULT_ITEMS();persist();renderEdit();renderChips();renderMastery();toast("Menu restored")});
+  $("#rmenu").onclick=()=>confirmDialog("Reset the menu?","Replaces all your edits with the original Cantina and Cocina menus, house specs and the 50 classics.","Reset menu",()=>{items=DEFAULT_ITEMS();persist();renderEdit();renderChips();renderMastery();toast("Menu restored")});
 }
 function openText(t,txt){openDialog(`<h2 class="panel-title" id="dlg-title">${esc(t)}</h2><label class="field"><span class="field-label">Menu text</span><textarea class="input" readonly>${esc(txt)}</textarea></label><div class="btns"><button class="btn" id="cl">Close</button></div>`);$("#cl").onclick=closeDialog}
 function openImport(){
@@ -799,7 +922,7 @@ function openImport(){
     catch(e){$("#impt").setAttribute("aria-invalid","true");$("#imp-err").textContent="That text isn't a valid menu. Paste exactly what Copy menu gave you.";$("#impt").focus()}};
 }
 function openEditor(id){
-  const it=id?items.find(x=>x.id===id):{id:"",folder,cat:decks[0]||CATS[0],name:"",price:"",spirit:"",ingredients:[],note:"",spec:"",method:"",glass:"",garnish:""};
+  const it=id?items.find(x=>x.id===id):{id:"",folder,cat:decks[0]||CATS[0],name:"",price:"",spirit:"",ingredients:[],note:"",spec:"",method:"",rim:"",glass:"",garnish:""};
   const f=(key,label,val,{ph="",hint="",area=false,type="text"}={})=>`<label class="field"><span class="field-label">${label}</span>${area?`<textarea class="input" id="e-${key}" placeholder="${esc(ph)}" ${hint?`aria-describedby="h-${key}"`:""}>${esc(val)}</textarea>`:`<input class="input" id="e-${key}" type="${type}" value="${esc(val)}" placeholder="${esc(ph)}" ${hint?`aria-describedby="h-${key}"`:""}>`}${hint?`<span class="field-hint" id="h-${key}">${hint}</span>`:""}</label>`;
   openDialog(`<h2 class="panel-title" id="dlg-title">${id?"Edit "+esc(it.name):"New drink"}</h2>
     <label class="field"><span class="field-label">Name <span aria-hidden="true">*</span></span><input class="input" id="e-name" value="${esc(it.name)}" required aria-required="true" aria-describedby="e-name-err"><span class="field-error" id="e-name-err"></span></label>
@@ -809,7 +932,7 @@ function openEditor(id){
     ${f("ing","Ingredients",it.ingredients.join("\n"),{area:true,hint:"One per line."})}
     ${f("note","Notes",it.note,{ph:"Rim, serve, upsell"})}
     ${f("spec","Spec",it.spec,{area:true,ph:"50ml Ocho Plata\n25ml Cointreau\n25ml lime",hint:"Measures, ice and rim, one per line."})}
-    ${f("method","Method",it.method||"",{ph:"Shake"})}
+    <div class="split">${f("method","Method",it.method||"",{ph:"Shake"})}${f("rim","Rim",it.rim||"",{ph:"Half Tajín"})}</div>
     <div class="split">${f("glass","Glass",it.glass||"",{ph:"Coupe"})}${f("garnish","Garnish",it.garnish||"",{ph:"Lime wheel"})}</div>
     <div class="btns">${id?`<button class="btn btn-danger-outline" id="del">Delete</button>`:""}<button class="btn" id="cl">Cancel</button><button class="btn btn-primary" id="sv">Save</button></div>`,{focus:"#e-name"});
   $("#cl").onclick=closeDialog;
@@ -818,7 +941,7 @@ function openEditor(id){
     if(!name){$("#e-name").setAttribute("aria-invalid","true");$("#e-name-err").textContent="Give the drink a name.";$("#e-name").focus();return}
     const d={...it,name,cat:$("#e-cat").value,price:$("#e-price").value.trim(),spirit:$("#e-spirit").value.trim(),
       ingredients:$("#e-ing").value.split("\n").map(s=>s.trim()).filter(Boolean),note:$("#e-note").value.trim(),spec:$("#e-spec").value.trim(),
-      method:$("#e-method").value.trim(),glass:$("#e-glass").value.trim(),garnish:$("#e-garnish").value.trim(),folder:it.folder||folder};
+      method:$("#e-method").value.trim(),rim:$("#e-rim").value.trim(),glass:$("#e-glass").value.trim(),garnish:$("#e-garnish").value.trim(),folder:it.folder||folder};
     if(id){items[items.findIndex(x=>x.id===id)]=d}else{d.id="u"+Date.now().toString(36);items.push(d);if(!decks.includes(d.cat)){decks=[...decks,d.cat]}}
     persist();closeDialog();renderChips();render();renderMastery();toast(`Saved ${name}`);
   };
@@ -912,7 +1035,7 @@ const errText = e => ERR[e && e.code] || "Something went wrong. Please try again
 
 /* ---------- Sign-in screens ---------- */
 let mode = "signin", flash = null;
-const brandHead = sub => `<h1 class="gate-h">BAR<br>DRILL</h1><p class="eyebrow" style="margin:var(--s-2) 0 var(--s-2)">${sub||"Corrochio's Cantina trainer"}</p>`;
+const brandHead = sub => `<h1 class="gate-h">BAR<br>DRILL</h1><p class="eyebrow" style="margin:var(--s-2) 0 var(--s-2)">${sub||"Corrochio's bar trainer"}</p>`;
 function pwField(id,label,ac){
   return `<div class="field"><label class="field-label" for="${id}">${label}</label><div class="pw">
     <input class="input" id="${id}" type="password" autocomplete="${ac}" required ${flash&&flash.t==="error"&&flash.f&&flash.f.includes(id)?'aria-invalid="true" aria-describedby="a-msg"':""}>
