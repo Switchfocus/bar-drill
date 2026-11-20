@@ -40,6 +40,17 @@ for (const f of files) {
 }
 
 let errors = 0;
+
+// Check Firebase CDN version floor (must be >= 13 to match existing IndexedDB schema)
+const authSrc = readFileSync(join(publicDir, "auth.js"), "utf8");
+const fvMatch = authSrc.match(/const FV\s*=\s*["']([^"']+)["']/);
+if (fvMatch) {
+  const major = parseInt(fvMatch[1].split(".")[0], 10);
+  if (major < 13) {
+    console.error(`✗  auth.js: Firebase CDN version "${fvMatch[1]}" is below 13.x — users' IndexedDB data requires 13+`);
+    errors++;
+  }
+}
 for (const f of files) {
   const src = readFileSync(join(publicDir, f), "utf8");
   for (const { specifier, names } of parseNamedImports(src)) {

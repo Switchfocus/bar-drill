@@ -5,7 +5,7 @@ import { state, esc } from "./state.js";
 import { toast } from "./ui.js";
 import { initSync, loadMember, createMember, loadProgress, scheduleProgressSave, flushProgress } from "./sync.js";
 
-const FV = "10.14.1";
+const FV = "13.4.0"; // single source — all three Firebase modules use this version
 
 const ERR = {
   "auth/invalid-credential":   "That email and password don't match.",
@@ -75,8 +75,16 @@ async function loadFirebase() {
 
   let db;
   try {
-    db = F.initializeFirestore(app, { localCache: F.persistentLocalCache({ tabManager: F.persistentMultipleTabManager() }) });
-  } catch { db = F.getFirestore(app); }
+    db = F.initializeFirestore(app, {
+      localCache: F.persistentLocalCache({ tabManager: F.persistentMultipleTabManager() }),
+    });
+  } catch(e) {
+    // Firestore throws if already initialised for this app (e.g. hot-reload / duplicate call).
+    // In that case the existing instance already has persistent cache; just retrieve it.
+    // Any other error (bad options, incompatible SDK build) is re-thrown so it surfaces loudly.
+    if (e?.name === "FirebaseError") { db = F.getFirestore(app); }
+    else throw e;
+  }
 
   initSync(db, F);
   return { A, F, db };
