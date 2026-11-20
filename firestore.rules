@@ -1,11 +1,87 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Each person can only read and write their own progress document.
-    match /users/{uid} {
-      allow read, write: if request.auth != null && request.auth.uid == uid;
+
+    function memberDoc(uid) {
+      return get(/databases/$(database)/documents/members/$(uid));
     }
-    // Everything else is closed.
+    function isAdmin(uid) {
+      return memberDoc(uid).data.role == "admin";
+    }
+    function isActive(uid) {
+      return memberDoc(uid).data.status == "active";
+    }
+    function memberMenus(uid) {
+      return memberDoc(uid).data.menus;
+    }
+    function adminCount() {
+      return get(/databases/$(database)/documents/config/app).data.adminCount;
+    }
+
+    match /members/{uid} {
+      allow read: if request.auth != null &&
+        (request.auth.uid == uid || isAdmin(request.auth.uid));
+
+      // New signup: staff only, pending, empty menus, null position
+      allow create: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.data.role == "staff"
+        && request.resource.data.status == "pending"
+        && request.resource.data.menus == []
+        && request.resource.data.position == null
+        && request.resource.data.keys().hasAll(["email","displayName","createdAt","role","status","position","menus"]);
+
+      allow update: if request.auth != null && (
+        // Admin can change anything, subject to last-admin guard
+        isAdmin(request.auth.uid)
+        // Staff can only rename themselves
+        || (request.auth.uid == uid
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["displayName"]))
+      )
+      // Block demoting the last admin
+      && !(resource.data.role == "admin"
+           && request.resource.data.role != "admin"
+           && adminCount() <= 1);
+
+      allow delete: if request.auth != null
+        && isAdmin(request.auth.uid)
+        && adminCount() > 1;
+    }
+
+    match /menus/{menuId} {
+      allow read: if request.auth != null && (
+        isAdmin(request.auth.uid)
+        || (isActive(request.auth.uid)
+            && resource.data.published == true
+            && menuId in memberMenus(request.auth.uid))
+      );
+      allow write: if request.auth != null && isAdmin(request.auth.uid);
+    }
+
+    match /menus/{menuId}/items/{itemId} {
+      allow read: if request.auth != null && (
+        isAdmin(request.auth.uid)
+        || (isActive(request.auth.uid)
+            && get(/databases/$(database)/documents/menus/$(menuId)).data.published == true
+            && menuId in memberMenus(request.auth.uid))
+      );
+      allow write: if request.auth != null && isAdmin(request.auth.uid);
+    }
+
+    match /progress/{uid} {
+      allow read: if request.auth != null &&
+        (request.auth.uid == uid || isAdmin(request.auth.uid));
+      allow write: if request.auth != null
+        && request.auth.uid == uid
+        && memberDoc(uid).data.status in ["active", "pending"];
+      allow delete: if request.auth != null && isAdmin(request.auth.uid);
+    }
+
+    match /config/{doc} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && isAdmin(request.auth.uid);
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

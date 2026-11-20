@@ -1,0 +1,17 @@
+{
+  "name": "bar-drill",
+  "version": "9.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "firebase emulators:exec --only firestore --project demo-bar-drill 'vitest run tests/rules.test.js'",
+    "test:watch": "vitest tests/rules.test.js",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "^4.0.1",
+    "firebase": "^11.0.0",
+    "firebase-admin": "^12.4.0",
+    "vitest": "^2.1.0",
+    "@playwright/test": "^1.46.0"
+  }
+}
