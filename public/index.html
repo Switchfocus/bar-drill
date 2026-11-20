@@ -454,6 +454,29 @@ body.fam-mode .chips,body.bar-mode .chips,body.shift-mode .chips,body.shift-mode
 .dn-seg{flex:none;width:150px}
 .dn-seg button[aria-pressed="true"]{background:var(--c-surface)}
 
+.grp-list{list-style:none;margin:var(--s-3) 0 0;padding:0}
+.grp{position:relative;border-radius:var(--r-md)}
+.grp+.grp{margin-top:var(--s-2)}
+.grp.next{box-shadow:0 0 0 2px var(--c-brand);border-radius:var(--r-md)}
+.next-tag{position:absolute;right:8px;top:-9px;z-index:1;font:700 10px/1 var(--f-ui);text-transform:uppercase;letter-spacing:.08em;background:var(--c-brand-text);color:var(--c-on-brand);padding:4px 7px;border-radius:var(--r-pill)}
+.mk-steps.flat{margin:0}
+.grp-head{background:var(--c-surface);min-height:56px}
+.grp-head .grp-title{display:block;font:600 var(--fs-md)/1.3 var(--f-ui)}
+.grp-head .grp-meta{display:block;font-size:var(--fs-sm);color:var(--c-muted)}
+.grp-head.part .opt-check{background:var(--c-tint);border-color:var(--c-brand);color:var(--c-brand-text)}
+.grp-head.done .grp-title{color:var(--c-muted);text-decoration:line-through;text-decoration-color:var(--c-line-strong)}
+.grp-action{flex:none;font:600 var(--fs-xs)/1 var(--f-ui);text-transform:uppercase;letter-spacing:.06em;color:var(--c-brand-text);padding:6px 8px;border-radius:var(--r-pill);background:var(--c-tint)}
+.grp.complete .grp-action{background:var(--c-sunken);color:var(--c-muted)}
+.grp-subs{list-style:none;margin:0;padding:6px 0 2px 22px;border-left:2px solid var(--c-line);margin-left:22px}
+.grp-subs li+li{margin-top:4px}
+.mk-step.sub{min-height:var(--tap);padding:6px var(--s-3);background:var(--c-bg)}
+.mk-step.sub .opt-check{width:20px;height:20px}
+.sub-name{display:block;font:500 var(--fs-sm)/1.3 var(--f-ui)}
+.sub-amt{display:block;font-size:var(--fs-sm)}
+.sub-amt .mk-amt{min-width:0}
+.mk-step.sub.done .mk-main{text-decoration:none}
+.mk-step.sub.done .sub-name{text-decoration:line-through;text-decoration-color:var(--c-line-strong);color:var(--c-muted)}
+
 </style>
 </head>
 <body class="locked">
@@ -1578,7 +1601,7 @@ function guideFor(item,variant){
     item.spec.split("\n").filter(Boolean).forEach((l,n)=>{
       const m=l.match(/^((?:\d+(?:\.\d+)?(?:–\d+(?:\.\d+)?)?|½)\s?(?:ml|dashes|dash|drops|drop|tsp)?|Pinch(?: of)?|Splash)\s+(.+)$/i);
       if(/^top\b/i.test(l)) g.tops.push({key:"t"+n,label:l.replace(/^top\s*/i,""),amt:"Top"});
-      else g.pours.push({key:"s"+n,label:m?m[2]:l,amt:m?m[1]:"",ml:m&&/ml$/i.test(m[1])?parseFloat(m[1]):null,rank:n});
+      else g.pours.push({key:"s"+n,label:m?m[2]:l,amt:m?m[1]:"",ml:m&&/ml$/i.test(m[1])?parseFloat(m[1]):null,rank:guessRank(m?m[2]:l)});
     });
   }else{
     // beers, wine, softs, shots and plain serves: what the menu tells us
@@ -1592,12 +1615,20 @@ function guideFor(item,variant){
   if(g.source==="none"&&kind==="cocktail") g.tips.push("No house spec on file yet: ask the team.");
   return g;
 }
+function guessRank(t){t=norm(t);
+  if(/lime|lemon|grapefruit|orange juice|pineapple|clamato|juice|cafe de olla|water/.test(t))return 1;
+  if(/syrup|gomme|simple|agave|honey|grenadine|sugar|orgeat|cordial|demerara/.test(t))return 2;
+  if(/bitters|dash|egg|salt|maggi|worcestershire|sauce|mint|cream/.test(t))return 3;
+  if(/vermouth|liqueur|cointreau|curacao|campari|chartreuse|maraschino|lillet|benedictine|aperol|kahlua|cacao|violette|sherry|montenegro|heering|applejack/.test(t))return 4;
+  return 5}
+// one name for the same bottle across specs: "Lime juice" = "lime" = "Fresh lime"
+const canon=t=>norm(t).replace(/\(.*?\)/g,"").replace(/\b(fresh|juice|top|of)\b/g,"").replace(/[^a-z0-9%]+/g," ").trim().replace(/s$/,"");
 // every tickable step of one order line, in teaching order
 function stepsFor(g){
   const s=[];
   if(g.glass) s.push({key:"glass",stage:"glass",label:"Glass",val:g.glass});
   if(g.rim) s.push({key:"rim",stage:"rim",label:"Rim",val:g.rim});
-  g.pours.forEach(p=>s.push({key:"p:"+p.key,stage:g.kind==="shot"?"serve":"pour",label:p.label,val:p.amt,amt:p.amt,ml:p.ml}));
+  g.pours.forEach(p=>s.push({key:"p:"+p.key,stage:g.kind==="shot"?"serve":"pour",label:p.label,val:p.amt,amt:p.amt,ml:p.ml,rank:p.rank}));
   if(g.method) s.push({key:"method",stage:"mix",label:"Method",val:g.method,rank:METHOD_RANK[g.method]||4});
   g.tops.forEach(t=>s.push({key:"t:"+t.key,stage:"top",label:t.label,val:t.amt,amt:t.amt}));
   if(g.garnish) s.push({key:"garnish",stage:"garnish",label:"Garnish",val:g.garnish});
@@ -1679,6 +1710,7 @@ function ticketSheet(){
 }
 function startMaking(){
   if(!shift.order.length)return;
+  if(!shift.started) shift.view=new Set(shift.order.map(l=>l.id+l.variant)).size>1?"run":"drink";
   shift.stage="make";if(!shift.started)shift.started=Date.now();saveShift();renderShift("#mk-title");window.scrollTo(0,0);
   announce(`Making ${qtyTotal()} drinks.`);
 }
@@ -1709,24 +1741,89 @@ function drinkCardMake(l){
 const STAGES=[
  ["glass","Glassware","Line up every glass first so nothing waits."],
  ["rim","Rims","Rim before you pour so nothing drips into the drink."],
- ["pour","Pours","Cheapest first: citrus and syrups, then liqueurs, spirit last. A mistake then wastes less."],
- ["mix","Shake, stir, build","Dry shakes first, they take longest. Shake the rest back to back so they all land cold."],
+ ["pour","Pours","One bottle at a time: pour it into every tin that needs it, then put it back. Citrus and syrups first, spirit last, so a mistake wastes less."],
+ ["mix","Shake, stir, build","Dry shakes first, they take longest. Then shake the rest back to back so they all land cold."],
  ["top","Top up","Top fizz last so it stays lively."],
  ["serve","Beer, wine, softs & shots","Last, so they're cold and fresh when they go out."],
  ["garnish","Garnish & send","Garnish, check the ticket, send."]
 ];
-function runSheet(){
-  let h="";
+const lineName=(L,l)=>L.item.name+(l.variant?` (${vName(l.variant)})`:"")+(l.qty>1?` ×${l.qty}`:"");
+function buildGroups(){
+  const out=[];
   STAGES.forEach(([st,title,tip])=>{
     const rows=[];
-    shift.order.forEach(l=>{const L=lineInfo(l);if(!L)return;L.steps.filter(s=>s.stage===st).forEach(s=>rows.push({l,s,name:L.item.name+(l.variant?` (${vName(l.variant)})`:"")+(l.qty>1?` ×${l.qty}`:"")}))});
+    shift.order.forEach(l=>{const L=lineInfo(l);if(!L)return;L.steps.filter(s=>s.stage===st).forEach(s=>rows.push({l,s,name:lineName(L,l)}))});
     if(!rows.length)return;
-    if(st==="mix") rows.sort((a,b)=>(a.s.rank||4)-(b.s.rank||4));
-    const done=rows.filter(r=>ck(r.l,r.s.key)).length;
-    h+=`<section class="rs-stage ${done===rows.length?"complete":""}" aria-labelledby="rs-${st}"><div class="row"><h3 class="rs-title" id="rs-${st}">${esc(title)}</h3><span class="mk-count num">${done===rows.length?ICON.check:`${done}/${rows.length}`}</span></div>
-      <p class="rs-tip">${esc(tip)}</p><ol class="mk-steps">${rows.map(r=>stepBtn(r.l,r.s.key==="glass"||r.s.key==="rim"||r.s.key==="method"||r.s.key==="garnish"||r.s.key==="serve"?{...r.s,label:"",val:r.s.val}:r.s,r.name)).join("")}</ol></section>`;
+    const by=new Map();
+    rows.forEach(r=>{const k=st==="pour"||st==="top"?canon(r.s.label):st==="serve"?"u"+r.l.uid+r.s.key:r.s.val;if(!by.has(k))by.set(k,[]);by.get(k).push(r)});
+    let groups=[...by.entries()].map(([k,rs],i)=>({key:st+"|"+k,stage:st,rows:rs,i,
+      title:st==="pour"||st==="top"?rs[0].s.label:st==="serve"?rs[0].name:rs[0].s.val,
+      rank:st==="pour"?Math.min(...rs.map(r=>r.s.rank??3)):st==="mix"?(METHOD_RANK[rs[0].s.val]||4):0,
+      units:rs.reduce((a,r)=>a+r.l.qty,0)}));
+    groups.sort((a,b)=>a.rank-b.rank||b.units-a.units||a.i-b.i);
+    out.push({st,title,tip,groups});
   });
-  return h;
+  return out;
+}
+const gDone=g=>g.rows.filter(r=>ck(r.l,r.s.key)).length;
+function groupMeta(g){
+  const n=g.units,d=n===1?"1 drink":`${n} drinks`;
+  if(g.stage==="glass") return n===1?"1 glass":`${n} glasses`;
+  if(g.stage==="pour"){const mls=g.rows.map(r=>r.s.ml!=null?r.s.ml*r.l.qty:null);return mls.every(x=>x!=null)?`${d} · ${mls.reduce((a,b)=>a+b,0)}ml total`:d}
+  if(g.stage==="mix") return n>1?`${d}, back to back`:d;
+  return d;
+}
+function subBtn(r){
+  const {l,s}=r,on=ck(l,s.key),hide=shift.recall&&s.amt&&!shift.revealed[l.uid+"|"+s.key]&&!on;
+  const amt=s.amt?(hide?`<span class="amt-hide">? ml</span>`:`<span class="mk-amt num">${esc(s.amt)}${l.qty>1?" each":""}</span>${l.qty>1&&s.ml?` <span class="x2 num">= ${s.ml*l.qty}ml</span>`:""}`):"";
+  return `<li><button type="button" class="mk-step sub ${on?"done":""}" data-l="${l.uid}" data-k="${esc(s.key)}" aria-pressed="${on}">
+    <span class="opt-check" aria-hidden="true">${ICON.check}</span><span class="grow mk-main"><span class="sub-name">${esc(r.name)}</span>${amt?`<span class="sub-amt">${amt}</span>`:""}</span>${hide?`<span class="sr-only">. Amount hidden: tap to reveal</span>`:""}</button></li>`;
+}
+function groupHTML(g,isNext){
+  const done=gDone(g),all=g.rows.length,state=done===all?"true":done?"mixed":"false";
+  const single=all===1;
+  if(single&&g.stage!=="pour"&&g.stage!=="top"){
+    const r=g.rows[0];return `<li class="grp ${state==="true"?"complete":""} ${isNext?"next":""}">${isNext?`<span class="next-tag">Up next</span>`:""}<ol class="mk-steps flat">${stepBtn(r.l,{...r.s,label:"",val:r.s.val},r.name)}</ol></li>`;
+  }
+  if(single){
+    const r=g.rows[0],on=ck(r.l,r.s.key),hide=shift.recall&&r.s.amt&&!shift.revealed[r.l.uid+"|"+r.s.key]&&!on;
+    const amt=r.s.amt?(hide?`<span class="amt-hide">? ml</span>`:`<span class="mk-amt num">${esc(r.s.amt)}${r.l.qty>1?" each":""}</span>${r.l.qty>1&&r.s.ml?` <span class="x2 num">= ${r.s.ml*r.l.qty}ml</span>`:""}`):"";
+    return `<li class="grp ${on?"complete":""} ${isNext?"next":""}">${isNext?`<span class="next-tag">Up next</span>`:""}<button type="button" class="mk-step grp-head ${on?"done":""}" data-l="${r.l.uid}" data-k="${esc(r.s.key)}" aria-pressed="${on}">
+      <span class="opt-check" aria-hidden="true">${ICON.check}</span><span class="grow"><span class="grp-title">${esc(g.title)}</span><span class="grp-meta">${esc(r.name)}${amt?" · ":""}${amt}</span></span>${hide?`<span class="sr-only">. Amount hidden: tap to reveal</span>`:""}</button></li>`;
+  }
+  const hideAll=shift.recall&&g.rows.some(r=>r.s.amt&&!shift.revealed[r.l.uid+"|"+r.s.key]&&!ck(r.l,r.s.key));
+  return `<li class="grp ${state==="true"?"complete":""} ${isNext?"next":""}">${isNext?`<span class="next-tag">Up next</span>`:""}
+    <button type="button" class="mk-step grp-head ${state==="true"?"done":state==="mixed"?"part":""}" data-g="${esc(g.key)}" aria-pressed="${state}" aria-describedby="gm-${esc(g.key).replace(/[^a-zA-Z0-9]/g,"_")}">
+      <span class="opt-check" aria-hidden="true">${state==="mixed"?ICON.minus:ICON.check}</span>
+      <span class="grow"><span class="grp-title">${esc(g.title)}</span><span class="grp-meta" id="gm-${esc(g.key).replace(/[^a-zA-Z0-9]/g,"_")}">${hideAll?groupMeta(g).replace(/ · \d+ml total/,""):groupMeta(g)}${state==="mixed"?` · ${done}/${all} done`:""}</span></span>
+      <span class="grp-action" aria-hidden="true">${state==="true"?"Undo":hideAll?"Reveal":"All"}</span>
+    </button>
+    ${state==="true"?"":`<ul class="grp-subs" aria-label="${esc(g.title)}: each drink">${g.rows.map(subBtn).join("")}</ul>`}
+  </li>`;
+}
+function runSheet(){
+  const stages=buildGroups();let nextKey=null;
+  for(const S of stages){const g=S.groups.find(g=>gDone(g)<g.rows.length);if(g){nextKey=g.key;break}}
+  return stages.map(S=>{
+    const done=S.groups.filter(g=>gDone(g)===g.rows.length).length;
+    return `<section class="rs-stage ${done===S.groups.length?"complete":""}" aria-labelledby="rs-${S.st}"><div class="row"><h3 class="rs-title" id="rs-${S.st}">${esc(S.title)}</h3><span class="mk-count num" aria-label="${done} of ${S.groups.length} done">${done===S.groups.length?ICON.check:`${done}/${S.groups.length}`}</span></div>
+      ${done===S.groups.length?"":`<p class="rs-tip">${esc(S.tip)}</p>`}<ul class="grp-list">${S.groups.map(g=>groupHTML(g,g.key===nextKey)).join("")}</ul></section>`;
+  }).join("");
+}
+function tickGroup(key){
+  const g=buildGroups().flatMap(S=>S.groups).find(x=>x.key===key);if(!g)return;
+  const hidden=g.rows.filter(r=>shift.recall&&r.s.amt&&!shift.revealed[r.l.uid+"|"+r.s.key]&&!ck(r.l,r.s.key));
+  if(hidden.length){hidden.forEach(r=>shift.revealed[r.l.uid+"|"+r.s.key]=true);saveShift();renderMake(`[data-g="${CSS.escape(key)}"]`);
+    announce(g.rows.map(r=>`${r.name}: ${r.s.amt}`).join(". "));return}
+  const allOn=gDone(g)===g.rows.length;
+  g.rows.forEach(r=>{const k=r.l.uid+"|"+r.s.key;if(allOn)delete shift.checks[k];else shift.checks[k]=true});
+  saveShift();
+  const {done,all}=progress();
+  if(allOn){renderMake(`[data-g="${CSS.escape(key)}"]`);return}
+  const groups=buildGroups().flatMap(S=>S.groups),nx=groups.find(x=>gDone(x)<x.rows.length);
+  renderMake(nx?(nx.rows.length>1||nx.stage==="pour"||nx.stage==="top"?`[data-g="${CSS.escape(nx.key)}"]`:`.mk-step[data-l="${nx.rows[0].l.uid}"][data-k="${CSS.escape(nx.rows[0].s.key)}"]`):"#mk-finish");
+  announce(`${g.title} done for ${g.units===1?"1 drink":g.units+" drinks"}.`);
+  if(done===all){toast("All done. Send it!")}
 }
 function renderMake(focusSel){
   const {done,all}=progress();
@@ -1747,7 +1844,8 @@ function renderMake(focusSel){
   $("#mk-recall").onclick=()=>{shift.recall=!shift.recall;saveShift();renderMake("#mk-recall")};
   $("#mk-wake").onclick=toggleWake;
   $("#main").querySelectorAll("[data-reopen]").forEach(b=>b.onclick=()=>{const l=shift.order.find(x=>x.uid==b.dataset.reopen);lineInfo(l).steps.forEach(s=>delete shift.checks[l.uid+"|"+s.key]);saveShift();renderMake(`#mk-${l.uid}`)});
-  $("#main").querySelectorAll(".mk-step").forEach(b=>b.onclick=()=>tickStep(+b.dataset.l,b.dataset.k));
+  $("#main").querySelectorAll(".mk-step[data-l]").forEach(b=>b.onclick=()=>tickStep(+b.dataset.l,b.dataset.k));
+  $("#main").querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>tickGroup(b.dataset.g));
   $("#mk-edit").onclick=()=>{shift.stage="pick";saveShift();renderShift();window.scrollTo(0,0)};
   $("#mk-finish").onclick=()=>{
     const go=()=>{shift.stage="done";shift.ended=Date.now();saveShift();renderShift("#dn-title");window.scrollTo(0,0)};
@@ -1762,7 +1860,7 @@ function tickStep(uid,key){
   saveShift();
   const lineDone=L.steps.every(x=>ck(l,x.key)),{done,all}=progress();
   // keep focus moving down the checklist
-  const btns=[...document.querySelectorAll(".mk-step")],i=btns.findIndex(b=>b.dataset.l==uid&&b.dataset.k===key);
+  const btns=[...document.querySelectorAll(".mk-step[data-l]")],i=btns.findIndex(b=>b.dataset.l==uid&&b.dataset.k===key);
   const nextBtn=btns.slice(i+1).find(b=>b.getAttribute("aria-pressed")!=="true");
   const nextSel=nextBtn?`.mk-step[data-l="${nextBtn.dataset.l}"][data-k="${CSS.escape(nextBtn.dataset.k)}"]`:"#mk-finish";
   renderMake(shift.checks[k]?(lineDone&&shift.view==="drink"?`#mk-${uid}`:nextSel):`.mk-step[data-l="${uid}"][data-k="${CSS.escape(key)}"]`);
