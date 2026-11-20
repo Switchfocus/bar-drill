@@ -3,6 +3,7 @@
   "version": "9.0.0",
   "type": "module",
   "scripts": {
+    "check": "node scripts/check-imports.js",
     "test": "firebase emulators:exec --only firestore --project demo-bar-drill 'vitest run tests/rules.test.js'",
     "test:watch": "vitest tests/rules.test.js",
     "test:e2e": "playwright test"

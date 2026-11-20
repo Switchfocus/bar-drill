@@ -1,8 +1,8 @@
 /* ── Firebase auth bootstrap ────────────────────────────────────────────────── */
 // Exports: initAuth({ onSignedOut, onPending, onDisabled, onActive }), signOut
 
-import { state } from "./state.js";
-import { toast, esc } from "./ui.js";
+import { state, esc } from "./state.js";
+import { toast } from "./ui.js";
 import { initSync, loadMember, createMember, loadProgress, scheduleProgressSave, flushProgress } from "./sync.js";
 
 const FV = "10.14.1";

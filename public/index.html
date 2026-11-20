@@ -636,7 +636,22 @@ dialog .dialog-actions,.editor-form .dialog-actions{margin-top:var(--s-4);displa
 </nav>
 <div id="toast" role="status" aria-live="polite"></div>
 <div id="sr-announce" class="sr-only" aria-live="polite" aria-atomic="true"></div>
-<script type="module" src="app.js"></script>
+<script type="module">
+import('./app.js').catch(err => {
+  const gate = document.getElementById('gate');
+  if (gate) {
+    gate.innerHTML = '<main><h1 class="gate-h">BAR <span>DRILL</span></h1>'
+      + '<section class="card" style="max-width:420px;margin:var(--s-6) auto">'
+      + '<h2 class="panel-title">Something went wrong loading Bar Drill</h2>'
+      + '<p class="lede" id="boot-err-msg"></p>'
+      + '<div class="btns"><button class="btn btn-dark" onclick="location.reload()">Reload</button></div>'
+      + '</section></main>';
+    document.getElementById('boot-err-msg').textContent = err?.message || String(err);
+    document.body.classList.remove('locked');
+  }
+  console.error('Boot error:', err);
+});
+</script>
 
 </body>
 </html>
