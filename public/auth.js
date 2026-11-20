@@ -307,7 +307,6 @@ export function renderAccountPanel(el) {
   const user = state.user;
   const isPw = user.providerData?.some(p => p.providerId==="password");
   const isG  = user.providerData?.some(p => p.providerId==="google.com");
-  const { onSyncState, getSyncState } = import("./sync.js");
 
   el.innerHTML = `<div class="row"><h2 class="panel-title" id="h-acct">Account</h2></div>
     <p style="margin-top:var(--s-2)">${user.displayName?`<strong>${esc(user.displayName)}</strong><br>`:""}<span class="muted">${esc(user.email||"")}</span>${isG?'<span class="tag">Google</span>':""}</p>
