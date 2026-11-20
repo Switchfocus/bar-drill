@@ -227,7 +227,7 @@ describe("members: update", () => {
     await seedMember(testEnv, "alice");
     const ctx = testEnv.authenticatedContext("alice");
     await assertFails(updateDoc(doc(ctx.firestore(), "members", "alice"), {
-      status: "active",
+      status: "pending",  // actual change — diff will include "status"
     }));
   });
 
