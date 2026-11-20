@@ -303,7 +303,7 @@ body.fam-mode .chips,body.bar-mode .chips{display:none}
 .stepper button{width:100%;min-height:var(--tap);display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:0;padding:0;color:var(--c-muted);border-radius:var(--r-sm)}
 .st-dot{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font:600 var(--fs-xs)/1 var(--f-ui);border:1.5px solid var(--c-line-strong);background:var(--c-bg);transition:all var(--dur) var(--ease)}
 .st-dot svg{width:13px;height:13px}
-.st-label{font:500 11px/1 var(--f-ui)}
+.st-label{font:500 12px/1 var(--f-ui)}
 .stepper .done .st-dot{background:var(--c-success);border-color:var(--c-success);color:var(--c-surface)}
 .stepper .current .st-dot{background:var(--c-primary);border-color:var(--c-primary);color:var(--c-on-primary);box-shadow:0 0 0 4px color-mix(in srgb,var(--c-brand) 28%,transparent)}
 .stepper .current button{color:var(--c-ink)} .stepper .current .st-label{font-weight:700}
@@ -314,6 +314,10 @@ body.fam-mode .chips,body.bar-mode .chips{display:none}
 .build-strip .dot{color:var(--c-line-strong)}
 /* step body */
 .step{margin-top:var(--s-4)}
+@media(prefers-reduced-motion:no-preference){
+  @keyframes stepIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  .step{animation:stepIn .18s var(--ease)}
+}
 .step-h{font:600 var(--fs-xl)/1.2 var(--f-display);letter-spacing:-.01em;margin-bottom:var(--s-3)}
 .sub-h{font:600 var(--fs-xs)/1.3 var(--f-ui);text-transform:uppercase;letter-spacing:.08em;color:var(--c-muted);margin:var(--s-4) 0 var(--s-2)}
 .inline-hint{font-size:var(--fs-sm);color:var(--c-brand-text);font-weight:600;margin-top:var(--s-3)}
@@ -381,6 +385,8 @@ body.fam-mode .chips,body.bar-mode .chips{display:none}
 .result-score small{font-size:1.25rem;color:var(--c-muted)}
 .r-sec{padding:0 var(--s-4) var(--s-2)}
 .r-sec .sub-h{margin-top:var(--s-3)}
+.r-sec.bad .sub-h{color:var(--c-danger)}
+.r-sec.ok .sub-h{color:var(--c-success)}
 .checks{list-style:none;margin:0;padding:0}
 .checks li{display:flex;gap:var(--s-3);align-items:flex-start;padding:6px 0}
 .checks .ck{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;margin-top:1px}
@@ -878,6 +884,11 @@ function openDialog(html,{focus}={}){
     else if(!e.shiftKey&&document.activeElement===f[f.length-1]){e.preventDefault();f[0].focus()}
   });
   (focus?dlg.querySelector(focus):dlg.querySelector(FOCUSABLE))?.focus();
+  // Swipe-to-dismiss (iOS sheet pattern)
+  let swipeStart=0,swipeY=0,swipeOn=false;
+  dlg.addEventListener("touchstart",e=>{swipeStart=e.touches[0].clientY;swipeY=0;swipeOn=dlg.scrollTop===0},{passive:true});
+  dlg.addEventListener("touchmove",e=>{if(!swipeOn)return;swipeY=Math.max(0,e.touches[0].clientY-swipeStart);if(swipeY>0){dlg.style.transform=`translateY(${swipeY}px)`;dlg.style.transition="none"}},{passive:true});
+  dlg.addEventListener("touchend",()=>{if(!swipeOn)return;dlg.style.transition="";if(swipeY>60)closeDialog();else dlg.style.transform="";swipeOn=false});
   return dlg;
 }
 function closeDialog(){
@@ -1308,12 +1319,12 @@ function stepBody(){
   switch(bar.step){
     case 0: return h("Which glass?")+`<div class="glass-grid" role="group" aria-labelledby="step-h">${GLASSES.map(g=>`<button type="button" class="glass" data-glass="${esc(g)}" aria-pressed="${s.glass===g}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${GLASS_ICON[g]}</svg><span>${esc(g)}</span></button>`).join("")}</div>`;
     case 1: return h("Rim")+`<div class="opts" role="group" aria-label="No rim">${optBtn("data-norim","1","No rim",s.noRim?"1":"")}</div>
-      <p class="sub-h" id="cov-h">Or rim it: how much?</p>
+      <p class="sub-h" id="cov-h" style="margin-top:var(--s-4)">Or rim it — how much?</p>
       <div class="seg" role="group" aria-labelledby="cov-h">${["Half","Full"].map(c=>`<button type="button" data-cov="${c}" aria-pressed="${!s.noRim&&s.rimCov===c}">${c} rim</button>`).join("")}</div>
+      ${!s.noRim&&s.rimType&&!s.rimCov?`<p class="inline-hint" role="status">Also choose half or full above.</p>`:""}
       <p class="sub-h" id="type-h">With what?</p>
-      <div class="opts" role="group" aria-labelledby="type-h">${RIM_TYPES.map(t=>optBtn("data-rtype",t,t,s.noRim?"":s.rimType)).join("")}</div>
-      ${!s.noRim&&s.rimType&&!s.rimCov?`<p class="inline-hint" role="status">Now choose half or full.</p>`:""}
-      ${!s.noRim&&s.rimCov&&!s.rimType?`<p class="inline-hint" role="status">Now choose what goes on the rim.</p>`:""}`;
+      ${!s.noRim&&s.rimCov&&!s.rimType?`<p class="inline-hint" role="status">Now choose what goes on the rim.</p>`:""}
+      <div class="opts" role="group" aria-labelledby="type-h">${RIM_TYPES.map(t=>optBtn("data-rtype",t,t,s.noRim?"":s.rimType)).join("")}</div>`;
     case 2: {
       const ks=Object.keys(s.ings),q=norm(bar.q.trim());
       const list=Object.keys(ING).filter(k=>q?norm(ING[k].label).includes(q):ING[k].group===bar.cat);
@@ -1372,9 +1383,9 @@ function go(step,{focus=true}={}){
   if(step===5) bar.fromReview=false;
   bar.step=step;bar.q="";bar.gq="";renderBar(focus?"#step-h":null);
   announce(`Step ${step+1} of 6: ${STEPS[step]}`);
-  const st=$(".stepper");if(st) st.scrollIntoView({block:"nearest"});
+  const st=$(".stepper");if(st&&!window.matchMedia("(prefers-reduced-motion:reduce)").matches)st.scrollIntoView({block:"nearest"});
 }
-function advance(){setTimeout(()=>{if(!bar||bar.result)return;if(bar.fromReview){bar.fromReview=false;go(5)}else if(bar.step<5)go(bar.step+1)},220)}
+function advance(){setTimeout(()=>{if(!bar||bar.result)return;if(bar.fromReview){bar.fromReview=false;go(5)}else if(bar.step<5)go(bar.step+1)},350)}
 function bindBar(){
   const s=bar.sel,M=$("#main");
   M.querySelectorAll(".stepper [data-step],.review [data-step]").forEach(b=>b.onclick=()=>{const to=+b.dataset.step;bar.fromReview=bar.step===5&&to<5;go(to)});
@@ -1389,7 +1400,7 @@ function bindBar(){
   M.querySelectorAll("[data-rtype]").forEach(b=>b.onclick=()=>{s.noRim=false;s.rimType=b.dataset.rtype;renderBar(`[data-rtype="${CSS.escape(s.rimType)}"]`);if(selRim(s))advance()});
   M.querySelectorAll("[data-method]").forEach(b=>b.onclick=()=>{s.method=b.dataset.method;markPressed("[data-method]",b);updateStrip();advance()});
   M.querySelectorAll("[data-garnish]").forEach(b=>b.onclick=()=>{s.garnish=b.dataset.garnish;markPressed("[data-garnish]",b);updateStrip();advance()});
-  M.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>{bar.cat=b.dataset.cat;renderBar(`[data-cat="${CSS.escape(bar.cat)}"]`)});
+  M.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>{const sp=window.scrollY;bar.cat=b.dataset.cat;renderBar(`[data-cat="${CSS.escape(bar.cat)}"]`);window.scrollTo(0,sp)});
   M.querySelectorAll("[data-ing]").forEach(b=>b.onclick=()=>pourSheet(b.dataset.ing));
   M.querySelectorAll("[data-edit-ing]").forEach(b=>b.onclick=()=>pourSheet(b.dataset.editIng));
   const rq=$("#rail-q");if(rq) rq.oninput=e=>{bar.q=e.target.value;const pos=e.target.selectionStart;renderBar("#rail-q");const n=$("#rail-q");n.setSelectionRange(pos,pos)};
@@ -1456,7 +1467,10 @@ function renderResult(){
         :r.kind==="extra"?`<span class="ck-val"><s>${esc(r.you)}</s> · not in this drink</span>`
         :r.kind==="missing"?`<span class="ck-val">Missing · spec is <b>${esc(r.want)}</b></span>`
         :`<span class="ck-val"><s>${esc(r.you)}</s> → <b>${esc(r.want)}</b></span>`}</div></li>`;
-  const secs=["Glass","Rim","Pour","Method","Garnish"];
+  const allSecs=["Glass","Rim","Pour","Method","Garnish"];
+  const badSecs=allSecs.filter(sec=>rows.filter(r=>r.sec===sec).some(r=>!r.ok));
+  const okSecs=allSecs.filter(sec=>!badSecs.includes(sec)&&rows.some(r=>r.sec===sec));
+  const secs=[...badSecs,...okSecs];
   $("#main").innerHTML=`<h2 class="sr-only">Bar mode</h2>${ticketHTML()}
     <section class="result card" aria-labelledby="r-h">
       <div class="result-head ${all?"ok":"bad"}">
@@ -1464,7 +1478,7 @@ function renderResult(){
         <div><h3 class="panel-title" id="r-h" tabindex="-1">${bar.practice&&bar.hint?"Here's the spec":all?"Nailed it":right>=rows.length-2?"Close. A couple to fix":"Not this time"}</h3>
         <p class="lede">${bar.practice?"Practice run, so it doesn't count.":all?"Counts towards mastery.":"Marked as a weak spot. It'll come round again."}</p></div>
       </div>
-      ${secs.map(sec=>{const rs=rows.filter(r=>r.sec===sec);return `<div class="r-sec"><p class="sub-h">${sec}</p><ul class="checks">${rs.map(line).join("")}</ul></div>`}).join("")}
+      ${secs.map(sec=>{const rs=rows.filter(r=>r.sec===sec),hasBad=rs.some(r=>!r.ok);return `<div class="r-sec ${hasBad?"bad":"ok"}"><p class="sub-h">${esc(sec)}</p><ul class="checks">${rs.map(line).join("")}</ul></div>`}).join("")}
     </section>
     <details class="member"><summary><span class="m-name">Full spec</span></summary>${drinkCard(item)}</details>
     <div class="actionbar"><div class="btns"><button type="button" class="btn" id="b-retry">${ICON.retry} Retry</button><button type="button" class="btn btn-primary grow2" id="b-next">Next ticket ${ICON.arrow}</button></div></div>`;
